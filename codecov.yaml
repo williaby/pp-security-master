@@ -1,0 +1,167 @@
+# Codecov Configuration for PP Security-Master
+# See: https://docs.codecov.com/docs/codecov-yaml
+
+codecov:
+  ci:
+    - github
+  branch: main
+  max_report_age: "24h"
+  notify:
+    after_n_builds: 2  # Wait for both Python versions to upload
+    wait_for_ci: true
+  require_ci_to_pass: false
+  assume_all_flags: false
+  disable_default_path_fixes: false
+  strict_yaml_branch: main
+
+coverage:
+  precision: 2
+  round: down
+  range: 70...95
+
+  status:
+    project:
+      default:
+        target: auto  # Compare against base commit
+        threshold: 1%  # Allow 1% drop without failing
+        if_not_found: success
+        informational: false  # This is blocking
+    patch:
+      default:
+        target: 85%  # New code must have good coverage
+        threshold: 2%
+        if_not_found: success
+        only_pulls: true
+        informational: false  # This is blocking
+
+  ignore:
+    - "tests/"
+    - "scripts/"
+    - "docs/"
+    - "htmlcov/"
+    - "*.html"
+    - "*.js"
+    - "*.css"
+    - "*/__pycache__/"
+    - "*/migrations/"
+    - "noxfile.py"
+    - ".github/"
+    - "sample_data/"
+    - "schema_exports/"
+    - "*.yaml"
+    - "*.yml"
+    - "*.toml"
+    - "*.cfg"
+    - "*.ini"
+    - "Dockerfile*"
+    - ".env*"
+    - "requirements*.txt"
+    - "pyproject.toml"
+
+# Component definitions for security-master architecture
+component_management:
+  individual_components:
+    - component_id: extractor
+      name: "Broker File Extractors"
+      paths:
+        - src/security_master/extractor/
+      flag_regexes:
+        - unit
+        - integration
+
+    - component_id: classifier
+      name: "Classification Engine"
+      paths:
+        - src/security_master/classifier/
+      flag_regexes:
+        - unit
+        - integration
+        - api
+
+    - component_id: storage
+      name: "Database & Persistence"
+      paths:
+        - src/security_master/storage/
+      flag_regexes:
+        - unit
+        - integration
+        - database
+
+    - component_id: patch
+      name: "PP Integration Layer"
+      paths:
+        - src/security_master/patch/
+      flag_regexes:
+        - unit
+        - integration
+
+    - component_id: cli
+      name: "CLI Interface"
+      paths:
+        - src/security_master/cli.py
+        - src/security_master/utils.py
+      flag_regexes:
+        - unit
+
+# Flag definitions for different test types with carryforward enabled
+flags:
+  unit:
+    paths:
+      - src/
+    carryforward: true
+
+  integration:
+    paths:
+      - src/
+    carryforward: true
+
+  database:
+    paths:
+      - src/
+    carryforward: true
+
+  api:
+    paths:
+      - src/
+    carryforward: true
+
+  security:
+    paths:
+      - src/
+    carryforward: true
+
+# Parser configurations
+parsers:
+  gcov:
+    branch_detection:
+      conditional: true
+      loop: true
+      method: false
+      macro: false
+
+# Comment configuration for PR updates
+comment:
+  layout: "reach, diff, flags, files, footer"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
+  branches:
+    - main
+  show_carryforward_flags: true
+  after_n_builds: 1
+
+# GitHub integration
+github_checks:
+  annotations: true
+
+fixes:
+  - "src/::src/"
+  - "tests/::tests/"
+
+# Profiling for critical paths
+profiling:
+  critical_files_paths:
+    - src/security_master/classifier/
+    - src/security_master/extractor/
+    - src/security_master/storage/

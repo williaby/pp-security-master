@@ -1,0 +1,214 @@
+from typing import Dict, Optional, Tuple
+
+from sqlalchemy.orm import Session
+
+from .models import KuberaSheet, KuberaSection
+
+
+class PortfolioMappingManager:
+    """Manages mappings between Kubera sheets/sections and Portfolio Performance groups/accounts."""
+    
+    def __init__(self, session: Session):
+        self.session = session
+        
+        # Default mappings based on common patterns
+        self.default_sheet_mappings = {
+            "IRA": "IRA",
+            "SDIRA": "Self-Directed IRA", 
+            "Crypto": "Crypto",
+            "Real Estate": "Real Estate",
+            "Residence": "Residence",
+            "Loans": "Liabilities",
+            "Other Assets": "Other Assets",
+            "Annuity": "Annuity",
+        }
+        
+        # Common section to account mappings
+        self.default_section_mappings = {
+            "Wells fargo": "Wells Fargo",
+            "Interactive Brokers": "Interactive Brokers", 
+            "AltoIRA": "AltoIRA",
+            "Prudential": "Prudential",
+            "Equity Trust Metals": "Equity Trust Metals",
+            "WFF SD IRA": "WFF SD IRA",
+            "WFF SD IRA LLC": "WFF SD IRA LLC",
+        }
+    
+    def get_or_create_sheet_mapping(self, sheet_id: str, sheet_name: str) -> KuberaSheet:
+        """Get existing sheet mapping or create new one with default PP group mapping."""
+        sheet = self.session.query(KuberaSheet).filter_by(sheet_id=sheet_id).first()
+        
+        if not sheet:
+            pp_group = self.default_sheet_mappings.get(sheet_name, sheet_name)
+            sheet = KuberaSheet(
+                sheet_id=sheet_id,
+                sheet_name=sheet_name,
+                pp_group_name=pp_group
+            )
+            self.session.add(sheet)
+            self.session.flush()  # Get the ID
+            
+        return sheet
+    
+    def get_or_create_section_mapping(self, section_id: str, section_name: str, 
+                                     sheet: KuberaSheet) -> KuberaSection:
+        """Get existing section mapping or create new one with default PP account mapping."""
+        section = self.session.query(KuberaSection).filter_by(section_id=section_id).first()
+        
+        if not section:
+            pp_account = self.default_section_mappings.get(section_name, section_name)
+            section = KuberaSection(
+                section_id=section_id,
+                section_name=section_name,
+                sheet_id=sheet.id,
+                pp_account_name=pp_account
+            )
+            self.session.add(section)
+            self.session.flush()  # Get the ID
+            
+        return section
+    
+    def update_sheet_mapping(self, sheet_id: str, pp_group_name: str) -> bool:
+        """Update the Portfolio Performance group mapping for a sheet."""
+        sheet = self.session.query(KuberaSheet).filter_by(sheet_id=sheet_id).first()
+        if sheet:
+            sheet.pp_group_name = pp_group_name
+            return True
+        return False
+    
+    def update_section_mapping(self, section_id: str, pp_account_name: str) -> bool:
+        """Update the Portfolio Performance account mapping for a section."""
+        section = self.session.query(KuberaSection).filter_by(section_id=section_id).first()
+        if section:
+            section.pp_account_name = pp_account_name
+            return True
+        return False
+    
+    def get_pp_mapping(self, sheet_id: str, section_id: str) -> Tuple[Optional[str], Optional[str]]:
+        """Get Portfolio Performance group and account names for a Kubera sheet/section."""
+        section = (self.session.query(KuberaSection)
+                  .join(KuberaSheet)
+                  .filter(KuberaSheet.sheet_id == sheet_id)
+                  .filter(KuberaSection.section_id == section_id)
+                  .first())
+        
+        if section and section.sheet:
+            return section.sheet.pp_group_name, section.pp_account_name
+        
+        return None, None
+    
+    def list_unmapped_sheets(self) -> list[KuberaSheet]:
+        """Get list of sheets without Portfolio Performance group mappings."""
+        return (self.session.query(KuberaSheet)
+               .filter(KuberaSheet.pp_group_name.is_(None))
+               .all())
+    
+    def list_unmapped_sections(self) -> list[KuberaSection]:
+        """Get list of sections without Portfolio Performance account mappings."""
+        return (self.session.query(KuberaSection)
+               .filter(KuberaSection.pp_account_name.is_(None))
+               .all())
+    
+    def get_mapping_summary(self) -> Dict[str, Dict[str, str]]:
+        """Get summary of all current mappings."""
+        mappings = {}
+        
+        sheets = self.session.query(KuberaSheet).all()
+        for sheet in sheets:
+            sheet_mapping = {
+                "pp_group": sheet.pp_group_name,
+                "sections": {}
+            }
+            
+            for section in sheet.sections:
+                sheet_mapping["sections"][section.section_name] = {
+                    "pp_account": section.pp_account_name
+                }
+            
+            mappings[sheet.sheet_name] = sheet_mapping
+        
+        return mappings
+
+
+class SecurityMatcher:
+    """Matches securities between Portfolio Performance and Kubera holdings."""
+    
+    @staticmethod
+    def match_by_isin(pp_isin: str, kubera_isin: str) -> bool:
+        """Match securities by ISIN (most reliable)."""
+        if not pp_isin or not kubera_isin:
+            return False
+        return pp_isin.upper().strip() == kubera_isin.upper().strip()
+    
+    @staticmethod
+    def match_by_ticker(pp_symbol: str, kubera_ticker: str) -> bool:
+        """Match securities by ticker/symbol."""
+        if not pp_symbol or not kubera_ticker:
+            return False
+        return pp_symbol.upper().strip() == kubera_ticker.upper().strip()
+    
+    @staticmethod
+    def match_by_name(pp_name: str, kubera_name: str, threshold: float = 0.8) -> bool:
+        """Match securities by name similarity (fuzzy matching)."""
+        if not pp_name or not kubera_name:
+            return False
+        
+        # Simple similarity check - could be enhanced with libraries like fuzzywuzzy
+        pp_clean = pp_name.upper().strip()
+        kubera_clean = kubera_name.upper().strip()
+        
+        # Exact match
+        if pp_clean == kubera_clean:
+            return True
+        
+        # Check if one name contains the other
+        if pp_clean in kubera_clean or kubera_clean in pp_clean:
+            return True
+        
+        # Simple word overlap check
+        pp_words = set(pp_clean.split())
+        kubera_words = set(kubera_clean.split())
+        
+        if len(pp_words) == 0 or len(kubera_words) == 0:
+            return False
+        
+        overlap = len(pp_words.intersection(kubera_words))
+        max_words = max(len(pp_words), len(kubera_words))
+        
+        return (overlap / max_words) >= threshold
+    
+    @classmethod
+    def find_best_match(cls, pp_security: dict, kubera_holdings: list[dict]) -> Optional[dict]:
+        """Find the best matching Kubera holding for a Portfolio Performance security."""
+        
+        # Try ISIN match first (most reliable)
+        if pp_security.get("isin"):
+            for holding in kubera_holdings:
+                if cls.match_by_isin(pp_security["isin"], holding.get("isin")):
+                    return holding
+        
+        # Try ticker match
+        if pp_security.get("symbol"):
+            for holding in kubera_holdings:
+                if cls.match_by_ticker(pp_security["symbol"], holding.get("ticker")):
+                    return holding
+        
+        # Try name match
+        if pp_security.get("name"):
+            for holding in kubera_holdings:
+                if cls.match_by_name(pp_security["name"], holding.get("name")):
+                    return holding
+        
+        return None
+    
+    @staticmethod
+    def calculate_variance(pp_value: float, kubera_value: float) -> Tuple[float, float]:
+        """Calculate absolute and percentage variance between two values."""
+        variance = kubera_value - pp_value
+        
+        if pp_value == 0:
+            percentage = 100.0 if kubera_value != 0 else 0.0
+        else:
+            percentage = (variance / pp_value) * 100
+        
+        return variance, percentage

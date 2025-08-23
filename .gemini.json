@@ -1,0 +1,15 @@
+
+{
+  "mcpServers": {
+    "zen_gemini": {
+      "type": "stdio",
+      "command": "/home/byron/dev/zen-mcp-server/.zen_venv/bin/python",
+      "args": [
+        "/home/byron/dev/zen-mcp-server/server.py",
+        "--model",
+        "gemini"
+      ],
+      "env": {}
+    }
+  }
+}

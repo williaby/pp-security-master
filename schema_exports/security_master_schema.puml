@@ -1,0 +1,267 @@
+@startuml Security Master Database Schema
+
+!define TABLE(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define PRIMARY_KEY(x) <u>x</u>
+!define FOREIGN_KEY(x) <i>x</i>
+!define UNIQUE_KEY(x) <b>x</b>
+
+skinparam class {
+    BackgroundColor<<(T,#FFAAAA)>> #FFEEEE
+    BorderColor #FF6666
+    ArrowColor #333333
+}
+
+' Securities Master Table
+entity "securities_master" as SM {
+    PRIMARY_KEY(+id) : INTEGER
+    --
+    name : VARCHAR(255) NOT NULL
+    UNIQUE_KEY(isin) : VARCHAR(12)
+    symbol : VARCHAR(20)
+    wkn : VARCHAR(20)
+    note : TEXT
+    currency : VARCHAR(3) DEFAULT 'USD'
+    --
+    ==Pricing Data==
+    latest_price : DECIMAL(12,4)
+    delta_percent : DECIMAL(8,4)
+    delta_amount : DECIMAL(12,4)
+    latest_date : DATE
+    last_historical_date : DATE
+    first_historical_date : DATE
+    --
+    ==Data Feeds==
+    quote_feed_historic : VARCHAR(100)
+    quote_feed_latest : VARCHAR(100)
+    url_historic_quotes : VARCHAR(500)
+    url_latest_quotes : VARCHAR(500)
+    --
+    ==Corporate Actions==
+    next_ex_date : DATE
+    next_payment_date : DATE
+    next_payment_amount : DECIMAL(12,4)
+    --
+    ==Fund/ETF Data==
+    logo : VARCHAR(500)
+    ter : DECIMAL(6,4)
+    aum : DECIMAL(15,2)
+    vendor : VARCHAR(100)
+    acquisition_fee : DECIMAL(6,4)
+    management_fee : DECIMAL(6,4)
+    --
+    ==Asset Classifications==
+    asset_classes_level1 : VARCHAR(100)
+    asset_classes : VARCHAR(200)
+    sector : VARCHAR(100)
+    industry_group : VARCHAR(100)
+    industry : VARCHAR(100)
+    --
+    ==GICS Classifications==
+    industries_gics_level4 : VARCHAR(200)
+    industries_gics : VARCHAR(200)
+    industries_gics_sectors_level1 : VARCHAR(100)
+    industries_gics_sectors : VARCHAR(200)
+    --
+    ==Asset Allocation==
+    asset_allocation_level1 : VARCHAR(100)
+    asset_allocation_level2 : VARCHAR(100)
+    asset_allocation : VARCHAR(200)
+    --
+    ==Geographic==
+    market : VARCHAR(100)
+    region : VARCHAR(100)
+    regions_msci_level3 : VARCHAR(100)
+    regions_msci : VARCHAR(200)
+    --
+    ==Security Types==
+    type_of_security_level1 : VARCHAR(100)
+    type_of_security : VARCHAR(200)
+    --
+    ==Custom BRX-Plus==
+    brx_plus_level1 : VARCHAR(100)
+    brx_plus_level2 : VARCHAR(100)
+    brx_plus : VARCHAR(200)
+    --
+    ==Audit Fields==
+    created_at : TIMESTAMP DEFAULT NOW()
+    updated_at : TIMESTAMP DEFAULT NOW()
+    data_source : VARCHAR(50) DEFAULT 'portfolio_performance'
+    data_quality_score : DECIMAL(3,2)
+}
+
+' Kubera Sheets Table
+entity "kubera_sheets" as KS {
+    PRIMARY_KEY(+id) : INTEGER
+    --
+    UNIQUE_KEY(sheet_id) : VARCHAR(50) NOT NULL
+    sheet_name : VARCHAR(100) NOT NULL
+    pp_group_name : VARCHAR(100)
+    --
+    ==Audit Fields==
+    created_at : TIMESTAMP DEFAULT NOW()
+    updated_at : TIMESTAMP DEFAULT NOW()
+}
+
+' Kubera Sections Table
+entity "kubera_sections" as KSE {
+    PRIMARY_KEY(+id) : INTEGER
+    --
+    UNIQUE_KEY(section_id) : VARCHAR(50) NOT NULL
+    section_name : VARCHAR(100) NOT NULL
+    FOREIGN_KEY(sheet_id) : INTEGER NOT NULL
+    pp_account_name : VARCHAR(100)
+    --
+    ==Audit Fields==
+    created_at : TIMESTAMP DEFAULT NOW()
+    updated_at : TIMESTAMP DEFAULT NOW()
+}
+
+' Kubera Holdings Table
+entity "kubera_holdings" as KH {
+    PRIMARY_KEY(+id) : INTEGER
+    --
+    UNIQUE_KEY(kubera_asset_id) : VARCHAR(100) NOT NULL
+    name : VARCHAR(255) NOT NULL
+    FOREIGN_KEY(section_id) : INTEGER NOT NULL
+    --
+    ==Security Identifiers==
+    ticker : VARCHAR(20)
+    ticker_id : INTEGER
+    isin : VARCHAR(12)
+    --
+    ==Classification==
+    category : VARCHAR(50) NOT NULL
+    sub_type : VARCHAR(50) NOT NULL
+    ticker_sub_type : VARCHAR(20)
+    asset_class : VARCHAR(50) NOT NULL
+    security_type : VARCHAR(50) NOT NULL
+    --
+    ==Market Data==
+    exchange : VARCHAR(50)
+    sector : VARCHAR(100)
+    ticker_sector : VARCHAR(100)
+    --
+    ==Position Data==
+    quantity : DECIMAL(18,8) NOT NULL
+    current_price : DECIMAL(12,4)
+    current_value : DECIMAL(15,2) NOT NULL
+    currency : VARCHAR(3) DEFAULT 'USD'
+    --
+    ==Cost Basis==
+    cost_per_share : DECIMAL(12,4)
+    cost_basis_total : DECIMAL(15,2)
+    cost_basis_for_tax : DECIMAL(15,2)
+    --
+    ==Performance==
+    irr : DECIMAL(12,6)
+    unrealized_gain_loss : DECIMAL(15,2)
+    tax_on_unrealized_gain : DECIMAL(15,2)
+    --
+    ==Dates==
+    purchase_date : DATE
+    holding_period_days : INTEGER
+    --
+    ==Tax Info==
+    tax_rate : DECIMAL(5,2)
+    tax_status : VARCHAR(20)
+    --
+    ==Geography & Liquidity==
+    geography_country : VARCHAR(50)
+    geography_region : VARCHAR(50)
+    liquidity : VARCHAR(20)
+    investable : VARCHAR(50)
+    ownership : DECIMAL(3,2) DEFAULT 1.0
+    --
+    ==Data Connection==
+    aggregator : VARCHAR(50)
+    provider_name : VARCHAR(100)
+    provider_account_id : VARCHAR(50)
+    provider_connection_id : VARCHAR(50)
+    last_updated : TIMESTAMP
+    --
+    ==Metadata==
+    is_manual : BOOLEAN DEFAULT FALSE
+    holdings_count : INTEGER DEFAULT 0
+    parent_id : VARCHAR(100)
+    parent_name : VARCHAR(255)
+    snapshot_date : DATE NOT NULL
+    data_source : VARCHAR(50) DEFAULT 'kubera'
+    --
+    ==Audit Fields==
+    created_at : TIMESTAMP DEFAULT NOW()
+    updated_at : TIMESTAMP DEFAULT NOW()
+}
+
+' Holding Comparisons Table
+entity "holding_comparisons" as HC {
+    PRIMARY_KEY(+id) : INTEGER
+    --
+    ==Comparison Metadata==
+    comparison_date : DATE NOT NULL
+    pp_group : VARCHAR(100) NOT NULL
+    pp_account : VARCHAR(100) NOT NULL
+    --
+    ==Security Identification==
+    security_name : VARCHAR(255) NOT NULL
+    isin : VARCHAR(12)
+    ticker : VARCHAR(20)
+    --
+    ==Portfolio Performance Data==
+    pp_quantity : DECIMAL(18,8)
+    pp_value : DECIMAL(15,2)
+    pp_currency : VARCHAR(3)
+    --
+    ==Kubera Data==
+    kubera_quantity : DECIMAL(18,8)
+    kubera_value : DECIMAL(15,2)
+    kubera_currency : VARCHAR(3)
+    --
+    ==Variance Analysis==
+    quantity_variance : DECIMAL(18,8)
+    quantity_variance_percent : DECIMAL(8,4)
+    value_variance : DECIMAL(15,2)
+    value_variance_percent : DECIMAL(8,4)
+    --
+    ==Status Flags==
+    is_matched : BOOLEAN DEFAULT FALSE
+    is_pp_only : BOOLEAN DEFAULT FALSE
+    is_kubera_only : BOOLEAN DEFAULT FALSE
+    variance_threshold_exceeded : BOOLEAN DEFAULT FALSE
+    --
+    ==Tolerance Settings==
+    quantity_tolerance_percent : DECIMAL(5,2) DEFAULT 0.01
+    value_tolerance_percent : DECIMAL(5,2) DEFAULT 0.50
+    --
+    ==Investigation==
+    notes : TEXT
+    investigation_status : VARCHAR(50) DEFAULT 'pending'
+    --
+    ==Audit Fields==
+    created_at : TIMESTAMP DEFAULT NOW()
+    updated_at : TIMESTAMP DEFAULT NOW()
+}
+
+' Relationships
+KS ||--o{ KSE : "contains sections"
+KSE ||--o{ KH : "contains holdings"
+
+note top of SM : Portfolio Performance Securities\nComplete taxonomy classification\nData quality scoring
+
+note top of KS : Kubera Account Sheets\nMap to PP Groups\n(IRA, Crypto, Real Estate)
+
+note top of KSE : Kubera Account Sections\nMap to PP Securities Accounts\n(Wells Fargo, Interactive Brokers)
+
+note top of KH : Individual Security Holdings\nReal-time position data\nPerformance metrics
+
+note top of HC : Holdings Variance Analysis\nPP vs Kubera comparison\nData quality validation
+
+note as N1
+**Security Master Service Architecture**
+====
+* **Securities Master**: PP securities with complete taxonomy
+* **Kubera Integration**: Real-time holdings with hierarchical mapping
+* **Variance Analysis**: Automated data quality monitoring
+* **Flexible Mapping**: Configurable PP group/account alignment
+end note
+
+@enduml
