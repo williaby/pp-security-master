@@ -31,22 +31,22 @@ class SecurityMasterCoverageReporter:
         """Find coverage XML and JSON files."""
         coverage_xml = self.project_root / "coverage.xml"
         coverage_json = self.project_root / "coverage.json"
-        
+
         return {
             "xml": coverage_xml if coverage_xml.exists() else None,
-            "json": coverage_json if coverage_json.exists() else None
+            "json": coverage_json if coverage_json.exists() else None,
         }
 
     def load_coverage_data(self) -> dict:
         """Load coverage data from XML and JSON files."""
         files = self.find_coverage_files()
-        
+
         if not files["xml"] and not files["json"]:
             return None
 
         data = {
             "overall": {"percentage": 0, "lines_covered": 0, "lines_total": 0},
-            "files": {}
+            "files": {},
         }
 
         # Parse XML for detailed file coverage
@@ -54,10 +54,12 @@ class SecurityMasterCoverageReporter:
             try:
                 tree = ET.parse(files["xml"])
                 root = tree.getroot()
-                
+
                 # Overall coverage
                 for coverage_elem in root.findall(".//coverage"):
-                    data["overall"]["percentage"] = float(coverage_elem.get("line-rate", 0)) * 100
+                    data["overall"]["percentage"] = (
+                        float(coverage_elem.get("line-rate", 0)) * 100
+                    )
                     break
 
                 # File-level coverage
@@ -66,14 +68,16 @@ class SecurityMasterCoverageReporter:
                         filename = class_elem.get("filename", "")
                         if filename.startswith("src/"):
                             lines = class_elem.findall("lines/line")
-                            covered = sum(1 for line in lines if line.get("hits", "0") != "0")
+                            covered = sum(
+                                1 for line in lines if line.get("hits", "0") != "0"
+                            )
                             total = len(lines)
-                            
+
                             if total > 0:
                                 data["files"][filename] = {
                                     "coverage": (covered / total) * 100,
                                     "lines_covered": covered,
-                                    "lines_total": total
+                                    "lines_total": total,
                                 }
             except Exception:
                 pass
@@ -83,19 +87,21 @@ class SecurityMasterCoverageReporter:
             try:
                 with open(files["json"]) as f:
                     json_data = json.load(f)
-                    
-                data["overall"]["percentage"] = json_data.get("totals", {}).get("percent_covered", 0)
-                
+
+                data["overall"]["percentage"] = json_data.get("totals", {}).get(
+                    "percent_covered", 0,
+                )
+
                 for filename, file_data in json_data.get("files", {}).items():
                     if filename.startswith("src/"):
                         summary = file_data.get("summary", {})
                         covered = summary.get("covered_lines", 0)
                         total = summary.get("num_statements", 0)
-                        
+
                         data["files"][filename] = {
                             "coverage": summary.get("percent_covered", 0),
                             "lines_covered": covered,
-                            "lines_total": total
+                            "lines_total": total,
                         }
             except Exception:
                 pass
@@ -110,12 +116,12 @@ class SecurityMasterCoverageReporter:
             "storage": {"files": [], "total_coverage": 0},
             "patch": {"files": [], "total_coverage": 0},
             "cli": {"files": [], "total_coverage": 0},
-            "utils": {"files": [], "total_coverage": 0}
+            "utils": {"files": [], "total_coverage": 0},
         }
 
         for filename, file_data in files_data.items():
             component = "utils"  # default
-            
+
             if "extractor/" in filename:
                 component = "extractor"
             elif "classifier/" in filename:
@@ -127,26 +133,30 @@ class SecurityMasterCoverageReporter:
             elif "cli.py" in filename:
                 component = "cli"
 
-            components[component]["files"].append({
-                "name": filename,
-                "coverage": file_data["coverage"],
-                "lines_covered": file_data["lines_covered"],
-                "lines_total": file_data["lines_total"]
-            })
+            components[component]["files"].append(
+                {
+                    "name": filename,
+                    "coverage": file_data["coverage"],
+                    "lines_covered": file_data["lines_covered"],
+                    "lines_total": file_data["lines_total"],
+                },
+            )
 
         # Calculate component averages
         for component, data in components.items():
             if data["files"]:
                 total_covered = sum(f["lines_covered"] for f in data["files"])
                 total_lines = sum(f["lines_total"] for f in data["files"])
-                data["total_coverage"] = (total_covered / total_lines * 100) if total_lines > 0 else 0
+                data["total_coverage"] = (
+                    (total_covered / total_lines * 100) if total_lines > 0 else 0
+                )
 
         return components
 
     def generate_html_report(self, coverage_data: dict, components: dict) -> str:
         """Generate enhanced HTML coverage report."""
         overall = coverage_data["overall"]
-        
+
         html = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -178,10 +188,12 @@ class SecurityMasterCoverageReporter:
         for component_name, component_data in components.items():
             if not component_data["files"]:
                 continue
-                
+
             coverage = component_data["total_coverage"]
-            css_class = "high" if coverage >= 80 else "medium" if coverage >= 60 else "low"
-            
+            css_class = (
+                "high" if coverage >= 80 else "medium" if coverage >= 60 else "low"
+            )
+
             html += f"""
     <div class="component">
         <div class="component-title">{component_name.title()} Component</div>
@@ -218,14 +230,14 @@ class SecurityMasterCoverageReporter:
 
         components = self.classify_by_component(coverage_data["files"])
         html_report = self.generate_html_report(coverage_data, components)
-        
+
         # Save enhanced report
         report_file = self.reports_dir / "security-master-coverage.html"
         report_file.write_text(html_report)
-        
+
         print(f"✅ Enhanced coverage report generated: {report_file}")
         print(f"📊 Overall coverage: {coverage_data['overall']['percentage']:.1f}%")
-        
+
         return True
 
 
@@ -234,10 +246,10 @@ def main():
     try:
         reporter = SecurityMasterCoverageReporter()
         success = reporter.run()
-        
+
         if not success:
             sys.exit(1)
-            
+
     except Exception as e:
         print(f"❌ Error generating coverage report: {e}")
         sys.exit(1)

@@ -1,6 +1,5 @@
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Optional
 
 from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Numeric, String, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -16,270 +15,330 @@ class SecurityMaster(Base):
     # Primary identification
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
-    isin: Mapped[Optional[str]] = mapped_column(String(12), unique=True, index=True)
-    symbol: Mapped[Optional[str]] = mapped_column(String(20), index=True)
-    wkn: Mapped[Optional[str]] = mapped_column(String(20), index=True)
-    
+    isin: Mapped[str | None] = mapped_column(String(12), unique=True, index=True)
+    symbol: Mapped[str | None] = mapped_column(String(20), index=True)
+    wkn: Mapped[str | None] = mapped_column(String(20), index=True)
+
     # Descriptive fields
-    note: Mapped[Optional[str]] = mapped_column(Text)
+    note: Mapped[str | None] = mapped_column(Text)
     currency: Mapped[str] = mapped_column(String(3), nullable=False, default="USD")
-    
+
     # Pricing data
-    latest_price: Mapped[Optional[Decimal]] = mapped_column(Numeric(12, 4))
-    delta_percent: Mapped[Optional[Decimal]] = mapped_column(Numeric(8, 4))
-    delta_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric(12, 4))
-    latest_date: Mapped[Optional[date]] = mapped_column(Date)
-    last_historical_date: Mapped[Optional[date]] = mapped_column(Date)
-    first_historical_date: Mapped[Optional[date]] = mapped_column(Date)
-    
+    latest_price: Mapped[Decimal | None] = mapped_column(Numeric(12, 4))
+    delta_percent: Mapped[Decimal | None] = mapped_column(Numeric(8, 4))
+    delta_amount: Mapped[Decimal | None] = mapped_column(Numeric(12, 4))
+    latest_date: Mapped[date | None] = mapped_column(Date)
+    last_historical_date: Mapped[date | None] = mapped_column(Date)
+    first_historical_date: Mapped[date | None] = mapped_column(Date)
+
     # Data feeds
-    quote_feed_historic: Mapped[Optional[str]] = mapped_column(String(100))
-    quote_feed_latest: Mapped[Optional[str]] = mapped_column(String(100))
-    url_historic_quotes: Mapped[Optional[str]] = mapped_column(String(500))
-    url_latest_quotes: Mapped[Optional[str]] = mapped_column(String(500))
-    
+    quote_feed_historic: Mapped[str | None] = mapped_column(String(100))
+    quote_feed_latest: Mapped[str | None] = mapped_column(String(100))
+    url_historic_quotes: Mapped[str | None] = mapped_column(String(500))
+    url_latest_quotes: Mapped[str | None] = mapped_column(String(500))
+
     # Corporate actions
-    next_ex_date: Mapped[Optional[date]] = mapped_column(Date)
-    next_payment_date: Mapped[Optional[date]] = mapped_column(Date)
-    next_payment_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric(12, 4))
-    
+    next_ex_date: Mapped[date | None] = mapped_column(Date)
+    next_payment_date: Mapped[date | None] = mapped_column(Date)
+    next_payment_amount: Mapped[Decimal | None] = mapped_column(Numeric(12, 4))
+
     # Fund/ETF specific
-    logo: Mapped[Optional[str]] = mapped_column(String(500))
-    ter: Mapped[Optional[Decimal]] = mapped_column(Numeric(6, 4))  # Total Expense Ratio
-    aum: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))  # Assets Under Management
-    vendor: Mapped[Optional[str]] = mapped_column(String(100))
-    acquisition_fee: Mapped[Optional[Decimal]] = mapped_column(Numeric(6, 4))
-    management_fee: Mapped[Optional[Decimal]] = mapped_column(Numeric(6, 4))
-    
+    logo: Mapped[str | None] = mapped_column(String(500))
+    ter: Mapped[Decimal | None] = mapped_column(Numeric(6, 4))  # Total Expense Ratio
+    aum: Mapped[Decimal | None] = mapped_column(
+        Numeric(15, 2),
+    )  # Assets Under Management
+    vendor: Mapped[str | None] = mapped_column(String(100))
+    acquisition_fee: Mapped[Decimal | None] = mapped_column(Numeric(6, 4))
+    management_fee: Mapped[Decimal | None] = mapped_column(Numeric(6, 4))
+
     # Asset Classifications - Level 1 (simplified)
-    asset_classes_level1: Mapped[Optional[str]] = mapped_column(String(100))
-    asset_classes: Mapped[Optional[str]] = mapped_column(String(200))
-    
+    asset_classes_level1: Mapped[str | None] = mapped_column(String(100))
+    asset_classes: Mapped[str | None] = mapped_column(String(200))
+
     # Sector Classifications
-    sector: Mapped[Optional[str]] = mapped_column(String(100), index=True)
-    industry_group: Mapped[Optional[str]] = mapped_column(String(100))
-    industry: Mapped[Optional[str]] = mapped_column(String(100))
-    
+    sector: Mapped[str | None] = mapped_column(String(100), index=True)
+    industry_group: Mapped[str | None] = mapped_column(String(100))
+    industry: Mapped[str | None] = mapped_column(String(100))
+
     # GICS Classifications
-    industries_gics_level4: Mapped[Optional[str]] = mapped_column(String(200))
-    industries_gics: Mapped[Optional[str]] = mapped_column(String(200))
-    industries_gics_sectors_level1: Mapped[Optional[str]] = mapped_column(String(100))
-    industries_gics_sectors: Mapped[Optional[str]] = mapped_column(String(200))
-    
+    industries_gics_level4: Mapped[str | None] = mapped_column(String(200))
+    industries_gics: Mapped[str | None] = mapped_column(String(200))
+    industries_gics_sectors_level1: Mapped[str | None] = mapped_column(String(100))
+    industries_gics_sectors: Mapped[str | None] = mapped_column(String(200))
+
     # Asset Allocation
-    asset_allocation_level1: Mapped[Optional[str]] = mapped_column(String(100))
-    asset_allocation_level2: Mapped[Optional[str]] = mapped_column(String(100))
-    asset_allocation: Mapped[Optional[str]] = mapped_column(String(200))
-    
+    asset_allocation_level1: Mapped[str | None] = mapped_column(String(100))
+    asset_allocation_level2: Mapped[str | None] = mapped_column(String(100))
+    asset_allocation: Mapped[str | None] = mapped_column(String(200))
+
     # Geographic Classifications
-    market: Mapped[Optional[str]] = mapped_column(String(100))
-    region: Mapped[Optional[str]] = mapped_column(String(100))
-    regions_msci_level3: Mapped[Optional[str]] = mapped_column(String(100))
-    regions_msci: Mapped[Optional[str]] = mapped_column(String(200))
-    
+    market: Mapped[str | None] = mapped_column(String(100))
+    region: Mapped[str | None] = mapped_column(String(100))
+    regions_msci_level3: Mapped[str | None] = mapped_column(String(100))
+    regions_msci: Mapped[str | None] = mapped_column(String(200))
+
     # Security Type Classifications
-    type_of_security_level1: Mapped[Optional[str]] = mapped_column(String(100), index=True)
-    type_of_security: Mapped[Optional[str]] = mapped_column(String(200))
-    
+    type_of_security_level1: Mapped[str | None] = mapped_column(
+        String(100), index=True,
+    )
+    type_of_security: Mapped[str | None] = mapped_column(String(200))
+
     # Custom Classifications (Byron's BRX-Plus taxonomy)
-    brx_plus_level1: Mapped[Optional[str]] = mapped_column(String(100))
-    brx_plus_level2: Mapped[Optional[str]] = mapped_column(String(100))
-    brx_plus: Mapped[Optional[str]] = mapped_column(String(200))
-    
+    brx_plus_level1: Mapped[str | None] = mapped_column(String(100))
+    brx_plus_level2: Mapped[str | None] = mapped_column(String(100))
+    brx_plus: Mapped[str | None] = mapped_column(String(200))
+
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    data_source: Mapped[str] = mapped_column(String(50), default="portfolio_performance")
-    data_quality_score: Mapped[Optional[Decimal]] = mapped_column(Numeric(3, 2))  # 0.00-1.00
-    
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+    )
+    data_source: Mapped[str] = mapped_column(
+        String(50), default="portfolio_performance",
+    )
+    data_quality_score: Mapped[Decimal | None] = mapped_column(
+        Numeric(3, 2),
+    )  # 0.00-1.00
+
     def __repr__(self) -> str:
         return f"<SecurityMaster(id={self.id}, name='{self.name}', isin='{self.isin}', symbol='{self.symbol}')>"
 
 
 class KuberaSheet(Base):
     __tablename__ = "kubera_sheets"
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     sheet_id: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     sheet_name: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
-    
+
     # Portfolio Performance mapping
-    pp_group_name: Mapped[Optional[str]] = mapped_column(String(100), index=True)
-    
+    pp_group_name: Mapped[str | None] = mapped_column(String(100), index=True)
+
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+    )
+
     # Relationships
-    sections: Mapped[list["KuberaSection"]] = relationship("KuberaSection", back_populates="sheet")
-    
+    sections: Mapped[list["KuberaSection"]] = relationship(
+        "KuberaSection", back_populates="sheet",
+    )
+
     def __repr__(self) -> str:
         return f"<KuberaSheet(id={self.id}, name='{self.sheet_name}', pp_group='{self.pp_group_name}')>"
 
 
 class KuberaSection(Base):
     __tablename__ = "kubera_sections"
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     section_id: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     section_name: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
-    
+
     # Sheet relationship
-    sheet_id: Mapped[int] = mapped_column(ForeignKey("kubera_sheets.id"), nullable=False)
-    sheet: Mapped["KuberaSheet"] = relationship("KuberaSheet", back_populates="sections")
-    
+    sheet_id: Mapped[int] = mapped_column(
+        ForeignKey("kubera_sheets.id"), nullable=False,
+    )
+    sheet: Mapped["KuberaSheet"] = relationship(
+        "KuberaSheet", back_populates="sections",
+    )
+
     # Portfolio Performance mapping
-    pp_account_name: Mapped[Optional[str]] = mapped_column(String(100), index=True)
-    
+    pp_account_name: Mapped[str | None] = mapped_column(String(100), index=True)
+
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+    )
+
     # Relationships
-    holdings: Mapped[list["KuberaHolding"]] = relationship("KuberaHolding", back_populates="section")
-    
+    holdings: Mapped[list["KuberaHolding"]] = relationship(
+        "KuberaHolding", back_populates="section",
+    )
+
     def __repr__(self) -> str:
         return f"<KuberaSection(id={self.id}, name='{self.section_name}', pp_account='{self.pp_account_name}')>"
 
 
 class KuberaHolding(Base):
     __tablename__ = "kubera_holdings"
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
-    
+
     # Kubera identifiers
-    kubera_asset_id: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    kubera_asset_id: Mapped[str] = mapped_column(
+        String(100), unique=True, nullable=False,
+    )
     name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
-    
+
     # Section relationship
-    section_id: Mapped[int] = mapped_column(ForeignKey("kubera_sections.id"), nullable=False)
-    section: Mapped["KuberaSection"] = relationship("KuberaSection", back_populates="holdings")
-    
+    section_id: Mapped[int] = mapped_column(
+        ForeignKey("kubera_sections.id"), nullable=False,
+    )
+    section: Mapped["KuberaSection"] = relationship(
+        "KuberaSection", back_populates="holdings",
+    )
+
     # Security identifiers
-    ticker: Mapped[Optional[str]] = mapped_column(String(20), index=True)
-    ticker_id: Mapped[Optional[int]] = mapped_column()
-    isin: Mapped[Optional[str]] = mapped_column(String(12), index=True)
-    
+    ticker: Mapped[str | None] = mapped_column(String(20), index=True)
+    ticker_id: Mapped[int | None] = mapped_column()
+    isin: Mapped[str | None] = mapped_column(String(12), index=True)
+
     # Classification
-    category: Mapped[str] = mapped_column(String(50), nullable=False)  # asset, liability
-    sub_type: Mapped[str] = mapped_column(String(50), nullable=False, index=True)  # stock, mutual fund, etf, cash, etc.
-    ticker_sub_type: Mapped[Optional[str]] = mapped_column(String(20))  # cs, etf, oef, scr
-    asset_class: Mapped[str] = mapped_column(String(50), nullable=False, index=True)  # stock, fund, cash, crypto
-    security_type: Mapped[str] = mapped_column(String(50), nullable=False)  # investment, other
-    
+    category: Mapped[str] = mapped_column(
+        String(50), nullable=False,
+    )  # asset, liability
+    sub_type: Mapped[str] = mapped_column(
+        String(50), nullable=False, index=True,
+    )  # stock, mutual fund, etf, cash, etc.
+    ticker_sub_type: Mapped[str | None] = mapped_column(
+        String(20),
+    )  # cs, etf, oef, scr
+    asset_class: Mapped[str] = mapped_column(
+        String(50), nullable=False, index=True,
+    )  # stock, fund, cash, crypto
+    security_type: Mapped[str] = mapped_column(
+        String(50), nullable=False,
+    )  # investment, other
+
     # Market data
-    exchange: Mapped[Optional[str]] = mapped_column(String(50))
-    sector: Mapped[Optional[str]] = mapped_column(String(100), index=True)
-    ticker_sector: Mapped[Optional[str]] = mapped_column(String(100))
-    
+    exchange: Mapped[str | None] = mapped_column(String(50))
+    sector: Mapped[str | None] = mapped_column(String(100), index=True)
+    ticker_sector: Mapped[str | None] = mapped_column(String(100))
+
     # Position data
     quantity: Mapped[Decimal] = mapped_column(Numeric(18, 8), nullable=False)
-    current_price: Mapped[Optional[Decimal]] = mapped_column(Numeric(12, 4))
+    current_price: Mapped[Decimal | None] = mapped_column(Numeric(12, 4))
     current_value: Mapped[Decimal] = mapped_column(Numeric(15, 2), nullable=False)
     currency: Mapped[str] = mapped_column(String(3), nullable=False, default="USD")
-    
+
     # Cost basis
-    cost_per_share: Mapped[Optional[Decimal]] = mapped_column(Numeric(12, 4))
-    cost_basis_total: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
-    cost_basis_for_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
-    
+    cost_per_share: Mapped[Decimal | None] = mapped_column(Numeric(12, 4))
+    cost_basis_total: Mapped[Decimal | None] = mapped_column(Numeric(15, 2))
+    cost_basis_for_tax: Mapped[Decimal | None] = mapped_column(Numeric(15, 2))
+
     # Performance metrics
-    irr: Mapped[Optional[Decimal]] = mapped_column(Numeric(12, 6))  # Internal Rate of Return
-    unrealized_gain_loss: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
-    tax_on_unrealized_gain: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
-    
+    irr: Mapped[Decimal | None] = mapped_column(
+        Numeric(12, 6),
+    )  # Internal Rate of Return
+    unrealized_gain_loss: Mapped[Decimal | None] = mapped_column(Numeric(15, 2))
+    tax_on_unrealized_gain: Mapped[Decimal | None] = mapped_column(Numeric(15, 2))
+
     # Dates
-    purchase_date: Mapped[Optional[date]] = mapped_column(Date)
-    holding_period_days: Mapped[Optional[int]] = mapped_column()
-    
+    purchase_date: Mapped[date | None] = mapped_column(Date)
+    holding_period_days: Mapped[int | None] = mapped_column()
+
     # Tax information
-    tax_rate: Mapped[Optional[Decimal]] = mapped_column(Numeric(5, 2))  # percentage
-    tax_status: Mapped[Optional[str]] = mapped_column(String(20))  # taxable, tax-deferred, etc.
-    
+    tax_rate: Mapped[Decimal | None] = mapped_column(Numeric(5, 2))  # percentage
+    tax_status: Mapped[str | None] = mapped_column(
+        String(20),
+    )  # taxable, tax-deferred, etc.
+
     # Geographic and liquidity
-    geography_country: Mapped[Optional[str]] = mapped_column(String(50))
-    geography_region: Mapped[Optional[str]] = mapped_column(String(50))
-    liquidity: Mapped[Optional[str]] = mapped_column(String(20))  # high, medium, low
-    investable: Mapped[Optional[str]] = mapped_column(String(50))  # investable_easy_convert, investable_cash
-    ownership: Mapped[Optional[Decimal]] = mapped_column(Numeric(3, 2), default=1.0)  # ownership percentage
-    
+    geography_country: Mapped[str | None] = mapped_column(String(50))
+    geography_region: Mapped[str | None] = mapped_column(String(50))
+    liquidity: Mapped[str | None] = mapped_column(String(20))  # high, medium, low
+    investable: Mapped[str | None] = mapped_column(
+        String(50),
+    )  # investable_easy_convert, investable_cash
+    ownership: Mapped[Decimal | None] = mapped_column(
+        Numeric(3, 2), default=1.0,
+    )  # ownership percentage
+
     # Data connection info
-    aggregator: Mapped[Optional[str]] = mapped_column(String(50))  # finicity, yodlee, manual
-    provider_name: Mapped[Optional[str]] = mapped_column(String(100))
-    provider_account_id: Mapped[Optional[str]] = mapped_column(String(50))
-    provider_connection_id: Mapped[Optional[str]] = mapped_column(String(50))
-    last_updated: Mapped[Optional[datetime]] = mapped_column(DateTime)
-    
+    aggregator: Mapped[str | None] = mapped_column(
+        String(50),
+    )  # finicity, yodlee, manual
+    provider_name: Mapped[str | None] = mapped_column(String(100))
+    provider_account_id: Mapped[str | None] = mapped_column(String(50))
+    provider_connection_id: Mapped[str | None] = mapped_column(String(50))
+    last_updated: Mapped[datetime | None] = mapped_column(DateTime)
+
     # Manual data flag
     is_manual: Mapped[bool] = mapped_column(Boolean, default=False)
-    
+
     # Holdings count (for parent accounts)
     holdings_count: Mapped[int] = mapped_column(default=0)
-    
+
     # Parent relationship (for account summaries)
-    parent_id: Mapped[Optional[str]] = mapped_column(String(100))
-    parent_name: Mapped[Optional[str]] = mapped_column(String(255))
-    
+    parent_id: Mapped[str | None] = mapped_column(String(100))
+    parent_name: Mapped[str | None] = mapped_column(String(255))
+
     # Snapshot metadata
     snapshot_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     data_source: Mapped[str] = mapped_column(String(50), default="kubera")
-    
+
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+    )
+
     def __repr__(self) -> str:
         return f"<KuberaHolding(id={self.id}, name='{self.name}', ticker='{self.ticker}', quantity={self.quantity}, value={self.current_value})>"
 
 
 class HoldingComparison(Base):
     __tablename__ = "holding_comparisons"
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
-    
+
     # Comparison metadata
     comparison_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     pp_group: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
     pp_account: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
-    
+
     # Security identification
     security_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    isin: Mapped[Optional[str]] = mapped_column(String(12), index=True)
-    ticker: Mapped[Optional[str]] = mapped_column(String(20), index=True)
-    
+    isin: Mapped[str | None] = mapped_column(String(12), index=True)
+    ticker: Mapped[str | None] = mapped_column(String(20), index=True)
+
     # Portfolio Performance data
-    pp_quantity: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 8))
-    pp_value: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
-    pp_currency: Mapped[Optional[str]] = mapped_column(String(3))
-    
+    pp_quantity: Mapped[Decimal | None] = mapped_column(Numeric(18, 8))
+    pp_value: Mapped[Decimal | None] = mapped_column(Numeric(15, 2))
+    pp_currency: Mapped[str | None] = mapped_column(String(3))
+
     # Kubera data
-    kubera_quantity: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 8))
-    kubera_value: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
-    kubera_currency: Mapped[Optional[str]] = mapped_column(String(3))
-    
+    kubera_quantity: Mapped[Decimal | None] = mapped_column(Numeric(18, 8))
+    kubera_value: Mapped[Decimal | None] = mapped_column(Numeric(15, 2))
+    kubera_currency: Mapped[str | None] = mapped_column(String(3))
+
     # Variance analysis
-    quantity_variance: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 8))
-    quantity_variance_percent: Mapped[Optional[Decimal]] = mapped_column(Numeric(8, 4))
-    value_variance: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
-    value_variance_percent: Mapped[Optional[Decimal]] = mapped_column(Numeric(8, 4))
-    
+    quantity_variance: Mapped[Decimal | None] = mapped_column(Numeric(18, 8))
+    quantity_variance_percent: Mapped[Decimal | None] = mapped_column(Numeric(8, 4))
+    value_variance: Mapped[Decimal | None] = mapped_column(Numeric(15, 2))
+    value_variance_percent: Mapped[Decimal | None] = mapped_column(Numeric(8, 4))
+
     # Status flags
     is_matched: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     is_pp_only: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     is_kubera_only: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
-    variance_threshold_exceeded: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
-    
+    variance_threshold_exceeded: Mapped[bool] = mapped_column(
+        Boolean, default=False, index=True,
+    )
+
     # Tolerance settings used
-    quantity_tolerance_percent: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0.01)  # 0.01%
-    value_tolerance_percent: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0.50)  # 0.50%
-    
+    quantity_tolerance_percent: Mapped[Decimal] = mapped_column(
+        Numeric(5, 2), default=0.01,
+    )  # 0.01%
+    value_tolerance_percent: Mapped[Decimal] = mapped_column(
+        Numeric(5, 2), default=0.50,
+    )  # 0.50%
+
     # Notes and investigation
-    notes: Mapped[Optional[str]] = mapped_column(Text)
-    investigation_status: Mapped[str] = mapped_column(String(50), default="pending")  # pending, investigating, resolved
-    
+    notes: Mapped[str | None] = mapped_column(Text)
+    investigation_status: Mapped[str] = mapped_column(
+        String(50), default="pending",
+    )  # pending, investigating, resolved
+
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+    )
+
     def __repr__(self) -> str:
         return f"<HoldingComparison(id={self.id}, security='{self.security_name}', pp_value={self.pp_value}, kubera_value={self.kubera_value}, matched={self.is_matched})>"

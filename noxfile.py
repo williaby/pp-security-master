@@ -13,7 +13,10 @@ SRC_LOCATIONS = ["src", "tests", "noxfile.py"]
 def tests(session):
     """Run the full test suite (all layers)."""
     args = session.posargs or [
-        "--cov", "--cov-branch", "--cov-report=term-missing", "--cov-fail-under=80"
+        "--cov",
+        "--cov-branch",
+        "--cov-report=term-missing",
+        "--cov-fail-under=80",
     ]
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run("pytest", *args)

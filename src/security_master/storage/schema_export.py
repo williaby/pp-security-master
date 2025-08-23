@@ -6,26 +6,30 @@ Schema export utility for visualizing database schema with dbdiagram.io
 from sqlalchemy import create_engine
 from sqlalchemy.schema import CreateTable
 
-from .models import Base, SecurityMaster, KuberaSheet, KuberaSection, KuberaHolding, HoldingComparison
+from .models import (
+    Base,
+)
 
 
 def generate_postgres_ddl() -> str:
     """Generate PostgreSQL DDL statements from SQLAlchemy models."""
-    engine = create_engine("postgresql://", strategy='mock', executor=lambda sql, *_: None)
-    
+    engine = create_engine(
+        "postgresql://", strategy="mock", executor=lambda sql, *_: None,
+    )
+
     ddl_statements = []
-    
+
     # Generate CREATE TABLE statements for each model
     for table in Base.metadata.tables.values():
         create_table = CreateTable(table).compile(engine)
         ddl_statements.append(str(create_table))
-    
+
     return "\n\n".join(ddl_statements)
 
 
 def generate_mermaid_er_diagram() -> str:
     """Generate Mermaid ER diagram for VS Code preview."""
-    
+
     mermaid = """# Security Master Database Schema
 
 ```mermaid
@@ -219,13 +223,13 @@ erDiagram
 3. **Data Quality**: Automated variance detection for holdings reconciliation
 4. **Performance**: Strategic indexing on identifiers, dates, and comparison flags
 """
-    
+
     return mermaid
 
 
 def generate_plantuml_er_diagram() -> str:
     """Generate PlantUML ER diagram for VS Code preview."""
-    
+
     plantuml = """@startuml Security Master Database Schema
 
 !define TABLE(name,desc) class name as "desc" << (T,#FFAAAA) >>
@@ -493,13 +497,13 @@ note as N1
 end note
 
 @enduml"""
-    
+
     return plantuml
 
 
 def generate_dbdiagram_schema() -> str:
     """Generate dbdiagram.io DBML format from SQLAlchemy models."""
-    
+
     dbml = """// Database Schema for Security Master Service
 // Generated from SQLAlchemy models for Portfolio Performance and Kubera integration
 
@@ -775,42 +779,46 @@ Note: "Kubera Holdings captures real-time position data from client aggregated a
 Note: "Holding Comparisons provides variance analysis between PP and Kubera for data quality validation"
 Note: "Sheet/Section mapping enables flexible Portfolio Performance group/account alignment"
 """
-    
+
     return dbml
 
 
 def export_schema_files():
     """Export PostgreSQL DDL, dbdiagram.io DBML, Mermaid, and PlantUML ER diagram files."""
     import os
-    
+
     # Create exports directory
     export_dir = "schema_exports"
     os.makedirs(export_dir, exist_ok=True)
-    
+
     # Export PostgreSQL DDL
     with open(f"{export_dir}/security_master_schema.sql", "w") as f:
         f.write(generate_postgres_ddl())
-    
+
     # Export dbdiagram.io DBML
     with open(f"{export_dir}/security_master_schema.dbml", "w") as f:
         f.write(generate_dbdiagram_schema())
-    
+
     # Export Mermaid ER diagram for VS Code
     with open(f"{export_dir}/security_master_schema.md", "w") as f:
         f.write(generate_mermaid_er_diagram())
-    
+
     # Export PlantUML ER diagram for VS Code
     with open(f"{export_dir}/security_master_schema.puml", "w") as f:
         f.write(generate_plantuml_er_diagram())
-    
+
     print(f"Schema exported to {export_dir}/")
     print("- security_master_schema.sql (PostgreSQL DDL)")
     print("- security_master_schema.dbml (dbdiagram.io format)")
     print("- security_master_schema.md (Mermaid ER diagram)")
     print("- security_master_schema.puml (PlantUML ER diagram)")
     print("\nTo visualize in VS Code:")
-    print("Mermaid: Install 'Mermaid Preview' → Open .md → Ctrl+Shift+P → 'Mermaid: Preview'")
-    print("PlantUML: Install 'PlantUML' → Open .puml → Alt+D (or Ctrl+Shift+P → 'PlantUML: Preview')")
+    print(
+        "Mermaid: Install 'Mermaid Preview' → Open .md → Ctrl+Shift+P → 'Mermaid: Preview'",
+    )
+    print(
+        "PlantUML: Install 'PlantUML' → Open .puml → Alt+D (or Ctrl+Shift+P → 'PlantUML: Preview')",
+    )
     print("\nTo visualize online:")
     print("1. Copy DBML content from security_master_schema.dbml")
     print("2. Go to https://dbdiagram.io/")

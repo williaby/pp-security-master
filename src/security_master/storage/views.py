@@ -6,7 +6,8 @@ These views aggregate institutional transaction data into PP-compatible formats.
 from sqlalchemy import text
 
 # Portfolio Performance Group-level Holdings View
-VIEW_HOLDINGS_BY_GROUP = text("""
+VIEW_HOLDINGS_BY_GROUP = text(
+    """
 CREATE OR REPLACE VIEW v_holdings_by_group AS
 SELECT 
     -- Group identification
@@ -108,10 +109,12 @@ HAVING SUM(
         ELSE 0
     END
 ) > 0;
-""")
+""",
+)
 
 # Portfolio Performance Account-level Holdings View
-VIEW_HOLDINGS_BY_ACCOUNT = text("""
+VIEW_HOLDINGS_BY_ACCOUNT = text(
+    """
 CREATE OR REPLACE VIEW v_holdings_by_account AS
 SELECT 
     -- Account identification
@@ -224,10 +227,12 @@ HAVING SUM(
         ELSE 0
     END
 ) > 0;
-""")
+""",
+)
 
 # Consolidated Transactions for Portfolio Performance Export
-VIEW_TRANSACTIONS_FOR_PP_EXPORT = text("""
+VIEW_TRANSACTIONS_FOR_PP_EXPORT = text(
+    """
 CREATE OR REPLACE VIEW v_transactions_for_pp_export AS
 SELECT 
     ct.id,
@@ -296,10 +301,12 @@ LEFT JOIN securities_master sm ON ct.security_master_id = sm.id
 WHERE ct.exported_to_pp = false
   AND ct.has_validation_issues = false
 ORDER BY ct.transaction_date DESC, ct.pp_group, ct.pp_account;
-""")
+""",
+)
 
 # Data Quality Summary View
-VIEW_DATA_QUALITY_SUMMARY = text("""
+VIEW_DATA_QUALITY_SUMMARY = text(
+    """
 CREATE OR REPLACE VIEW v_data_quality_summary AS
 WITH institution_stats AS (
     SELECT 
@@ -361,7 +368,9 @@ SELECT
 FROM kubera_comparison kc
 WHERE kc.transaction_variance > 0
 ORDER BY metric_type, value DESC;
-""")
+""",
+)
+
 
 # Create all views function
 def create_all_views(engine):
@@ -374,16 +383,17 @@ def create_all_views(engine):
         conn.commit()
         print("All consolidation views created successfully")
 
+
 # Drop all views function
 def drop_all_views(engine):
     """Drop all consolidation views from the database."""
     drop_statements = [
         "DROP VIEW IF EXISTS v_holdings_by_group CASCADE;",
-        "DROP VIEW IF EXISTS v_holdings_by_account CASCADE;", 
+        "DROP VIEW IF EXISTS v_holdings_by_account CASCADE;",
         "DROP VIEW IF EXISTS v_transactions_for_pp_export CASCADE;",
-        "DROP VIEW IF EXISTS v_data_quality_summary CASCADE;"
+        "DROP VIEW IF EXISTS v_data_quality_summary CASCADE;",
     ]
-    
+
     with engine.connect() as conn:
         for stmt in drop_statements:
             conn.execute(text(stmt))

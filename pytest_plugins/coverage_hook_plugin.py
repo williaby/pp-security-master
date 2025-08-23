@@ -22,8 +22,7 @@ def pytest_configure(config) -> None:
     """Called after command line options have been parsed."""
     # Register custom marker
     config.addinivalue_line(
-        "markers", 
-        "coverage_hook: Mark tests that trigger coverage report generation"
+        "markers", "coverage_hook: Mark tests that trigger coverage report generation",
     )
 
     # Detect coverage enablement
@@ -85,17 +84,19 @@ def pytest_sessionfinish(session, exitstatus) -> None:
 
 def pytest_runtest_makereport(item, call) -> None:
     """Set coverage context based on test type for better tracking."""
-    if (call.when == "call" and 
-        hasattr(item.config, "_coverage_enabled") and 
-        item.config._coverage_enabled):
-        
+    if (
+        call.when == "call"
+        and hasattr(item.config, "_coverage_enabled")
+        and item.config._coverage_enabled
+    ):
+
         test_path = str(item.fspath)
-        
+
         # Security-master specific test type classification
         if "/tests/unit/" in test_path:
             context = "unit"
         elif "/tests/integration/" in test_path:
-            context = "integration" 
+            context = "integration"
         elif "/tests/database/" in test_path:
             context = "database"
         elif "/tests/classifier/" in test_path:

@@ -15,12 +15,23 @@
 - **[Original Project Plan](../PROJECT_PLAN.md)** - Original 22.5-week linear plan
 
 ### 🏗️ Phase Documentation
-- **[Phase 0: Foundation & Prerequisites](phase-0-foundation.md)** - Weeks 1-2
+
+**Phase 0: Foundation & Prerequisites (Weeks 1-2)**
+- [Overview & Success Criteria](phase-0-foundation-overview.md)
+- [Issues P0-001 to P0-005](phase-0-issues-P0-001-to-P0-005.md) - Infrastructure setup
+- [Issues P0-006 to P0-010](phase-0-issues-P0-006-to-P0-010.md) - Development foundation
+- [Completion Guide](phase-0-completion-guide.md) - Validation and troubleshooting
+
+**Phase 1-4: Core Development**
 - **[Phase 1: Core Infrastructure](phase-1-core-infrastructure.md)** - Weeks 3-6  
 - **[Phase 2: External Integrations](phase-2-external-integrations.md)** - Weeks 7-10
 - **[Phase 3: Institution Features](phase-3-institution-features.md)** - Weeks 11-14
 - **[Phase 4: Analytics & PP Integration](phase-4-analytics-pp-integration.md)** - Weeks 15-18
-- **[Phase 5: Enterprise & Production](phase-5-enterprise-production.md)** - Weeks 19-22
+
+**Phase 5: Enterprise & Production (Weeks 19-22)**
+- [Prerequisites & Setup](phase-5-prerequisites-setup.md) - Steps 1-3
+- [Production Deployment](phase-5-production-deployment.md) - Steps 4-7
+- [Testing & Completion](phase-5-testing-completion.md) - Steps 8-10
 
 ### 📚 Architecture References
 - **[ADRs Directory](../adr/)** - All Architecture Decision Records
