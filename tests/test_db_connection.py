@@ -18,8 +18,11 @@ POSTGRES_DB = os.getenv("POSTGRES_DB")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 
 # WORKAROUND: python-dotenv has issues with # in passwords
-# If password appears truncated, use the full password directly
-if POSTGRES_PASSWORD and len(POSTGRES_PASSWORD) < 10 and POSTGRES_PASSWORD.endswith("!W"):
+# If password appears truncated or has escape characters, use the full password directly
+if POSTGRES_PASSWORD and (
+    (len(POSTGRES_PASSWORD) < 15 and POSTGRES_PASSWORD.endswith("!W")) or  # Truncated at #
+    "\\" in POSTGRES_PASSWORD  # Has escape characters
+):
     # This is the known Unraid password with special characters
     POSTGRES_PASSWORD = "cribrsk!W#9D%6^0" 
     print("⚠️  Applied password workaround for dotenv parsing limitation")
