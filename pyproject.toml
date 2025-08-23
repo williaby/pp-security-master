@@ -67,6 +67,8 @@ pytest-mock = ">=3.12.0"
 pytest-timeout = ">=2.2.0"
 pytest-xdist = ">=3.5.0"
 pytest-rerunfailures = ">=12.0"
+pytest-benchmark = ">=4.0.0"  # Performance testing
+pytest-html = ">=4.1.1"  # HTML test reports
 hypothesis = ">=6.98.9"
 faker = ">=37.0.0"
 black = "24.10.0"
@@ -234,7 +236,7 @@ warn_untyped_fields = true
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra --strict-markers --strict-config --asyncio-mode=auto -m 'not slow' --tb=short"
+addopts = "-ra --strict-markers --strict-config --asyncio-mode=auto -m 'not slow' --tb=short --durations=10"
 testpaths = ["tests"]
 pythonpath = [".", "scripts"]
 python_files = ["test_*.py", "*_test.py"]
@@ -246,6 +248,8 @@ filterwarnings = [
     "ignore::UserWarning",
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
+    "ignore::sqlalchemy.exc.MovedIn20Warning",  # SQLAlchemy compatibility
+    "ignore::sqlalchemy.exc.SADeprecationWarning",  # SQLAlchemy deprecation warnings
 ]
 markers = [
     # Primary execution control markers
@@ -255,37 +259,42 @@ markers = [
     # Test pyramid layer taxonomy (for analysis and metrics)
     "unit: unit-level tests (pure functions/classes; no I/O, no network) - DEFAULT",
     "component: component-level tests (single bounded context incl. DB/container mocks)",
-    "contract: consumer-driven contract tests (API contract verifications)",
+    "contract: consumer-driven contract tests (OpenFIGI API contract verifications)",
     "integration: cross-service integration tests (multi-service / real DB)",
     "e2e: user-facing end-to-end tests (full user journey via CLI)",
 
-    # Non-functional test types (for analysis and selective execution)
+    # Non-functional test types (for analysis and selective execution)  
     "perf: performance/load tests (benchmarks, stress, timing assertions)",
-    "security: runtime security assertions (Bandit assertions, penetration tests)",
+    "performance: performance/load tests (alias for perf)",
+    "security: runtime security assertions (input validation, SQL injection tests)",
 
     # Execution behavior markers
     "smoke: basic functionality validation tests",
     "no_parallel: tests that should not run in parallel",
 
-    # Component-specific markers
-    "database: database-related tests",
-    "classifier: classification engine tests",
-    "extractor: broker file extraction tests",
-    "api: external API integration tests",
+    # Component-specific markers (Security Master specific)
+    "database: database-related tests (PostgreSQL, Alembic)",
+    "classifier: classification engine tests (fund, equity, bond classification)",
+    "extractor: broker file extraction tests (PP XML, IBKR Flex, Wells CSV, AltoIRA PDF)",
+    "api: external API integration tests (OpenFIGI API)",
+    "storage: storage layer tests (models, mappers, validators)",
+    "patch: PP XML/JSON patch generation tests",
 ]
 
-# Load pytest plugins
-pytest_plugins = ["pytest_plugins.coverage_hook_plugin"]
+# Note: Custom pytest plugins loaded via conftest.py or command line
 
 [tool.coverage.run]
 source = ["src"]
 branch = true
 parallel = true
+dynamic_context = "test_function"  # Function-level coverage tracking
 omit = [
     "*/tests/*",
     "*/test_*.py",
     "*/__init__.py",
     "scripts/*",
+    "sql/versions/*",  # Alembic migrations
+    "schema_exports/*",  # Generated schema files
 ]
 
 [tool.coverage.report]
@@ -298,6 +307,10 @@ exclude_lines = [
     "raise NotImplementedError",
     "if TYPE_CHECKING:",
     "@abstractmethod",
+    # Security Master specific
+    "except DatabaseConnectionError:",  # DB connection fallbacks
+    "if self.debug_mode:",  # Debug-only code
+    "class .*\\(.*Protocol.*\\):",  # Protocol classes
 ]
 precision = 2
 show_missing = true
@@ -306,6 +319,7 @@ fail_under = 80
 
 [tool.coverage.html]
 directory = "htmlcov"
+show_contexts = true  # Show which tests cover each line
 
 [tool.coverage.xml]
 output = "coverage.xml"

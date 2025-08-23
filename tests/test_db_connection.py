@@ -53,7 +53,9 @@ if all([POSTGRES_HOST, POSTGRES_USER, POSTGRES_DB, POSTGRES_PASSWORD]):
                     print(f"✅ Database: {result[0]}, User: {result[1]}, Time: {result[2]}")
                     
                     print("✅ All PostgreSQL connection tests passed!")
-                    exit(0)  # Success - no need to try fallback
+                    if __name__ == "__main__":
+                        exit(0)  # Success - no need to try fallback
+                    return  # For pytest execution
                 else:
                     print("❌ Connected with DATABASE_URL, but could not fetch PostgreSQL version.")
     except Exception as e:
