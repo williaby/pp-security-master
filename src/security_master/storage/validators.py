@@ -64,7 +64,6 @@ class SecurityDataValidator:
     def calculate_data_quality_score(cls, security: SecurityMaster) -> Decimal:
         """Calculate data quality score (0.00-1.00) based on completeness and validity."""
         score = Decimal("0.0")
-        total_checks = 0
 
         # Core identification (40% weight)
         identification_score = 0

@@ -4,13 +4,15 @@ Generates valid PP XML backup files that can restore a complete PP instance.
 """
 
 import xml.etree.ElementTree as ET
-from datetime import datetime
-from xml.dom import minidom
+from datetime import UTC, datetime
+from pathlib import Path
 
+from defusedxml import ElementTree as safe_ET
+from defusedxml import minidom as safe_minidom
 from sqlalchemy.orm import Session
 
-from ..storage.models import SecurityMaster
-from ..storage.pp_models import (
+from security_master.storage.models import SecurityMaster
+from security_master.storage.pp_models import (
     PPAccount,
     PPAccountTransaction,
     PPBookmark,
@@ -26,7 +28,7 @@ from ..storage.pp_models import (
 class PPXMLExportService:
     """Generate complete Portfolio Performance XML backup from database."""
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session) -> None:
         self.session = session
 
     def generate_complete_backup(self, config_name: str = "default") -> str:
@@ -143,7 +145,7 @@ class PPXMLExportService:
 
             # Add updatedAt timestamp
             ET.SubElement(account_elem, "updatedAt").text = (
-                datetime.utcnow().isoformat() + "Z"
+                datetime.now(tz=UTC).isoformat().replace("+00:00", "Z")
             )
 
     def _add_account_transactions(
@@ -259,7 +261,7 @@ class PPXMLExportService:
 
                 # Updated timestamp
                 ET.SubElement(ref_account_elem, "updatedAt").text = (
-                    datetime.utcnow().isoformat() + "Z"
+                    datetime.now(tz=UTC).isoformat().replace("+00:00", "Z")
                 )
 
             # Add portfolio transactions
@@ -399,22 +401,23 @@ class PPXMLExportService:
     def _prettify_xml(self, elem: ET.Element) -> str:
         """Return a pretty-printed XML string for the Element."""
         rough_string = ET.tostring(elem, "unicode")
-        reparsed = minidom.parseString(rough_string)
+        reparsed = safe_minidom.parseString(rough_string)
         return reparsed.toprettyxml(indent="  ")
 
     def export_to_file(self, file_path: str, config_name: str = "default") -> None:
         """Export complete PP XML backup to file."""
         xml_content = self.generate_complete_backup(config_name)
 
-        with open(file_path, "w", encoding="utf-8") as f:
+        with Path(file_path).open("w", encoding="utf-8") as f:
             f.write(xml_content)
 
     def validate_export(self, xml_content: str) -> dict[str, int]:
         """Validate exported XML and return statistics."""
         try:
-            root = ET.fromstring(xml_content)
+            # Use defusedxml for safe parsing
+            root = safe_ET.fromstring(xml_content)
 
-            stats = {
+            return {
                 "securities": len(root.findall(".//security")),
                 "accounts": len(root.findall(".//accounts/account")),
                 "portfolios": len(root.findall(".//portfolios/portfolio")),
@@ -424,10 +427,8 @@ class PPXMLExportService:
                 "bookmarks": len(root.findall(".//bookmark")),
             }
 
-            return stats
-
         except ET.ParseError as e:
-            raise ValueError(f"Invalid XML generated: {e}")
+            raise ValueError(f"Invalid XML generated: {e}") from e
 
 
 # Utility functions for PP data conversion

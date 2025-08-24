@@ -1,7 +1,7 @@
 import os
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from .models import Base
@@ -18,7 +18,7 @@ def get_database_url() -> str:
     return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
 
-def create_db_engine(database_url: str = None):
+def create_db_engine(database_url: str | None = None) -> Engine:
     """Create database engine."""
     if database_url is None:
         database_url = get_database_url()
@@ -31,17 +31,17 @@ def create_db_engine(database_url: str = None):
     )
 
 
-def create_tables(engine):
+def create_tables(engine: Engine) -> None:
     """Create all tables."""
     Base.metadata.create_all(bind=engine)
 
 
-def get_session_factory(engine):
+def get_session_factory(engine: Engine) -> Callable[[], Session]:
     """Create session factory."""
     return sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_db_session(session_factory) -> Generator[Session, None, None]:
+def get_db_session(session_factory: Callable[[], Session]) -> Generator[Session, None, None]:
     """Get database session."""
     session = session_factory()
     try:

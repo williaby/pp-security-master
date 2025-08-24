@@ -7,7 +7,7 @@ from .models import KuberaSection, KuberaSheet
 class PortfolioMappingManager:
     """Manages mappings between Kubera sheets/sections and Portfolio Performance groups/accounts."""
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session) -> None:
         self.session = session
 
         # Default mappings based on common patterns
