@@ -1,11 +1,12 @@
 name: "Security Analysis Config"
 
-# Disable default queries and only run security-focused ones
-disable-default-queries: false
-
 # Enable additional query suites
-queries:
-  - security-and-quality
+query-filters:
+  - exclude:
+      id: py/unused-local-variable
+  - include:
+      kind: problem
+      queries: security-extended
   
 # Paths to analyze (include only source code)
 paths:

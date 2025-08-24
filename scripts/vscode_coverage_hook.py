@@ -13,10 +13,13 @@ Features:
 """
 
 import json
+import logging
 import sys
 import time
 from pathlib import Path
 from xml.etree import ElementTree as ET
+
+logger = logging.getLogger(__name__)
 
 
 class SecurityMasterCoverageReporter:
@@ -79,8 +82,8 @@ class SecurityMasterCoverageReporter:
                                     "lines_covered": covered,
                                     "lines_total": total,
                                 }
-            except Exception:
-                pass
+            except Exception as e:
+                logger.error(f"Error parsing coverage XML: {e}")
 
         # Parse JSON for additional data
         if files["json"]:
@@ -89,7 +92,8 @@ class SecurityMasterCoverageReporter:
                     json_data = json.load(f)
 
                 data["overall"]["percentage"] = json_data.get("totals", {}).get(
-                    "percent_covered", 0,
+                    "percent_covered",
+                    0,
                 )
 
                 for filename, file_data in json_data.get("files", {}).items():
@@ -103,8 +107,8 @@ class SecurityMasterCoverageReporter:
                             "lines_covered": covered,
                             "lines_total": total,
                         }
-            except Exception:
-                pass
+            except Exception as e:
+                logger.error(f"Error parsing coverage JSON: {e}")
 
         return data
 
@@ -225,7 +229,7 @@ class SecurityMasterCoverageReporter:
         """Generate coverage reports if data is available."""
         coverage_data = self.load_coverage_data()
         if not coverage_data:
-            print("⚠️  No coverage data found - run tests with coverage first")
+            logger.warning("⚠️  No coverage data found - run tests with coverage first")
             return False
 
         components = self.classify_by_component(coverage_data["files"])
@@ -235,8 +239,10 @@ class SecurityMasterCoverageReporter:
         report_file = self.reports_dir / "security-master-coverage.html"
         report_file.write_text(html_report)
 
-        print(f"✅ Enhanced coverage report generated: {report_file}")
-        print(f"📊 Overall coverage: {coverage_data['overall']['percentage']:.1f}%")
+        logger.info(f"✅ Enhanced coverage report generated: {report_file}")
+        logger.info(
+            f"📊 Overall coverage: {coverage_data['overall']['percentage']:.1f}%",
+        )
 
         return True
 
@@ -251,7 +257,7 @@ def main():
             sys.exit(1)
 
     except Exception as e:
-        print(f"❌ Error generating coverage report: {e}")
+        logger.error(f"❌ Error generating coverage report: {e}")
         sys.exit(1)
 
 
