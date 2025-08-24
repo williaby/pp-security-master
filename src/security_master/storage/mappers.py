@@ -1,4 +1,6 @@
 
+from typing import Any
+
 from sqlalchemy.orm import Session
 
 from .models import KuberaSection, KuberaSheet
@@ -121,13 +123,13 @@ class PortfolioMappingManager:
             .all()
         )
 
-    def get_mapping_summary(self) -> dict[str, dict[str, str]]:
+    def get_mapping_summary(self) -> dict[str, dict[str, Any]]:
         """Get summary of all current mappings."""
-        mappings = {}
+        mappings: dict[str, dict[str, Any]] = {}
 
         sheets = self.session.query(KuberaSheet).all()
         for sheet in sheets:
-            sheet_mapping = {"pp_group": sheet.pp_group_name, "sections": {}}
+            sheet_mapping: dict[str, Any] = {"pp_group": sheet.pp_group_name, "sections": {}}
 
             for section in sheet.sections:
                 sheet_mapping["sections"][section.section_name] = {
@@ -195,19 +197,22 @@ class SecurityMatcher:
         # Try ISIN match first (most reliable)
         if pp_security.get("isin"):
             for holding in kubera_holdings:
-                if cls.match_by_isin(pp_security["isin"], holding.get("isin")):
+                kubera_isin = holding.get("isin")
+                if kubera_isin and cls.match_by_isin(pp_security["isin"], kubera_isin):
                     return holding
 
         # Try ticker match
         if pp_security.get("symbol"):
             for holding in kubera_holdings:
-                if cls.match_by_ticker(pp_security["symbol"], holding.get("ticker")):
+                kubera_ticker = holding.get("ticker")
+                if kubera_ticker and cls.match_by_ticker(pp_security["symbol"], kubera_ticker):
                     return holding
 
         # Try name match
         if pp_security.get("name"):
             for holding in kubera_holdings:
-                if cls.match_by_name(pp_security["name"], holding.get("name")):
+                kubera_name = holding.get("name")
+                if kubera_name and cls.match_by_name(pp_security["name"], kubera_name):
                     return holding
 
         return None

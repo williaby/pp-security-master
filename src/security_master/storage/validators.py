@@ -58,7 +58,7 @@ class SecurityDataValidator:
     @classmethod
     def validate_currency(cls, currency: str) -> bool:
         """Validate currency code (ISO 4217)."""
-        return currency and len(currency) == 3 and currency.isupper()
+        return bool(currency and len(currency) == 3 and currency.isupper())
 
     @classmethod
     def calculate_data_quality_score(cls, security: SecurityMaster) -> Decimal:

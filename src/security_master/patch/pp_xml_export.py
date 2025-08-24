@@ -3,10 +3,10 @@ Portfolio Performance XML export service for complete backup generation.
 Generates valid PP XML backup files that can restore a complete PP instance.
 """
 
-import xml.etree.ElementTree as ET
 from datetime import UTC, datetime
 from pathlib import Path
 
+import defusedxml.ElementTree as ET
 from defusedxml import ElementTree as safe_ET
 from defusedxml import minidom as safe_minidom
 from sqlalchemy.orm import Session
@@ -402,7 +402,7 @@ class PPXMLExportService:
         """Return a pretty-printed XML string for the Element."""
         rough_string = ET.tostring(elem, "unicode")
         reparsed = safe_minidom.parseString(rough_string)
-        return reparsed.toprettyxml(indent="  ")
+        return str(reparsed.toprettyxml(indent="  "))
 
     def export_to_file(self, file_path: str, config_name: str = "default") -> None:
         """Export complete PP XML backup to file."""
