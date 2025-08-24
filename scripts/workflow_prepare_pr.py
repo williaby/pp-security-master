@@ -32,6 +32,7 @@ import re
 import subprocess
 from pathlib import Path
 from typing import Dict, Any, Optional
+from urllib.parse import urlparse
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -194,18 +195,26 @@ def get_repository_info() -> Dict[str, str]:
             ["git", "config", "--get", "remote.origin.url"],
             text=True
         ).strip()
-        
-        # Parse GitHub URL to get owner/repo
-        if "github.com" in remote_url:
-            # Handle both SSH and HTTPS URLs
-            if remote_url.startswith("git@"):
-                # git@github.com:owner/repo.git
-                repo_part = remote_url.split(":")[-1].replace(".git", "")
-            else:
-                # https://github.com/owner/repo.git
-                repo_part = remote_url.split("github.com/")[-1].replace(".git", "")
-            
-            owner, repo = repo_part.split("/")
+
+        # Only handle valid GitHub URLs by parsing the host field
+        owner = repo = None
+        if remote_url.startswith("git@"):
+            # SSH format: git@github.com:owner/repo.git
+            # Split on '@', then ':'
+            user_host, path_part = remote_url.split('@', 1)
+            if path_part.startswith("github.com:"):
+                repo_part = path_part[len("github.com:"):].replace(".git", "")
+                if "/" in repo_part:
+                    owner, repo = repo_part.split("/", 1)
+        else:
+            # HTTPS or git protocol, try to parse the URL
+            parsed = urlparse(remote_url)
+            if parsed.hostname == "github.com":
+                # parsed.path starts with /, so skip it
+                repo_part = parsed.path.lstrip("/").replace(".git", "")
+                if "/" in repo_part:
+                    owner, repo = repo_part.split("/", 1)
+        if owner and repo:
             return {
                 "owner": owner,
                 "repo": repo,
