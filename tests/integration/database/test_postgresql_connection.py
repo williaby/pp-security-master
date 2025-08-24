@@ -30,12 +30,12 @@ def test_database_connection_individual_params():
     database = os.getenv("POSTGRES_DB")
     password = os.getenv("POSTGRES_PASSWORD")
     
-    # Apply password workaround for dotenv parsing issues
-    if password and (
+    # Skip test if password is malformed or missing
+    if not password or (
         (len(password) < 15 and password.endswith("!W")) or
         "\\" in password
     ):
-        password = "cribrsk!W#9D%6^0"
+        pytest.skip("Database connection parameters not configured or password malformed")
     
     # Skip test if required parameters are missing
     if not all([host, user, database, password]):
