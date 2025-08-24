@@ -154,7 +154,57 @@ The complete workflow consists of five main commands that form a complete issue 
 
 ---
 
-### 6. Workflow Resolve Issue (Orchestrator)
+### 6. Workflow Prepare PR
+
+**Command**: `/project:workflow-prepare-pr`
+**Purpose**: Prepare and create pull requests with comprehensive validation and safety checks
+**Estimated Time**: 5-10 minutes
+
+#### Usage Options
+
+- **Standard**: `/project:workflow-prepare-pr <phase> <issue>`
+  - Complete PR preparation with validation
+  - Automatic branch analysis and safety checks
+  - WhatTheDiff summary inclusion
+
+- **Security**: `/project:workflow-prepare-pr --security <phase> <issue>`
+  - Enhanced security analysis during preparation
+  - Additional validation checks
+  - Security-focused PR description
+
+- **Dry Run**: `/project:workflow-prepare-pr --dry-run <phase> <issue>`
+  - Validation only, no actual PR creation
+  - Perfect for testing and validation
+  - Preview of all parameters
+
+---
+
+### 7. Workflow Review PR
+
+**Command**: `/project:workflow-review-pr`
+**Purpose**: Review existing pull requests with comprehensive analysis and multi-agent validation
+**Estimated Time**: 5-25 minutes (adaptive based on complexity)
+
+#### Usage Options
+
+- **Adaptive**: `/project:workflow-review-pr <pr_url>`
+  - Automatically scales analysis based on PR complexity
+  - 2-minute quick reviews for simple changes
+  - Up to 25 minutes for comprehensive analysis
+
+- **Security Focus**: `/project:workflow-review-pr --mode security-focus --security <pr_url>`
+  - Deep security analysis and vulnerability detection
+  - OWASP compliance checks
+  - Security-focused recommendations
+
+- **Consensus**: `/project:workflow-review-pr --consensus --submit --review-action approve <pr_url>`
+  - Multi-agent consensus review
+  - Automated GitHub review submission
+  - Enhanced validation and quality assurance
+
+---
+
+### 8. Workflow Resolve Issue (Orchestrator)
 
 **Command**: `/project:workflow-resolve-issue`
 **Purpose**: Systematically resolve any project issue through modular workflow orchestration
@@ -208,6 +258,16 @@ The complete workflow consists of five main commands that form a complete issue 
 /project:workflow-review-cycle phase 1 issue 3
 /project:workflow-review-cycle quick phase 1 issue 3
 /project:workflow-review-cycle consensus phase 1 issue 3
+
+# PR preparation with different options
+/project:workflow-prepare-pr 1 P0-003
+/project:workflow-prepare-pr --dry-run --security 1 P0-005
+/project:workflow-prepare-pr --target develop --title "Custom Title" 2 P2-001
+
+# PR review with different modes and options
+/project:workflow-review-pr https://github.com/org/repo/pull/123
+/project:workflow-review-pr --mode security-focus --security https://github.com/org/repo/pull/456
+/project:workflow-review-pr --consensus --submit --review-action approve https://github.com/org/repo/pull/789
 ```
 
 ### Full Orchestration
