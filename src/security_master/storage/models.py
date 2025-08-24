@@ -80,7 +80,8 @@ class SecurityMaster(Base):
 
     # Security Type Classifications
     type_of_security_level1: Mapped[str | None] = mapped_column(
-        String(100), index=True,
+        String(100),
+        index=True,
     )
     type_of_security: Mapped[str | None] = mapped_column(String(200))
 
@@ -92,10 +93,13 @@ class SecurityMaster(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
     data_source: Mapped[str] = mapped_column(
-        String(50), default="portfolio_performance",
+        String(50),
+        default="portfolio_performance",
     )
     data_quality_score: Mapped[Decimal | None] = mapped_column(
         Numeric(3, 2),
@@ -118,12 +122,15 @@ class KuberaSheet(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     # Relationships
     sections: Mapped[list["KuberaSection"]] = relationship(
-        "KuberaSection", back_populates="sheet",
+        "KuberaSection",
+        back_populates="sheet",
     )
 
     def __repr__(self) -> str:
@@ -139,10 +146,12 @@ class KuberaSection(Base):
 
     # Sheet relationship
     sheet_id: Mapped[int] = mapped_column(
-        ForeignKey("kubera_sheets.id"), nullable=False,
+        ForeignKey("kubera_sheets.id"),
+        nullable=False,
     )
     sheet: Mapped["KuberaSheet"] = relationship(
-        "KuberaSheet", back_populates="sections",
+        "KuberaSheet",
+        back_populates="sections",
     )
 
     # Portfolio Performance mapping
@@ -151,12 +160,15 @@ class KuberaSection(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     # Relationships
     holdings: Mapped[list["KuberaHolding"]] = relationship(
-        "KuberaHolding", back_populates="section",
+        "KuberaHolding",
+        back_populates="section",
     )
 
     def __repr__(self) -> str:
@@ -170,16 +182,20 @@ class KuberaHolding(Base):
 
     # Kubera identifiers
     kubera_asset_id: Mapped[str] = mapped_column(
-        String(100), unique=True, nullable=False,
+        String(100),
+        unique=True,
+        nullable=False,
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
 
     # Section relationship
     section_id: Mapped[int] = mapped_column(
-        ForeignKey("kubera_sections.id"), nullable=False,
+        ForeignKey("kubera_sections.id"),
+        nullable=False,
     )
     section: Mapped["KuberaSection"] = relationship(
-        "KuberaSection", back_populates="holdings",
+        "KuberaSection",
+        back_populates="holdings",
     )
 
     # Security identifiers
@@ -189,19 +205,25 @@ class KuberaHolding(Base):
 
     # Classification
     category: Mapped[str] = mapped_column(
-        String(50), nullable=False,
+        String(50),
+        nullable=False,
     )  # asset, liability
     sub_type: Mapped[str] = mapped_column(
-        String(50), nullable=False, index=True,
+        String(50),
+        nullable=False,
+        index=True,
     )  # stock, mutual fund, etf, cash, etc.
     ticker_sub_type: Mapped[str | None] = mapped_column(
         String(20),
     )  # cs, etf, oef, scr
     asset_class: Mapped[str] = mapped_column(
-        String(50), nullable=False, index=True,
+        String(50),
+        nullable=False,
+        index=True,
     )  # stock, fund, cash, crypto
     security_type: Mapped[str] = mapped_column(
-        String(50), nullable=False,
+        String(50),
+        nullable=False,
     )  # investment, other
 
     # Market data
@@ -245,7 +267,8 @@ class KuberaHolding(Base):
         String(50),
     )  # investable_easy_convert, investable_cash
     ownership: Mapped[Decimal | None] = mapped_column(
-        Numeric(3, 2), default=1.0,
+        Numeric(3, 2),
+        default=1.0,
     )  # ownership percentage
 
     # Data connection info
@@ -274,7 +297,9 @@ class KuberaHolding(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     def __repr__(self) -> str:
@@ -317,27 +342,34 @@ class HoldingComparison(Base):
     is_pp_only: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     is_kubera_only: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     variance_threshold_exceeded: Mapped[bool] = mapped_column(
-        Boolean, default=False, index=True,
+        Boolean,
+        default=False,
+        index=True,
     )
 
     # Tolerance settings used
     quantity_tolerance_percent: Mapped[Decimal] = mapped_column(
-        Numeric(5, 2), default=0.01,
+        Numeric(5, 2),
+        default=0.01,
     )  # 0.01%
     value_tolerance_percent: Mapped[Decimal] = mapped_column(
-        Numeric(5, 2), default=0.50,
+        Numeric(5, 2),
+        default=0.50,
     )  # 0.50%
 
     # Notes and investigation
     notes: Mapped[str | None] = mapped_column(Text)
     investigation_status: Mapped[str] = mapped_column(
-        String(50), default="pending",
+        String(50),
+        default="pending",
     )  # pending, investigating, resolved
 
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     def __repr__(self) -> str:

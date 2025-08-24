@@ -41,7 +41,9 @@ def get_session_factory(engine: Engine) -> Callable[[], Session]:
     return sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_db_session(session_factory: Callable[[], Session]) -> Generator[Session, None, None]:
+def get_db_session(
+    session_factory: Callable[[], Session],
+) -> Generator[Session, None, None]:
     """Get database session."""
     session = session_factory()
     try:

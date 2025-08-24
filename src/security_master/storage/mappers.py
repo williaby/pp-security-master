@@ -1,4 +1,3 @@
-
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -36,7 +35,9 @@ class PortfolioMappingManager:
         }
 
     def get_or_create_sheet_mapping(
-        self, sheet_id: str, sheet_name: str,
+        self,
+        sheet_id: str,
+        sheet_name: str,
     ) -> KuberaSheet:
         """Get existing sheet mapping or create new one with default PP group mapping."""
         sheet = self.session.query(KuberaSheet).filter_by(sheet_id=sheet_id).first()
@@ -44,7 +45,9 @@ class PortfolioMappingManager:
         if not sheet:
             pp_group = self.default_sheet_mappings.get(sheet_name, sheet_name)
             sheet = KuberaSheet(
-                sheet_id=sheet_id, sheet_name=sheet_name, pp_group_name=pp_group,
+                sheet_id=sheet_id,
+                sheet_name=sheet_name,
+                pp_group_name=pp_group,
             )
             self.session.add(sheet)
             self.session.flush()  # Get the ID
@@ -52,7 +55,10 @@ class PortfolioMappingManager:
         return sheet
 
     def get_or_create_section_mapping(
-        self, section_id: str, section_name: str, sheet: KuberaSheet,
+        self,
+        section_id: str,
+        section_name: str,
+        sheet: KuberaSheet,
     ) -> KuberaSection:
         """Get existing section mapping or create new one with default PP account mapping."""
         section = (
@@ -91,7 +97,9 @@ class PortfolioMappingManager:
         return False
 
     def get_pp_mapping(
-        self, sheet_id: str, section_id: str,
+        self,
+        sheet_id: str,
+        section_id: str,
     ) -> tuple[str | None, str | None]:
         """Get Portfolio Performance group and account names for a Kubera sheet/section."""
         section = (
@@ -129,7 +137,10 @@ class PortfolioMappingManager:
 
         sheets = self.session.query(KuberaSheet).all()
         for sheet in sheets:
-            sheet_mapping: dict[str, Any] = {"pp_group": sheet.pp_group_name, "sections": {}}
+            sheet_mapping: dict[str, Any] = {
+                "pp_group": sheet.pp_group_name,
+                "sections": {},
+            }
 
             for section in sheet.sections:
                 sheet_mapping["sections"][section.section_name] = {
@@ -190,7 +201,9 @@ class SecurityMatcher:
 
     @classmethod
     def find_best_match(
-        cls, pp_security: dict, kubera_holdings: list[dict],
+        cls,
+        pp_security: dict,
+        kubera_holdings: list[dict],
     ) -> dict | None:
         """Find the best matching Kubera holding for a Portfolio Performance security."""
 
@@ -205,7 +218,10 @@ class SecurityMatcher:
         if pp_security.get("symbol"):
             for holding in kubera_holdings:
                 kubera_ticker = holding.get("ticker")
-                if kubera_ticker and cls.match_by_ticker(pp_security["symbol"], kubera_ticker):
+                if kubera_ticker and cls.match_by_ticker(
+                    pp_security["symbol"],
+                    kubera_ticker,
+                ):
                     return holding
 
         # Try name match

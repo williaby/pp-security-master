@@ -106,7 +106,6 @@ class SecurityDataValidator:
         if pricing_checks > 0:
             score += Decimal(str(pricing_score / pricing_checks * 0.2))
 
-        # Classifications (30% weight)
         classification_score = 0
         classification_checks = 0
 

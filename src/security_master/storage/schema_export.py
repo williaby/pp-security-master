@@ -16,7 +16,9 @@ from .models import (
 def generate_postgres_ddl() -> str:
     """Generate PostgreSQL DDL statements from SQLAlchemy models."""
     engine = create_engine(
-        "postgresql://", strategy="mock", executor=lambda _sql, *_: None,
+        "postgresql://",
+        strategy="mock",
+        executor=lambda _sql, *_: None,
     )
 
     ddl_statements = []
@@ -225,7 +227,6 @@ erDiagram
 3. **Data Quality**: Automated variance detection for holdings reconciliation
 4. **Performance**: Strategic indexing on identifiers, dates, and comparison flags
 """
-
 
 
 def generate_plantuml_er_diagram() -> str:
@@ -498,7 +499,6 @@ note as N1
 end note
 
 @enduml"""
-
 
 
 def generate_dbdiagram_schema() -> str:
@@ -781,7 +781,6 @@ Note: "Sheet/Section mapping enables flexible Portfolio Performance group/accoun
 """
 
 
-
 def export_schema_files() -> None:
     """Export PostgreSQL DDL, dbdiagram.io DBML, Mermaid, and PlantUML ER diagram files."""
     # Create exports directory
@@ -798,8 +797,9 @@ def export_schema_files() -> None:
     (export_dir / "security_master_schema.md").write_text(generate_mermaid_er_diagram())
 
     # Export PlantUML ER diagram for VS Code
-    (export_dir / "security_master_schema.puml").write_text(generate_plantuml_er_diagram())
-
+    (export_dir / "security_master_schema.puml").write_text(
+        generate_plantuml_er_diagram(),
+    )
 
 
 if __name__ == "__main__":

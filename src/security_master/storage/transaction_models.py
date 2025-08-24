@@ -28,7 +28,9 @@ class TransactionBase(Base):
 
     # Transaction details
     transaction_type: Mapped[str] = mapped_column(
-        String(50), nullable=False, index=True,
+        String(50),
+        nullable=False,
+        index=True,
     )  # BUY, SELL, DIV, etc.
     quantity: Mapped[Decimal | None] = mapped_column(Numeric(18, 8))
     price: Mapped[Decimal | None] = mapped_column(Numeric(12, 4))
@@ -57,7 +59,9 @@ class TransactionBase(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
 
@@ -128,7 +132,9 @@ class AltoIRATransaction(TransactionBase):
 
     # Manual review flags
     requires_manual_review: Mapped[bool] = mapped_column(
-        Boolean, default=False, index=True,
+        Boolean,
+        default=False,
+        index=True,
     )
     manually_reviewed: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     reviewed_by: Mapped[str | None] = mapped_column(String(100))
@@ -150,18 +156,25 @@ class KuberaTransaction(TransactionBase):
 
     # Kubera specific fields
     kubera_asset_id: Mapped[str] = mapped_column(
-        String(100), nullable=False, index=True,
+        String(100),
+        nullable=False,
+        index=True,
     )
     kubera_transaction_id: Mapped[str | None] = mapped_column(
-        String(100), unique=True,
+        String(100),
+        unique=True,
     )
 
     # Kubera hierarchical data
     sheet_name: Mapped[str] = mapped_column(
-        String(100), nullable=False, index=True,
+        String(100),
+        nullable=False,
+        index=True,
     )  # IRA, Crypto, etc.
     section_name: Mapped[str] = mapped_column(
-        String(100), nullable=False, index=True,
+        String(100),
+        nullable=False,
+        index=True,
     )  # Wells Fargo, IBKR, etc.
 
     # Data connection info
@@ -174,10 +187,14 @@ class KuberaTransaction(TransactionBase):
 
     # Validation flags
     is_validation_source: Mapped[bool] = mapped_column(
-        Boolean, default=True, index=True,
+        Boolean,
+        default=True,
+        index=True,
     )
     matched_to_institution: Mapped[bool] = mapped_column(
-        Boolean, default=False, index=True,
+        Boolean,
+        default=False,
+        index=True,
     )
     variance_flag: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
 
@@ -194,7 +211,9 @@ class ConsolidatedTransaction(Base):
 
     # Source tracking
     source_institution: Mapped[str] = mapped_column(
-        String(50), nullable=False, index=True,
+        String(50),
+        nullable=False,
+        index=True,
     )  # wells_fargo, ibkr, altoira
     source_transaction_id: Mapped[int] = mapped_column(nullable=False)
     source_table: Mapped[str] = mapped_column(String(50), nullable=False)
@@ -217,7 +236,9 @@ class ConsolidatedTransaction(Base):
 
     # Standardized transaction data
     transaction_type: Mapped[str] = mapped_column(
-        String(50), nullable=False, index=True,
+        String(50),
+        nullable=False,
+        index=True,
     )
     quantity: Mapped[Decimal | None] = mapped_column(Numeric(18, 8))
     price: Mapped[Decimal | None] = mapped_column(Numeric(12, 4))
@@ -228,10 +249,13 @@ class ConsolidatedTransaction(Base):
 
     # Data quality
     quality_score: Mapped[Decimal] = mapped_column(
-        Numeric(3, 2), default=1.00,
+        Numeric(3, 2),
+        default=1.00,
     )  # 0.00-1.00
     has_validation_issues: Mapped[bool] = mapped_column(
-        Boolean, default=False, index=True,
+        Boolean,
+        default=False,
+        index=True,
     )
     validation_notes: Mapped[str | None] = mapped_column(Text)
 
@@ -243,7 +267,9 @@ class ConsolidatedTransaction(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     def __repr__(self) -> str:
@@ -261,7 +287,8 @@ class ImportBatch(Base):
     # Import metadata
     institution: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
     import_type: Mapped[str] = mapped_column(
-        String(50), nullable=False,
+        String(50),
+        nullable=False,
     )  # csv, xml, pdf, api
     source_file_path: Mapped[str | None] = mapped_column(String(500))
     file_size: Mapped[int | None] = mapped_column()
@@ -274,7 +301,9 @@ class ImportBatch(Base):
 
     # Status tracking
     status: Mapped[str] = mapped_column(
-        String(20), default="pending", index=True,
+        String(20),
+        default="pending",
+        index=True,
     )  # pending, processing, completed, failed
     started_at: Mapped[datetime | None] = mapped_column(DateTime)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime)
@@ -288,7 +317,9 @@ class ImportBatch(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     def __repr__(self) -> str:

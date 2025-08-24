@@ -36,14 +36,18 @@ class PPClientConfig(Base):
 
     # Configuration metadata
     config_name: Mapped[str] = mapped_column(
-        String(100), nullable=False, default="default",
+        String(100),
+        nullable=False,
+        default="default",
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     def __repr__(self) -> str:
@@ -57,7 +61,10 @@ class PPAccount(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     uuid: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True), unique=True, nullable=False, default=uuid4,
+        PG_UUID(as_uuid=True),
+        unique=True,
+        nullable=False,
+        default=uuid4,
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     currency_code: Mapped[str] = mapped_column(String(3), nullable=False, default="USD")
@@ -71,15 +78,19 @@ class PPAccount(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     # Relationships
     transactions: Mapped[list["PPAccountTransaction"]] = relationship(
-        "PPAccountTransaction", back_populates="account",
+        "PPAccountTransaction",
+        back_populates="account",
     )
     portfolios: Mapped[list["PPPortfolio"]] = relationship(
-        "PPPortfolio", back_populates="reference_account",
+        "PPPortfolio",
+        back_populates="reference_account",
     )
 
     def __repr__(self) -> str:
@@ -93,7 +104,10 @@ class PPPortfolio(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     uuid: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True), unique=True, nullable=False, default=uuid4,
+        PG_UUID(as_uuid=True),
+        unique=True,
+        nullable=False,
+        default=uuid4,
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     is_retired: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -103,18 +117,22 @@ class PPPortfolio(Base):
         ForeignKey("pp_accounts.id"),
     )
     reference_account: Mapped[Optional["PPAccount"]] = relationship(
-        "PPAccount", back_populates="portfolios",
+        "PPAccount",
+        back_populates="portfolios",
     )
 
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     # Relationships
     transactions: Mapped[list["PPPortfolioTransaction"]] = relationship(
-        "PPPortfolioTransaction", back_populates="portfolio",
+        "PPPortfolioTransaction",
+        back_populates="portfolio",
     )
 
     def __repr__(self) -> str:
@@ -128,15 +146,20 @@ class PPAccountTransaction(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     uuid: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True), unique=True, nullable=False, default=uuid4,
+        PG_UUID(as_uuid=True),
+        unique=True,
+        nullable=False,
+        default=uuid4,
     )
 
     # Account relationship
     account_id: Mapped[int] = mapped_column(
-        ForeignKey("pp_accounts.id"), nullable=False,
+        ForeignKey("pp_accounts.id"),
+        nullable=False,
     )
     account: Mapped["PPAccount"] = relationship(
-        "PPAccount", back_populates="transactions",
+        "PPAccount",
+        back_populates="transactions",
     )
 
     # Transaction core data
@@ -154,7 +177,9 @@ class PPAccountTransaction(Base):
 
     # Transaction type (BUY, SELL, DEPOSIT, WITHDRAWAL, etc.)
     transaction_type: Mapped[str] = mapped_column(
-        String(20), nullable=False, index=True,
+        String(20),
+        nullable=False,
+        index=True,
     )
 
     # Cross-entry information for linked portfolio transactions
@@ -165,12 +190,15 @@ class PPAccountTransaction(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     # Relationships
     portfolio_transactions: Mapped[list["PPPortfolioTransaction"]] = relationship(
-        "PPPortfolioTransaction", back_populates="linked_account_transaction",
+        "PPPortfolioTransaction",
+        back_populates="linked_account_transaction",
     )
     units: Mapped[list["PPTransactionUnit"]] = relationship(
         "PPTransactionUnit",
@@ -189,15 +217,20 @@ class PPPortfolioTransaction(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     uuid: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True), unique=True, nullable=False, default=uuid4,
+        PG_UUID(as_uuid=True),
+        unique=True,
+        nullable=False,
+        default=uuid4,
     )
 
     # Portfolio relationship
     portfolio_id: Mapped[int] = mapped_column(
-        ForeignKey("pp_portfolios.id"), nullable=False,
+        ForeignKey("pp_portfolios.id"),
+        nullable=False,
     )
     portfolio: Mapped["PPPortfolio"] = relationship(
-        "PPPortfolio", back_populates="transactions",
+        "PPPortfolio",
+        back_populates="transactions",
     )
 
     # Transaction core data
@@ -207,7 +240,8 @@ class PPPortfolioTransaction(Base):
 
     # Security reference (required for portfolio transactions)
     security_id: Mapped[int] = mapped_column(
-        ForeignKey("securities_master.id"), nullable=False,
+        ForeignKey("securities_master.id"),
+        nullable=False,
     )
 
     # Share quantity (required for portfolio transactions)
@@ -215,7 +249,9 @@ class PPPortfolioTransaction(Base):
 
     # Transaction type (BUY, SELL, DIVIDEND, etc.)
     transaction_type: Mapped[str] = mapped_column(
-        String(20), nullable=False, index=True,
+        String(20),
+        nullable=False,
+        index=True,
     )
 
     # Cross-reference to linked account transaction
@@ -223,13 +259,16 @@ class PPPortfolioTransaction(Base):
         ForeignKey("pp_account_transactions.id"),
     )
     linked_account_transaction: Mapped[Optional["PPAccountTransaction"]] = relationship(
-        "PPAccountTransaction", back_populates="portfolio_transactions",
+        "PPAccountTransaction",
+        back_populates="portfolio_transactions",
     )
 
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     # Relationships
@@ -253,7 +292,8 @@ class PPTransactionUnit(Base):
     # Reference to either account or portfolio transaction
     transaction_id: Mapped[int] = mapped_column(nullable=False)
     transaction_type: Mapped[str] = mapped_column(
-        String(20), nullable=False,
+        String(20),
+        nullable=False,
     )  # 'ACCOUNT' or 'PORTFOLIO'
 
     # Unit details
@@ -277,18 +317,21 @@ class PPSecurityPrice(Base):
 
     # Security reference
     security_id: Mapped[int] = mapped_column(
-        ForeignKey("securities_master.id"), nullable=False,
+        ForeignKey("securities_master.id"),
+        nullable=False,
     )
 
     # Price data
     price_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     price_value: Mapped[int] = mapped_column(
-        Integer, nullable=False,
+        Integer,
+        nullable=False,
     )  # PP stores as integer (multiply by 100000000)
 
     # Data source tracking
     price_source: Mapped[str] = mapped_column(
-        String(50), default="manual",
+        String(50),
+        default="manual",
     )  # manual, yahoo, pp, etc.
 
     # Audit fields
@@ -322,7 +365,8 @@ class PPSetting(Base):
 
     # Setting identification
     setting_category: Mapped[str] = mapped_column(
-        String(50), nullable=False,
+        String(50),
+        nullable=False,
     )  # 'properties', 'bookmarks', etc.
     setting_key: Mapped[str] = mapped_column(String(100), nullable=False)
     setting_value: Mapped[str | None] = mapped_column(Text)
@@ -330,13 +374,17 @@ class PPSetting(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     # Unique constraint on category + key
     __table_args__ = (
         UniqueConstraint(
-            "setting_category", "setting_key", name="uq_setting_category_key",
+            "setting_category",
+            "setting_key",
+            name="uq_setting_category_key",
         ),
     )
 
@@ -361,7 +409,9 @@ class PPBookmark(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     def __repr__(self) -> str:
@@ -399,7 +449,9 @@ class PPImportBatch(Base):
     # Audit fields
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
     )
 
     def __repr__(self) -> str:
