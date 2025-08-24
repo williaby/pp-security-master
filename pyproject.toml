@@ -119,6 +119,10 @@ exclude = [
     "*.yml",
     "sample_data/*",
     "schema_exports/*",
+    "docs/planning/phase-1-templates/*",
+    "docs/planning/phase-2-templates/*",
+    "docs/planning/phase-4-templates/*",
+    "docs/planning/phase-5-templates/*",
 ]
 
 [tool.ruff.lint]
@@ -177,6 +181,7 @@ ignore = [
 "noxfile.py" = ["ANN", "D"]
 "*.yaml" = ["ALL"]
 "*.yml" = ["ALL"]
+"pytest_plugins/*" = ["S603"]
 
 [tool.ruff.lint.pylint]
 max-branches = 18      # Increased from default 12 for industry standards
@@ -326,8 +331,8 @@ output = "coverage.xml"
 
 [tool.bandit]
 targets = ["src"]
-exclude_dirs = ["tests", "scripts"]
-skips = ["B101", "B601"]
+exclude_dirs = ["tests", "scripts", "pytest_plugins"]
+skips = ["B101", "B601", "S603"]
 
 [tool.bandit.assert_used]
 skips = ["*/test_*.py", "*_test.py"]

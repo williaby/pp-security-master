@@ -85,7 +85,7 @@ def pytest_sessionfinish(session: Any) -> None:
             logger.info("✅ Coverage reports updated")
 
     except (subprocess.TimeoutExpired, Exception) as e:
-        logger.error(f"Coverage hook failed: {e}")
+        logger.error("Coverage hook failed: %s", e)
 
 
 def pytest_runtest_makereport(item: Any, call: Any) -> None:
