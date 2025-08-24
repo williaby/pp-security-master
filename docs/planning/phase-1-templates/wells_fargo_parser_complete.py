@@ -56,7 +56,9 @@ class WellsFargoParser:
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
     def parse_file(
-        self, file_path: Path, created_by: str = "system",
+        self,
+        file_path: Path,
+        created_by: str = "system",
     ) -> WellsFargoParseResult:
         """Parse Wells Fargo CSV file with comprehensive validation."""
 
@@ -98,7 +100,9 @@ class WellsFargoParser:
                 avg_quality_score = 0.0
 
             self.batch_manager.complete_batch(
-                batch.id, statistics, data_quality_score=avg_quality_score,
+                batch.id,
+                statistics,
+                data_quality_score=avg_quality_score,
             )
 
             self.logger.info(
@@ -129,7 +133,8 @@ class WellsFargoParser:
             reader = csv.DictReader(csvfile, delimiter=delimiter)
 
             for row_number, row_data in enumerate(
-                reader, start=2,
+                reader,
+                start=2,
             ):  # Start at 2 (header is row 1)
                 result.total_rows += 1
 
@@ -174,7 +179,8 @@ class WellsFargoParser:
                     for fmt in ["%Y-%m-%d", "%m/%d/%Y", "%m-%d-%Y", "%Y/%m/%d"]:
                         try:
                             cleaned[clean_key] = datetime.strptime(
-                                clean_value, fmt,
+                                clean_value,
+                                fmt,
                             ).date()
                             break
                         except ValueError:

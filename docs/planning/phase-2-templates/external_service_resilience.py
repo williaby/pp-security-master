@@ -202,7 +202,8 @@ class ServiceMonitor:
         self.logger.info(f"Registered service: {name}")
 
     def add_alert_handler(
-        self, handler: Callable[[str, ServiceMetrics], Awaitable[None]],
+        self,
+        handler: Callable[[str, ServiceMetrics], Awaitable[None]],
     ):
         """Add alert handler for service issues."""
         self.alert_handlers.append(handler)
@@ -234,7 +235,8 @@ class ServiceMonitor:
 
                 # Execute operation with timeout
                 result = await asyncio.wait_for(
-                    operation(), timeout=self.config.request_timeout_seconds,
+                    operation(),
+                    timeout=self.config.request_timeout_seconds,
                 )
 
                 # Record success
@@ -373,7 +375,8 @@ class ServiceMonitor:
         try:
             start_time = time.time()
             result = await asyncio.wait_for(
-                health_check(), timeout=self.config.request_timeout_seconds,
+                health_check(),
+                timeout=self.config.request_timeout_seconds,
             )
 
             # Update metrics based on health check result
@@ -382,7 +385,8 @@ class ServiceMonitor:
                 self.circuit_breakers[service_name].record_success()
             else:
                 self._record_failure(
-                    service_name, result.error or "Health check failed",
+                    service_name,
+                    result.error or "Health check failed",
                 )
                 self.circuit_breakers[service_name].record_failure()
 
@@ -613,7 +617,8 @@ async def main():
 
     # Create service monitor
     config = ServiceResilienceConfig(
-        health_check_interval_seconds=10, alert_threshold_failure_rate=0.3,
+        health_check_interval_seconds=10,
+        alert_threshold_failure_rate=0.3,
     )
     monitor = ServiceMonitor(config)
 
@@ -637,7 +642,9 @@ async def main():
             return {"result": "success"}
 
         result = await monitor.execute_with_resilience(
-            "openfigi", example_openfigi_call, fallback_value={"result": "fallback"},
+            "openfigi",
+            example_openfigi_call,
+            fallback_value={"result": "fallback"},
         )
         print(f"Result: {result}")
 

@@ -130,6 +130,8 @@ def parse_arguments() -> argparse.Namespace:
         help="Consensus model selection (default: auto)",
     )
     return parser.parse_args()
+
+
 def validate_pr_url(url: str) -> bool:
     """Validate that the provided URL is a valid GitHub PR URL."""
     try:
@@ -148,6 +150,8 @@ def validate_pr_url(url: str) -> bool:
     except Exception as e:
         print(f"❌ Invalid URL format: {e}")
         return False
+
+
 def extract_pr_info(url: str) -> dict[str, str]:
     """Extract PR information from the URL."""
     parsed = urlparse(url)
@@ -158,6 +162,8 @@ def extract_pr_info(url: str) -> dict[str, str]:
         "pr_number": parts[3],
         "full_name": f"{parts[0]}/{parts[1]}",
     }
+
+
 def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
     """Build parameters for the MCP pr_review function."""
     params = {
@@ -179,6 +185,8 @@ def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
     if args.output_file:
         params["output_file_path"] = args.output_file
     return params
+
+
 def log_change(pr_info: dict[str, str], action: str, details: str) -> None:
     """Log the workflow action to the change log."""
     log_file = Path("docs/planning/claude-file-change-log.md")
@@ -187,6 +195,7 @@ def log_change(pr_info: dict[str, str], action: str, details: str) -> None:
     if not log_file.exists():
         log_file.write_text("# Claude File Change Log\n\n")
     from datetime import datetime
+
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = f"## {timestamp} - {action}\n"
     log_entry += (
@@ -196,17 +205,22 @@ def log_change(pr_info: dict[str, str], action: str, details: str) -> None:
     # Append to log file
     with log_file.open("a", encoding="utf-8") as f:
         f.write(log_entry)
+
+
 def validate_environment() -> bool:
     """Validate that the environment is ready for PR review."""
     print("🔍 Validating environment...")
     # Check if we have GitHub CLI available (for potential PR operations)
     import shutil
+
     if not shutil.which("gh"):
         print("⚠️  GitHub CLI (gh) not found - some features may be limited")
     else:
         print("✅ GitHub CLI available")
     print("✅ Environment validation passed")
     return True
+
+
 def main() -> int:
     """Main entry point for the workflow review PR command."""
     args = parse_arguments()
@@ -258,5 +272,7 @@ def main() -> int:
     print(f"\n🎯 Ready to review PR #{pr_info['pr_number']} in {pr_info['full_name']}")
     print("💡 Use Claude Code with the MCP pr_review tool to execute this review")
     return 0
+
+
 if __name__ == "__main__":
     sys.exit(main())

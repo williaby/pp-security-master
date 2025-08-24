@@ -137,7 +137,8 @@ async def example_4_update_existing_benchmark():
 
     # Update benchmark through current date
     success = generator.update_benchmark_security(
-        benchmark_uuid=existing_benchmark_uuid, end_date=date.today(),
+        benchmark_uuid=existing_benchmark_uuid,
+        end_date=date.today(),
     )
 
     if success:
@@ -145,7 +146,8 @@ async def example_4_update_existing_benchmark():
 
         # Get performance summary
         summary = generator.get_benchmark_performance_summary(
-            benchmark_uuid=existing_benchmark_uuid, period_days=252,  # Last year
+            benchmark_uuid=existing_benchmark_uuid,
+            period_days=252,  # Last year
         )
 
         print("   Performance Summary (Last 252 days):")

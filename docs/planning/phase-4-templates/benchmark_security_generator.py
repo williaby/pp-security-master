@@ -28,7 +28,8 @@ class BenchmarkComposition:
 
     @classmethod
     def from_portfolio_snapshot(
-        cls, snapshot: PortfolioSnapshot,
+        cls,
+        snapshot: PortfolioSnapshot,
     ) -> "BenchmarkComposition":
         """Create benchmark composition from portfolio snapshot."""
         weights = {}
@@ -80,18 +81,21 @@ class SyntheticBenchmarkSecurity(BaseModel):
 
     # Benchmark metadata
     benchmark_type: str = Field(
-        ..., description="'reference_portfolio', 'custom_index', 'blended'",
+        ...,
+        description="'reference_portfolio', 'custom_index', 'blended'",
     )
     base_date: date = Field(..., description="Inception date for price calculation")
     base_price: Decimal = Field(
-        default=Decimal("100.00"), description="Starting price (usually 100)",
+        default=Decimal("100.00"),
+        description="Starting price (usually 100)",
     )
 
     # Composition tracking
     underlying_portfolio_id: str | None = None
     underlying_securities: list[str] = Field(default_factory=list)
     rebalance_frequency: str = Field(
-        default="monthly", description="'daily', 'monthly', 'quarterly'",
+        default="monthly",
+        description="'daily', 'monthly', 'quarterly'",
     )
 
     # Performance tracking
@@ -219,7 +223,11 @@ class BenchmarkSecurityGenerator:
 
         # Calculate custom index performance
         self._calculate_custom_index_performance(
-            benchmark, securities, weights, start_date, end_date,
+            benchmark,
+            securities,
+            weights,
+            start_date,
+            end_date,
         )
 
         # Store in database
@@ -228,13 +236,18 @@ class BenchmarkSecurityGenerator:
         return benchmark
 
     def _calculate_benchmark_performance(
-        self, benchmark: SyntheticBenchmarkSecurity, start_date: date, end_date: date,
+        self,
+        benchmark: SyntheticBenchmarkSecurity,
+        start_date: date,
+        end_date: date,
     ):
         """Calculate performance history for portfolio benchmark."""
 
         # Get portfolio snapshots for the period
         snapshots = self._get_portfolio_snapshots(
-            benchmark.underlying_portfolio_id, start_date, end_date,
+            benchmark.underlying_portfolio_id,
+            start_date,
+            end_date,
         )
 
         if not snapshots:
@@ -245,7 +258,10 @@ class BenchmarkSecurityGenerator:
 
         # Convert to daily compositions with rebalancing
         daily_compositions = self._generate_daily_compositions(
-            snapshots, benchmark.rebalance_frequency, start_date, end_date,
+            snapshots,
+            benchmark.rebalance_frequency,
+            start_date,
+            end_date,
         )
 
         # Calculate daily returns and prices
@@ -256,13 +272,15 @@ class BenchmarkSecurityGenerator:
             if previous_value is not None:
                 # Calculate portfolio return for the day
                 portfolio_return = self._calculate_daily_portfolio_return(
-                    composition, previous_value,
+                    composition,
+                    previous_value,
                 )
 
                 # Update synthetic security price
                 current_price = current_price * (Decimal("1") + portfolio_return)
                 current_price = current_price.quantize(
-                    Decimal("0.01"), rounding=ROUND_HALF_UP,
+                    Decimal("0.01"),
+                    rounding=ROUND_HALF_UP,
                 )
 
                 # Store return data
@@ -309,7 +327,9 @@ class BenchmarkSecurityGenerator:
 
         # Get price history for all securities
         price_data = self._get_securities_price_history(
-            securities, start_date, end_date,
+            securities,
+            start_date,
+            end_date,
         )
 
         # Calculate daily index returns
@@ -335,7 +355,8 @@ class BenchmarkSecurityGenerator:
 
             for i, security_id in enumerate(securities):
                 security_return = self._get_security_daily_return(
-                    price_data.get(security_id, {}), current_date.date(),
+                    price_data.get(security_id, {}),
+                    current_date.date(),
                 )
 
                 if security_return is not None:
@@ -346,7 +367,8 @@ class BenchmarkSecurityGenerator:
             if valid_data_count >= len(securities) * 0.7:  # 70% threshold
                 current_price = current_price * (Decimal("1") + daily_return)
                 current_price = current_price.quantize(
-                    Decimal("0.01"), rounding=ROUND_HALF_UP,
+                    Decimal("0.01"),
+                    rounding=ROUND_HALF_UP,
                 )
 
                 # Store return data
@@ -370,7 +392,10 @@ class BenchmarkSecurityGenerator:
             )
 
     def _get_portfolio_snapshots(
-        self, portfolio_id: str, start_date: date, end_date: date,
+        self,
+        portfolio_id: str,
+        start_date: date,
+        end_date: date,
     ) -> list[PortfolioSnapshot]:
         """Get portfolio snapshots for the specified period."""
         with self.db_engine.get_session() as session:
@@ -396,7 +421,9 @@ class BenchmarkSecurityGenerator:
 
         # Determine rebalance dates
         rebalance_dates = self._get_rebalance_dates(
-            start_date, end_date, rebalance_frequency,
+            start_date,
+            end_date,
+            rebalance_frequency,
         )
 
         # Generate daily compositions
@@ -429,7 +456,10 @@ class BenchmarkSecurityGenerator:
         return compositions
 
     def _get_rebalance_dates(
-        self, start_date: date, end_date: date, frequency: str,
+        self,
+        start_date: date,
+        end_date: date,
+        frequency: str,
     ) -> list[date]:
         """Get rebalance dates based on frequency."""
         dates = []
@@ -463,7 +493,9 @@ class BenchmarkSecurityGenerator:
         return sorted(dates)
 
     def _find_nearest_snapshot(
-        self, snapshots: list[PortfolioSnapshot], target_date: date,
+        self,
+        snapshots: list[PortfolioSnapshot],
+        target_date: date,
     ) -> PortfolioSnapshot | None:
         """Find portfolio snapshot nearest to target date."""
         if not snapshots:
@@ -482,7 +514,9 @@ class BenchmarkSecurityGenerator:
         return nearest_snapshot
 
     def _calculate_daily_portfolio_return(
-        self, composition: BenchmarkComposition, previous_value: Decimal,
+        self,
+        composition: BenchmarkComposition,
+        previous_value: Decimal,
     ) -> Decimal:
         """Calculate daily portfolio return based on composition."""
         if previous_value <= 0:
@@ -493,7 +527,10 @@ class BenchmarkSecurityGenerator:
         return (composition.total_value - previous_value) / previous_value
 
     def _get_securities_price_history(
-        self, securities: list[str], start_date: date, end_date: date,
+        self,
+        securities: list[str],
+        start_date: date,
+        end_date: date,
     ) -> dict[str, dict[date, Decimal]]:
         """Get price history for multiple securities."""
         price_data = {}
@@ -507,7 +544,9 @@ class BenchmarkSecurityGenerator:
         return price_data
 
     def _get_security_daily_return(
-        self, price_history: dict[date, Decimal], target_date: date,
+        self,
+        price_history: dict[date, Decimal],
+        target_date: date,
     ) -> Decimal | None:
         """Calculate daily return for a security."""
         if target_date not in price_history:
@@ -600,7 +639,9 @@ class BenchmarkSecurityGenerator:
                 raise
 
     def update_benchmark_security(
-        self, benchmark_uuid: UUID, end_date: date | None = None,
+        self,
+        benchmark_uuid: UUID,
+        end_date: date | None = None,
     ) -> bool:
         """Update an existing benchmark security with latest data."""
         if end_date is None:
@@ -644,14 +685,17 @@ class BenchmarkSecurityGenerator:
             return False
 
     def _load_benchmark_security(
-        self, benchmark_uuid: UUID,
+        self,
+        benchmark_uuid: UUID,
     ) -> SyntheticBenchmarkSecurity | None:
         """Load existing benchmark security from database."""
         # Implementation would load from database tables
         return None
 
     def get_benchmark_performance_summary(
-        self, benchmark_uuid: UUID, period_days: int = 252,
+        self,
+        benchmark_uuid: UUID,
+        period_days: int = 252,
     ) -> dict[str, Any]:
         """Get performance summary for benchmark security."""
         benchmark = self._load_benchmark_security(benchmark_uuid)
@@ -745,7 +789,8 @@ def calculate_benchmark_attribution_example():
     benchmark_uuid = uuid4()  # Would be actual benchmark UUID
 
     summary = generator.get_benchmark_performance_summary(
-        benchmark_uuid=benchmark_uuid, period_days=252,  # 1 year
+        benchmark_uuid=benchmark_uuid,
+        period_days=252,  # 1 year
     )
 
     print("Benchmark Performance Summary:")

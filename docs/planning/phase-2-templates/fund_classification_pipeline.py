@@ -137,7 +137,10 @@ class FundClassificationPipeline:
                 )
 
                 fallback_result = await self._classify_with_openfigi(
-                    symbol, name, cusip, isin,
+                    symbol,
+                    name,
+                    cusip,
+                    isin,
                 )
 
                 if fallback_result.confidence > result.confidence:
@@ -179,7 +182,8 @@ class FundClassificationPipeline:
             )
 
     async def classify_batch(
-        self, securities: list[dict[str, Any]],
+        self,
+        securities: list[dict[str, Any]],
     ) -> list[ClassificationResult]:
         """
         Classify multiple securities in batch.
@@ -364,7 +368,9 @@ class FundClassificationPipeline:
 
                 # Calculate confidence based on match quality
                 confidence = self._calculate_openfigi_confidence(
-                    figi_result, symbol, name,
+                    figi_result,
+                    symbol,
+                    name,
                 )
 
                 self.classification_stats["openfigi_success"] += 1
@@ -413,7 +419,8 @@ class FundClassificationPipeline:
             )
 
     def _convert_pp_result(
-        self, pp_result: dict[str, Any],
+        self,
+        pp_result: dict[str, Any],
     ) -> SecurityClassification | None:
         """Convert pp-portfolio-classifier result to SecurityClassification."""
         # This will be implemented based on actual pp-portfolio-classifier output format
@@ -430,7 +437,8 @@ class FundClassificationPipeline:
         )
 
     def _convert_openfigi_result(
-        self, figi_result: dict[str, Any],
+        self,
+        figi_result: dict[str, Any],
     ) -> SecurityClassification | None:
         """Convert OpenFIGI result to SecurityClassification."""
         return SecurityClassification(
@@ -447,7 +455,10 @@ class FundClassificationPipeline:
         )
 
     def _calculate_openfigi_confidence(
-        self, figi_result: dict[str, Any], symbol: str | None, name: str | None,
+        self,
+        figi_result: dict[str, Any],
+        symbol: str | None,
+        name: str | None,
     ) -> float:
         """Calculate confidence score for OpenFIGI result."""
         confidence = 0.6  # Base confidence for OpenFIGI
@@ -518,7 +529,9 @@ async def main():
 
     # Configure pipeline
     config = FundClassificationConfig(
-        confidence_threshold=0.7, enable_fallback=True, batch_size=50,
+        confidence_threshold=0.7,
+        enable_fallback=True,
+        batch_size=50,
     )
 
     pipeline = FundClassificationPipeline(config)

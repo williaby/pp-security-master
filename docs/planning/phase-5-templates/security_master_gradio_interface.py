@@ -173,10 +173,14 @@ class SecurityMasterInterface:
                 with gr.Row():
                     search_btn = gr.Button("🔍 Search", variant="primary", size="sm")
                     clear_search_btn = gr.Button(
-                        "🗑️ Clear", variant="secondary", size="sm",
+                        "🗑️ Clear",
+                        variant="secondary",
+                        size="sm",
                     )
                     bulk_classify_btn = gr.Button(
-                        "🤖 Bulk Auto-Classify", variant="primary", size="sm",
+                        "🤖 Bulk Auto-Classify",
+                        variant="primary",
+                        size="sm",
                     )
 
                 # Search results with selection
@@ -238,7 +242,8 @@ class SecurityMasterInterface:
                 with gr.Column():
                     refresh_stats_btn = gr.Button("🔄 Refresh Stats", size="sm")
                     export_classification_report_btn = gr.Button(
-                        "📊 Export Report", size="sm",
+                        "📊 Export Report",
+                        size="sm",
                     )
 
         # Manual classification interface
@@ -366,16 +371,20 @@ class SecurityMasterInterface:
         # Classification action buttons
         with gr.Row():
             save_classification_btn = gr.Button(
-                "💾 Save Classification", variant="primary",
+                "💾 Save Classification",
+                variant="primary",
             )
             auto_classify_selected_btn = gr.Button(
-                "🤖 Auto-Classify Selected", variant="secondary",
+                "🤖 Auto-Classify Selected",
+                variant="secondary",
             )
             review_classification_btn = gr.Button(
-                "👁️ Review & Approve", variant="secondary",
+                "👁️ Review & Approve",
+                variant="secondary",
             )
             reject_classification_btn = gr.Button(
-                "❌ Reject Classification", variant="stop",
+                "❌ Reject Classification",
+                variant="stop",
             )
 
         # Classification result feedback
@@ -564,7 +573,9 @@ class SecurityMasterInterface:
                     )
 
                     analysis_end_date = gr.DatePicker(
-                        label="Analysis End Date", value=date.today(), interactive=True,
+                        label="Analysis End Date",
+                        value=date.today(),
+                        interactive=True,
                     )
 
                     benchmark_selector = gr.Dropdown(
@@ -593,13 +604,16 @@ class SecurityMasterInterface:
                 # Generate analytics
                 with gr.Row():
                     generate_analytics_btn = gr.Button(
-                        "📊 Generate Analytics", variant="primary",
+                        "📊 Generate Analytics",
+                        variant="primary",
                     )
                     export_analytics_btn = gr.Button(
-                        "📤 Export Results", variant="secondary",
+                        "📤 Export Results",
+                        variant="secondary",
                     )
                     schedule_analytics_btn = gr.Button(
-                        "⏰ Schedule Regular Reports", variant="secondary",
+                        "⏰ Schedule Regular Reports",
+                        variant="secondary",
                     )
 
         # Analytics results display
@@ -635,18 +649,21 @@ class SecurityMasterInterface:
             with gr.Tab("Performance Charts"):
                 with gr.Column():
                     performance_chart = gr.Plot(
-                        label="Cumulative Performance Comparison", height=400,
+                        label="Cumulative Performance Comparison",
+                        height=400,
                     )
 
                     rolling_metrics_chart = gr.Plot(
-                        label="Rolling Performance Metrics", height=300,
+                        label="Rolling Performance Metrics",
+                        height=300,
                     )
 
             with gr.Tab("Asset Allocation"):
                 with gr.Row():
                     with gr.Column():
                         allocation_chart = gr.Plot(
-                            label="Current Asset Allocation", height=400,
+                            label="Current Asset Allocation",
+                            height=400,
                         )
 
                     with gr.Column():
@@ -712,7 +729,9 @@ class SecurityMasterInterface:
                 with gr.Row():
                     refresh_benchmarks_btn = gr.Button("🔄 Refresh", size="sm")
                     delete_benchmark_btn = gr.Button(
-                        "🗑️ Delete Selected", variant="stop", size="sm",
+                        "🗑️ Delete Selected",
+                        variant="stop",
+                        size="sm",
                     )
 
         with gr.Tabs():
@@ -766,7 +785,8 @@ class SecurityMasterInterface:
                         )
 
                 create_portfolio_benchmark_btn = gr.Button(
-                    "🎯 Create Portfolio Benchmark", variant="primary",
+                    "🎯 Create Portfolio Benchmark",
+                    variant="primary",
                 )
 
             with gr.Tab("Create Custom Index"):
@@ -787,7 +807,9 @@ class SecurityMasterInterface:
 
                     with gr.Column():
                         custom_start_date = gr.DatePicker(
-                            label="Start Date", value=date(2023, 1, 1), interactive=True,
+                            label="Start Date",
+                            value=date(2023, 1, 1),
+                            interactive=True,
                         )
 
                         custom_rebalance_frequency = gr.Dropdown(
@@ -810,11 +832,13 @@ class SecurityMasterInterface:
                     add_security_btn = gr.Button("➕ Add Security", size="sm")
                     normalize_weights_btn = gr.Button("⚖️ Normalize Weights", size="sm")
                     validate_config_btn = gr.Button(
-                        "✅ Validate Configuration", size="sm",
+                        "✅ Validate Configuration",
+                        size="sm",
                     )
 
                 create_custom_benchmark_btn = gr.Button(
-                    "🎯 Create Custom Index Benchmark", variant="primary",
+                    "🎯 Create Custom Index Benchmark",
+                    variant="primary",
                 )
 
         # Benchmark creation results
@@ -876,7 +900,9 @@ class SecurityMasterInterface:
                     )
 
                     export_compression = gr.Checkbox(
-                        label="Compress Export Files", value=True, interactive=True,
+                        label="Compress Export Files",
+                        value=True,
+                        interactive=True,
                     )
 
                 # Date range for export
@@ -888,7 +914,9 @@ class SecurityMasterInterface:
                     )
 
                     export_end_date = gr.DatePicker(
-                        label="Export End Date", value=date.today(), interactive=True,
+                        label="Export End Date",
+                        value=date.today(),
+                        interactive=True,
                     )
 
         # Export generation
@@ -896,7 +924,8 @@ class SecurityMasterInterface:
             generate_export_btn = gr.Button("📤 Generate Export", variant="primary")
             preview_export_btn = gr.Button("👁️ Preview Export", variant="secondary")
             schedule_export_btn = gr.Button(
-                "⏰ Schedule Regular Export", variant="secondary",
+                "⏰ Schedule Regular Export",
+                variant="secondary",
             )
 
         # Export status and results
@@ -924,7 +953,8 @@ class SecurityMasterInterface:
             with gr.Tab("Download & Validation"):
                 with gr.Column():
                     export_download = gr.File(
-                        label="Download Export File", visible=False,
+                        label="Download Export File",
+                        visible=False,
                     )
 
                     validation_results = gr.DataFrame(
@@ -934,7 +964,8 @@ class SecurityMasterInterface:
                     )
 
                     export_verification_report = gr.File(
-                        label="Download Verification Report", visible=False,
+                        label="Download Verification Report",
+                        visible=False,
                     )
 
         # Setup export event handlers
@@ -1016,32 +1047,41 @@ class SecurityMasterInterface:
 
                 with gr.Row():
                     resolve_issue_btn = gr.Button(
-                        "✅ Mark as Resolved", variant="primary", size="sm",
+                        "✅ Mark as Resolved",
+                        variant="primary",
+                        size="sm",
                     )
                     bulk_resolve_btn = gr.Button(
-                        "🔄 Bulk Resolve", variant="secondary", size="sm",
+                        "🔄 Bulk Resolve",
+                        variant="secondary",
+                        size="sm",
                     )
                     export_issues_btn = gr.Button("📊 Export Issues Report", size="sm")
 
             with gr.Tab("Quality Trends"):
                 quality_trend_chart = gr.Plot(
-                    label="Data Quality Trends Over Time", height=500,
+                    label="Data Quality Trends Over Time",
+                    height=500,
                 )
 
                 quality_breakdown_chart = gr.Plot(
-                    label="Quality Score Breakdown by Category", height=300,
+                    label="Quality Score Breakdown by Category",
+                    height=300,
                 )
 
         # Quality monitoring controls
         with gr.Row():
             refresh_quality_btn = gr.Button(
-                "🔄 Refresh Quality Metrics", variant="primary",
+                "🔄 Refresh Quality Metrics",
+                variant="primary",
             )
             run_validation_btn = gr.Button(
-                "🔍 Run Full Validation", variant="secondary",
+                "🔍 Run Full Validation",
+                variant="secondary",
             )
             schedule_quality_btn = gr.Button(
-                "⏰ Schedule Quality Checks", variant="secondary",
+                "⏰ Schedule Quality Checks",
+                variant="secondary",
             )
 
         # Setup quality event handlers
@@ -1091,10 +1131,14 @@ class SecurityMasterInterface:
                 with gr.Row():
                     refresh_status_btn = gr.Button("🔄 Refresh Status", size="sm")
                     restart_services_btn = gr.Button(
-                        "🔄 Restart Services", variant="stop", size="sm",
+                        "🔄 Restart Services",
+                        variant="stop",
+                        size="sm",
                     )
                     run_diagnostics_btn = gr.Button(
-                        "🔧 Run Diagnostics", variant="secondary", size="sm",
+                        "🔧 Run Diagnostics",
+                        variant="secondary",
+                        size="sm",
                     )
 
             with gr.Tab("User Management"):
@@ -1131,7 +1175,8 @@ class SecurityMasterInterface:
                     refresh_users_btn = gr.Button("🔄 Refresh", size="sm")
                     export_audit_btn = gr.Button("📊 Export Audit Log", size="sm")
                     manage_permissions_btn = gr.Button(
-                        "🔑 Manage Permissions", size="sm",
+                        "🔑 Manage Permissions",
+                        size="sm",
                     )
 
             with gr.Tab("API Management"):
@@ -1163,7 +1208,9 @@ class SecurityMasterInterface:
 
                 with gr.Row():
                     rotate_keys_btn = gr.Button(
-                        "🔄 Rotate API Keys", variant="secondary", size="sm",
+                        "🔄 Rotate API Keys",
+                        variant="secondary",
+                        size="sm",
                     )
                     test_apis_btn = gr.Button("🧪 Test API Connections", size="sm")
 
@@ -1173,10 +1220,12 @@ class SecurityMasterInterface:
 
                 with gr.Row():
                     save_config_btn = gr.Button(
-                        "💾 Save Configuration", variant="primary",
+                        "💾 Save Configuration",
+                        variant="primary",
                     )
                     reload_config_btn = gr.Button(
-                        "🔄 Reload Configuration", variant="secondary",
+                        "🔄 Reload Configuration",
+                        variant="secondary",
                     )
                     backup_config_btn = gr.Button("📦 Backup Configuration", size="sm")
 
@@ -1343,7 +1392,9 @@ class SecurityMasterInterface:
         )
 
     def _search_securities(
-        self, query: str, search_type: str,
+        self,
+        query: str,
+        search_type: str,
     ) -> tuple[pd.DataFrame, str]:
         """Search securities based on query and type."""
         # Implementation would query database and return results
@@ -1406,7 +1457,10 @@ class SecurityMasterInterface:
         return "✅ Classification saved successfully"
 
     def _process_institution_import(
-        self, file, institution: str, options: list[str],
+        self,
+        file,
+        institution: str,
+        options: list[str],
     ) -> tuple[str, pd.DataFrame, pd.DataFrame]:
         """Process institution file import."""
         # Implementation would process file and return results
@@ -1456,7 +1510,11 @@ class SecurityMasterInterface:
         return status, results_data, history_data
 
     def _generate_portfolio_analytics(
-        self, portfolio: str, benchmark: str, start_date, end_date,
+        self,
+        portfolio: str,
+        benchmark: str,
+        start_date,
+        end_date,
     ):
         """Generate portfolio analytics."""
         # Implementation would calculate analytics and return results
@@ -1501,12 +1559,18 @@ class SecurityMasterInterface:
 
         fig.add_trace(
             go.Scatter(
-                x=dates, y=portfolio_values, name="Portfolio", line=dict(color="blue"),
+                x=dates,
+                y=portfolio_values,
+                name="Portfolio",
+                line=dict(color="blue"),
             ),
         )
         fig.add_trace(
             go.Scatter(
-                x=dates, y=benchmark_values, name="Benchmark", line=dict(color="red"),
+                x=dates,
+                y=benchmark_values,
+                name="Benchmark",
+                line=dict(color="red"),
             ),
         )
         fig.update_layout(
@@ -1518,7 +1582,9 @@ class SecurityMasterInterface:
         return metrics_data, risk_data, fig
 
     def _create_portfolio_benchmark(
-        self, source_portfolio: str, benchmark_name: str,
+        self,
+        source_portfolio: str,
+        benchmark_name: str,
     ) -> tuple[str, pd.DataFrame]:
         """Create portfolio benchmark."""
         result = (

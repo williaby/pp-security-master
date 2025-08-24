@@ -124,6 +124,8 @@ def parse_arguments() -> argparse.Namespace:
         help="Skip dependency validation and requirements generation",
     )
     return parser.parse_args()
+
+
 def validate_issue_format(phase: str, issue: str) -> bool:
     """Validate issue format matches pp-security-master patterns (PX-XXX)."""
     # Check if issue follows PX-XXX format
@@ -137,6 +139,8 @@ def validate_issue_format(phase: str, issue: str) -> bool:
         print(f"❌ Phase mismatch: phase={phase}, issue phase={issue_phase}")
         return False
     return True
+
+
 def determine_target_branch(phase: str, target: str) -> str:
     """Determine appropriate target branch based on phase and current branch."""
     if target != "auto":
@@ -165,6 +169,8 @@ def determine_target_branch(phase: str, target: str) -> str:
             return "main"
     except subprocess.CalledProcessError:
         return "main"
+
+
 def get_repository_info() -> dict[str, str]:
     """Get repository information from git remote."""
     try:
@@ -206,6 +212,8 @@ def get_repository_info() -> dict[str, str]:
         "full_name": "byron/pp-security-master",
         "url": "https://github.com/byron/pp-security-master",
     }
+
+
 def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
     """Build parameters for the MCP pr_prepare function."""
     params = {
@@ -230,6 +238,8 @@ def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
     if args.phase_number:
         params["phase_number"] = args.phase_number
     return params
+
+
 def log_change(phase: str, issue: str, action: str, details: str) -> None:
     """Log the workflow action to the change log."""
     log_file = Path("docs/planning/claude-file-change-log.md")
@@ -238,6 +248,7 @@ def log_change(phase: str, issue: str, action: str, details: str) -> None:
     if not log_file.exists():
         log_file.write_text("# Claude File Change Log\n\n")
     from datetime import datetime
+
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = f"## {timestamp} - {action}\n"
     log_entry += f"**Phase**: {phase} | **Issue**: {issue}\n"
@@ -245,6 +256,8 @@ def log_change(phase: str, issue: str, action: str, details: str) -> None:
     # Append to log file
     with log_file.open("a", encoding="utf-8") as f:
         f.write(log_entry)
+
+
 def validate_environment() -> bool:
     """Validate that the environment is ready for PR creation."""
     print("🔍 Validating environment...")
@@ -256,6 +269,8 @@ def validate_environment() -> bool:
     # This would typically be validated by the actual MCP call
     print("✅ Environment validation passed")
     return True
+
+
 def main() -> int:
     """Main entry point for the workflow prepare PR command."""
     args = parse_arguments()
@@ -301,5 +316,7 @@ def main() -> int:
     print(f"\n🎯 Ready to create PR for Phase {args.phase}, Issue {args.issue}")
     print("💡 Use Claude Code with the MCP pr_prepare tool to execute this preparation")
     return 0
+
+
 if __name__ == "__main__":
     sys.exit(main())
