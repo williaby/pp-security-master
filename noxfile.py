@@ -13,7 +13,10 @@ SRC_LOCATIONS = ["src", "tests", "noxfile.py"]
 def tests(session):
     """Run the full test suite (all layers)."""
     args = session.posargs or [
-        "--cov", "--cov-branch", "--cov-report=term-missing", "--cov-fail-under=80"
+        "--cov",
+        "--cov-branch",
+        "--cov-report=term-missing",
+        "--cov-fail-under=80",
     ]
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run("pytest", *args)
@@ -52,6 +55,84 @@ def component(session):
         "--cov=src",
         "--cov-branch",
         "--cov-fail-under=75",
+        "-v",
+        *session.posargs,
+    )
+
+
+@nox.session
+def db_tests(session):
+    """Run database tests (PostgreSQL integration)."""
+    session.run("poetry", "install", "--with", "dev", external=True)
+    session.run(
+        "pytest",
+        "-m",
+        "database",
+        "--cov=src/security_master/storage",
+        "--cov-branch",
+        "--cov-fail-under=75",
+        "-v",
+        *session.posargs,
+    )
+
+
+@nox.session
+def classifier_tests(session):
+    """Run classification engine tests."""
+    session.run("poetry", "install", "--with", "dev", external=True)
+    session.run(
+        "pytest",
+        "-m",
+        "classifier",
+        "--cov=src/security_master/classifier",
+        "--cov-branch",
+        "--cov-fail-under=85",
+        "-v",
+        *session.posargs,
+    )
+
+
+@nox.session
+def extractor_tests(session):
+    """Run broker file extraction tests."""
+    session.run("poetry", "install", "--with", "dev", external=True)
+    session.run(
+        "pytest",
+        "-m",
+        "extractor",
+        "--cov=src/security_master/extractor",
+        "--cov-branch",
+        "--cov-fail-under=85",
+        "-v",
+        *session.posargs,
+    )
+
+
+@nox.session
+def fast(session):
+    """Fast development loop - exclude slow tests."""
+    session.run("poetry", "install", "--with", "dev", external=True)
+    session.run(
+        "pytest",
+        "-m",
+        "not slow",
+        "--cov=src",
+        "--cov-branch",
+        "--cov-fail-under=75",  # Slightly lower for fast feedback
+        "--maxfail=5",
+        "-v",
+        *session.posargs,
+    )
+
+
+@nox.session
+def security_tests(session):
+    """Run security assertion tests."""
+    session.run("poetry", "install", "--with", "dev", external=True)
+    session.run(
+        "pytest",
+        "-m",
+        "security",
         "-v",
         *session.posargs,
     )
@@ -101,36 +182,6 @@ def perf(session):
     )
 
 
-@nox.session
-def security_tests(session):
-    """Run security assertion tests."""
-    session.run("poetry", "install", "--with", "dev", external=True)
-    session.run(
-        "pytest",
-        "-m",
-        "security",
-        "-v",
-        *session.posargs,
-    )
-
-
-@nox.session
-def fast(session):
-    """Fast development loop - exclude slow tests."""
-    session.run("poetry", "install", "--with", "dev", external=True)
-    session.run(
-        "pytest",
-        "-m",
-        "not slow",
-        "--cov=src",
-        "--cov-branch",
-        "--cov-fail-under=75",  # Slightly lower for fast feedback
-        "--maxfail=5",
-        "-v",
-        *session.posargs,
-    )
-
-
 @nox.session(python="3.11")
 def lint(session):
     """Run linters."""
@@ -164,6 +215,9 @@ def security(session):
     # Run bandit for code security issues
     session.run("bandit", "-r", "src", "-ll")
 
+    # Audit pip packages
+    session.run("pip-audit")
+
 
 @nox.session(python="3.11")
 def format_code(session):
@@ -179,45 +233,3 @@ def pre_commit(session):
     """Run pre-commit on all files."""
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run("pre-commit", "run", "--all-files")
-
-
-@nox.session(python="3.11")
-def db_tests(session):
-    """Run database-specific tests."""
-    session.run("poetry", "install", "--with", "dev", external=True)
-    session.run(
-        "pytest",
-        "tests/",
-        "-k",
-        "database or db or migration",
-        "-v",
-        *session.posargs,
-    )
-
-
-@nox.session(python="3.11")
-def classifier_tests(session):
-    """Run classification engine tests."""
-    session.run("poetry", "install", "--with", "dev", external=True)
-    session.run(
-        "pytest",
-        "tests/",
-        "-k",
-        "classifier or classification",
-        "-v",
-        *session.posargs,
-    )
-
-
-@nox.session(python="3.11")
-def extractor_tests(session):
-    """Run broker file extractor tests."""
-    session.run("poetry", "install", "--with", "dev", external=True)
-    session.run(
-        "pytest",
-        "tests/",
-        "-k",
-        "extractor or parser",
-        "-v",
-        *session.posargs,
-    )

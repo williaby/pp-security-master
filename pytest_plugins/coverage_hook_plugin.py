@@ -12,18 +12,22 @@ Features:
 - Handles security-master specific test types
 """
 
+import logging
 import os
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
-def pytest_configure(config) -> None:
+def pytest_configure(config: Any) -> None:
     """Called after command line options have been parsed."""
     # Register custom marker
     config.addinivalue_line(
-        "markers", 
-        "coverage_hook: Mark tests that trigger coverage report generation"
+        "markers",
+        "coverage_hook: Mark tests that trigger coverage report generation",
     )
 
     # Detect coverage enablement
@@ -41,7 +45,7 @@ def pytest_configure(config) -> None:
     config._coverage_enabled = cov_enabled
 
 
-def pytest_sessionfinish(session, exitstatus) -> None:
+def pytest_sessionfinish(session: Any) -> None:
     """Called after test run completion to trigger coverage reports."""
     # Only run if coverage was enabled and tests ran
     if not getattr(session.config, "_coverage_enabled", False):
@@ -66,7 +70,7 @@ def pytest_sessionfinish(session, exitstatus) -> None:
         if not hook_script.exists():
             return
 
-        # Execute coverage hook
+        # Execute coverage hook (safe as hook_script is internal and not user-provided)
         result = subprocess.run(
             [sys.executable, str(hook_script)],
             check=False,
@@ -74,28 +78,31 @@ def pytest_sessionfinish(session, exitstatus) -> None:
             capture_output=True,
             text=True,
             timeout=60,
+            shell=False,
         )
 
         if result.returncode == 0 and "✅" in result.stdout:
-            print("✅ Coverage reports updated")
+            logger.info("✅ Coverage reports updated")
 
-    except (subprocess.TimeoutExpired, Exception):
-        pass
+    except (subprocess.TimeoutExpired, Exception) as e:
+        logger.error("Coverage hook failed: %s", e)
 
 
-def pytest_runtest_makereport(item, call) -> None:
+def pytest_runtest_makereport(item: Any, call: Any) -> None:
     """Set coverage context based on test type for better tracking."""
-    if (call.when == "call" and 
-        hasattr(item.config, "_coverage_enabled") and 
-        item.config._coverage_enabled):
-        
+    if (
+        call.when == "call"
+        and hasattr(item.config, "_coverage_enabled")
+        and item.config._coverage_enabled
+    ):
+
         test_path = str(item.fspath)
-        
+
         # Security-master specific test type classification
         if "/tests/unit/" in test_path:
             context = "unit"
         elif "/tests/integration/" in test_path:
-            context = "integration" 
+            context = "integration"
         elif "/tests/database/" in test_path:
             context = "database"
         elif "/tests/classifier/" in test_path:

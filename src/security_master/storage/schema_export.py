@@ -3,30 +3,38 @@
 Schema export utility for visualizing database schema with dbdiagram.io
 """
 
+from pathlib import Path
+
 from sqlalchemy import create_engine
 from sqlalchemy.schema import CreateTable
 
-from .models import Base, SecurityMaster, KuberaSheet, KuberaSection, KuberaHolding, HoldingComparison
+from .models import (
+    Base,
+)
 
 
 def generate_postgres_ddl() -> str:
     """Generate PostgreSQL DDL statements from SQLAlchemy models."""
-    engine = create_engine("postgresql://", strategy='mock', executor=lambda sql, *_: None)
-    
+    engine = create_engine(
+        "postgresql://",
+        strategy="mock",
+        executor=lambda _sql, *_: None,
+    )
+
     ddl_statements = []
-    
+
     # Generate CREATE TABLE statements for each model
     for table in Base.metadata.tables.values():
         create_table = CreateTable(table).compile(engine)
         ddl_statements.append(str(create_table))
-    
+
     return "\n\n".join(ddl_statements)
 
 
 def generate_mermaid_er_diagram() -> str:
     """Generate Mermaid ER diagram for VS Code preview."""
-    
-    mermaid = """# Security Master Database Schema
+
+    return """# Security Master Database Schema
 
 ```mermaid
 erDiagram
@@ -202,7 +210,7 @@ erDiagram
 - **Multi-level Classifications**: GICS, asset allocation, geographic, custom BRX-Plus taxonomy
 - **Data Quality Scoring**: Automated completeness assessment (0.00-1.00)
 
-### Kubera Integration  
+### Kubera Integration
 - **Hierarchical Structure**: Sheet → Section → Holdings mapping
 - **Flexible PP Mapping**: Configurable mapping to PP groups and accounts
 - **Rich Position Data**: Quantity, value, cost basis, performance metrics, tax implications
@@ -215,18 +223,16 @@ erDiagram
 ## Usage Notes
 
 1. **Sheet Mapping**: Kubera sheets (IRA, Crypto) map to Portfolio Performance groups
-2. **Section Mapping**: Kubera sections (Wells Fargo, Interactive Brokers) map to PP accounts  
+2. **Section Mapping**: Kubera sections (Wells Fargo, Interactive Brokers) map to PP accounts
 3. **Data Quality**: Automated variance detection for holdings reconciliation
 4. **Performance**: Strategic indexing on identifiers, dates, and comparison flags
 """
-    
-    return mermaid
 
 
 def generate_plantuml_er_diagram() -> str:
     """Generate PlantUML ER diagram for VS Code preview."""
-    
-    plantuml = """@startuml Security Master Database Schema
+
+    return """@startuml Security Master Database Schema
 
 !define TABLE(name,desc) class name as "desc" << (T,#FFAAAA) >>
 !define PRIMARY_KEY(x) <u>x</u>
@@ -493,14 +499,12 @@ note as N1
 end note
 
 @enduml"""
-    
-    return plantuml
 
 
 def generate_dbdiagram_schema() -> str:
     """Generate dbdiagram.io DBML format from SQLAlchemy models."""
-    
-    dbml = """// Database Schema for Security Master Service
+
+    return """// Database Schema for Security Master Service
 // Generated from SQLAlchemy models for Portfolio Performance and Kubera integration
 
 Project SecurityMaster {
@@ -520,7 +524,7 @@ Table securities_master {
   wkn varchar(20) [note: 'German securities identifier']
   note text [note: 'Additional notes']
   currency varchar(3) [not null, default: 'USD']
-  
+
   // Pricing data
   latest_price decimal(12,4) [note: 'Current market price']
   delta_percent decimal(8,4) [note: 'Price change percentage']
@@ -528,18 +532,18 @@ Table securities_master {
   latest_date date [note: 'Date of latest price']
   last_historical_date date
   first_historical_date date
-  
+
   // Data feeds
   quote_feed_historic varchar(100) [note: 'Historical data source']
   quote_feed_latest varchar(100) [note: 'Latest price data source']
   url_historic_quotes varchar(500)
   url_latest_quotes varchar(500)
-  
+
   // Corporate actions
   next_ex_date date [note: 'Next ex-dividend date']
   next_payment_date date [note: 'Next dividend payment date']
   next_payment_amount decimal(12,4) [note: 'Next dividend amount']
-  
+
   // Fund/ETF specific
   logo varchar(500)
   ter decimal(6,4) [note: 'Total Expense Ratio']
@@ -547,46 +551,46 @@ Table securities_master {
   vendor varchar(100) [note: 'Fund company/vendor']
   acquisition_fee decimal(6,4)
   management_fee decimal(6,4)
-  
+
   // Asset Classifications
   asset_classes_level1 varchar(100) [note: 'Top-level asset class']
   asset_classes varchar(200) [note: 'Detailed asset classes']
   sector varchar(100) [note: 'Industry sector']
   industry_group varchar(100)
   industry varchar(100)
-  
+
   // GICS Classifications
   industries_gics_level4 varchar(200) [note: 'GICS Level 4 industries']
   industries_gics varchar(200) [note: 'All GICS industries']
   industries_gics_sectors_level1 varchar(100) [note: 'GICS top-level sectors']
   industries_gics_sectors varchar(200) [note: 'All GICS sectors']
-  
+
   // Asset Allocation
   asset_allocation_level1 varchar(100)
   asset_allocation_level2 varchar(100)
   asset_allocation varchar(200)
-  
+
   // Geographic Classifications
   market varchar(100) [note: 'Primary trading market']
   region varchar(100) [note: 'Geographic region']
   regions_msci_level3 varchar(100) [note: 'MSCI Level 3 regions']
   regions_msci varchar(200) [note: 'All MSCI regions']
-  
+
   // Security Type Classifications
   type_of_security_level1 varchar(100) [note: 'Top-level security type']
   type_of_security varchar(200) [note: 'Detailed security type']
-  
+
   // Custom Classifications (BRX-Plus taxonomy)
   brx_plus_level1 varchar(100) [note: 'Byron custom Level 1']
   brx_plus_level2 varchar(100) [note: 'Byron custom Level 2']
   brx_plus varchar(200) [note: 'Byron custom full taxonomy']
-  
+
   // Audit fields
   created_at timestamp [default: `now()`, note: 'Record creation timestamp']
   updated_at timestamp [default: `now()`, note: 'Last update timestamp']
   data_source varchar(50) [default: 'portfolio_performance', note: 'Source system']
   data_quality_score decimal(3,2) [note: 'Data completeness score 0.00-1.00']
-  
+
   indexes {
     (name) [name: 'idx_securities_name']
     (isin) [name: 'idx_securities_isin']
@@ -604,7 +608,7 @@ Table kubera_sheets {
   pp_group_name varchar(100) [note: 'Mapped Portfolio Performance group']
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
-  
+
   indexes {
     (sheet_name) [name: 'idx_kubera_sheets_name']
     (pp_group_name) [name: 'idx_kubera_sheets_pp_group']
@@ -619,7 +623,7 @@ Table kubera_sections {
   pp_account_name varchar(100) [note: 'Mapped Portfolio Performance account']
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
-  
+
   indexes {
     (section_name) [name: 'idx_kubera_sections_name']
     (pp_account_name) [name: 'idx_kubera_sections_pp_account']
@@ -631,76 +635,76 @@ Table kubera_holdings {
   kubera_asset_id varchar(100) [unique, not null, note: 'Kubera asset UUID']
   name varchar(255) [not null, note: 'Security name from Kubera']
   section_id integer [ref: > kubera_sections.id, not null]
-  
+
   // Security identifiers
   ticker varchar(20) [note: 'Trading symbol']
   ticker_id integer [note: 'Kubera internal ticker ID']
   isin varchar(12) [note: 'ISIN from Kubera']
-  
+
   // Classification
   category varchar(50) [not null, note: 'asset or liability']
   sub_type varchar(50) [not null, note: 'stock, mutual fund, etf, cash']
   ticker_sub_type varchar(20) [note: 'cs, etf, oef, scr']
   asset_class varchar(50) [not null, note: 'stock, fund, cash, crypto']
   security_type varchar(50) [not null, note: 'investment, other']
-  
+
   // Market data
   exchange varchar(50) [note: 'Trading exchange']
   sector varchar(100) [note: 'Industry sector']
   ticker_sector varchar(100) [note: 'Kubera sector classification']
-  
+
   // Position data
   quantity decimal(18,8) [not null, note: 'Number of shares/units']
   current_price decimal(12,4) [note: 'Current market price per share']
   current_value decimal(15,2) [not null, note: 'Total current market value']
   currency varchar(3) [not null, default: 'USD']
-  
+
   // Cost basis
   cost_per_share decimal(12,4) [note: 'Average cost per share']
   cost_basis_total decimal(15,2) [note: 'Total cost basis']
   cost_basis_for_tax decimal(15,2) [note: 'Tax-adjusted cost basis']
-  
+
   // Performance metrics
   irr decimal(12,6) [note: 'Internal Rate of Return']
   unrealized_gain_loss decimal(15,2) [note: 'Unrealized gain/loss']
   tax_on_unrealized_gain decimal(15,2) [note: 'Tax liability on gains']
-  
+
   // Dates
   purchase_date date [note: 'Original purchase date']
   holding_period_days integer [note: 'Days since purchase']
-  
+
   // Tax information
   tax_rate decimal(5,2) [note: 'Tax rate percentage']
   tax_status varchar(20) [note: 'taxable, tax-deferred, etc.']
-  
+
   // Geographic and liquidity
   geography_country varchar(50) [note: 'Country of domicile']
   geography_region varchar(50) [note: 'Geographic region']
   liquidity varchar(20) [note: 'high, medium, low']
   investable varchar(50) [note: 'investable_easy_convert, investable_cash']
   ownership decimal(3,2) [default: 1.0, note: 'Ownership percentage']
-  
+
   // Data connection info
   aggregator varchar(50) [note: 'finicity, yodlee, manual']
   provider_name varchar(100) [note: 'Financial institution name']
   provider_account_id varchar(50) [note: 'Provider account ID']
   provider_connection_id varchar(50) [note: 'Provider connection ID']
   last_updated timestamp [note: 'Last data update from provider']
-  
+
   // Manual data flag
   is_manual boolean [default: false, note: 'Manually entered data']
   holdings_count integer [default: 0, note: 'Child holdings count for accounts']
-  
+
   // Parent relationship (for account summaries)
   parent_id varchar(100) [note: 'Parent account ID']
   parent_name varchar(255) [note: 'Parent account name']
-  
+
   // Snapshot metadata
   snapshot_date date [not null, note: 'Date of data snapshot']
   data_source varchar(50) [default: 'kubera']
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
-  
+
   indexes {
     (name) [name: 'idx_kubera_holdings_name']
     (ticker) [name: 'idx_kubera_holdings_ticker']
@@ -717,45 +721,45 @@ Table holding_comparisons {
   comparison_date date [not null, note: 'Date of comparison run']
   pp_group varchar(100) [not null, note: 'Portfolio Performance group']
   pp_account varchar(100) [not null, note: 'Portfolio Performance account']
-  
+
   // Security identification
   security_name varchar(255) [not null, note: 'Security name for comparison']
   isin varchar(12) [note: 'ISIN for matching']
   ticker varchar(20) [note: 'Ticker for matching']
-  
+
   // Portfolio Performance data
   pp_quantity decimal(18,8) [note: 'PP quantity']
   pp_value decimal(15,2) [note: 'PP total value']
   pp_currency varchar(3) [note: 'PP currency']
-  
+
   // Kubera data
   kubera_quantity decimal(18,8) [note: 'Kubera quantity']
   kubera_value decimal(15,2) [note: 'Kubera total value']
   kubera_currency varchar(3) [note: 'Kubera currency']
-  
+
   // Variance analysis
   quantity_variance decimal(18,8) [note: 'Quantity difference (Kubera - PP)']
   quantity_variance_percent decimal(8,4) [note: 'Quantity variance percentage']
   value_variance decimal(15,2) [note: 'Value difference (Kubera - PP)']
   value_variance_percent decimal(8,4) [note: 'Value variance percentage']
-  
+
   // Status flags
   is_matched boolean [default: false, note: 'Holdings match within tolerance']
   is_pp_only boolean [default: false, note: 'Only exists in Portfolio Performance']
   is_kubera_only boolean [default: false, note: 'Only exists in Kubera']
   variance_threshold_exceeded boolean [default: false, note: 'Variance exceeds tolerance']
-  
+
   // Tolerance settings used
   quantity_tolerance_percent decimal(5,2) [default: 0.01, note: 'Quantity tolerance %']
   value_tolerance_percent decimal(5,2) [default: 0.50, note: 'Value tolerance %']
-  
+
   // Notes and investigation
   notes text [note: 'Investigation notes']
   investigation_status varchar(50) [default: 'pending', note: 'pending, investigating, resolved']
-  
+
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
-  
+
   indexes {
     (comparison_date) [name: 'idx_comparisons_date']
     (pp_group) [name: 'idx_comparisons_pp_group']
@@ -775,46 +779,27 @@ Note: "Kubera Holdings captures real-time position data from client aggregated a
 Note: "Holding Comparisons provides variance analysis between PP and Kubera for data quality validation"
 Note: "Sheet/Section mapping enables flexible Portfolio Performance group/account alignment"
 """
-    
-    return dbml
 
 
-def export_schema_files():
+def export_schema_files() -> None:
     """Export PostgreSQL DDL, dbdiagram.io DBML, Mermaid, and PlantUML ER diagram files."""
-    import os
-    
     # Create exports directory
-    export_dir = "schema_exports"
-    os.makedirs(export_dir, exist_ok=True)
-    
+    export_dir = Path("schema_exports")
+    export_dir.mkdir(exist_ok=True)
+
     # Export PostgreSQL DDL
-    with open(f"{export_dir}/security_master_schema.sql", "w") as f:
-        f.write(generate_postgres_ddl())
-    
+    (export_dir / "security_master_schema.sql").write_text(generate_postgres_ddl())
+
     # Export dbdiagram.io DBML
-    with open(f"{export_dir}/security_master_schema.dbml", "w") as f:
-        f.write(generate_dbdiagram_schema())
-    
+    (export_dir / "security_master_schema.dbml").write_text(generate_dbdiagram_schema())
+
     # Export Mermaid ER diagram for VS Code
-    with open(f"{export_dir}/security_master_schema.md", "w") as f:
-        f.write(generate_mermaid_er_diagram())
-    
+    (export_dir / "security_master_schema.md").write_text(generate_mermaid_er_diagram())
+
     # Export PlantUML ER diagram for VS Code
-    with open(f"{export_dir}/security_master_schema.puml", "w") as f:
-        f.write(generate_plantuml_er_diagram())
-    
-    print(f"Schema exported to {export_dir}/")
-    print("- security_master_schema.sql (PostgreSQL DDL)")
-    print("- security_master_schema.dbml (dbdiagram.io format)")
-    print("- security_master_schema.md (Mermaid ER diagram)")
-    print("- security_master_schema.puml (PlantUML ER diagram)")
-    print("\nTo visualize in VS Code:")
-    print("Mermaid: Install 'Mermaid Preview' → Open .md → Ctrl+Shift+P → 'Mermaid: Preview'")
-    print("PlantUML: Install 'PlantUML' → Open .puml → Alt+D (or Ctrl+Shift+P → 'PlantUML: Preview')")
-    print("\nTo visualize online:")
-    print("1. Copy DBML content from security_master_schema.dbml")
-    print("2. Go to https://dbdiagram.io/")
-    print("3. Paste the DBML content into the editor")
+    (export_dir / "security_master_schema.puml").write_text(
+        generate_plantuml_er_diagram(),
+    )
 
 
 if __name__ == "__main__":

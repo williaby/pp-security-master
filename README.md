@@ -40,14 +40,46 @@ Portfolio Performance (PP) is a powerful open-source desktop portfolio tracker. 
 
 > **Current Status**: Foundation phase - Core architecture and database models implemented
 
-1. **Setup Database**: Install PostgreSQL 17 via Unraid Community Apps
-2. **Clone Repository**: `git clone [repository-url] && cd pp-security-master`
-3. **Install Dependencies**: `poetry install`
-4. **Configure Environment**: Copy `.env.example` to `.env` and configure database connection
+### Prerequisites
+- **PostgreSQL 17**: Running on Unraid server (see [Database Setup](#database-setup) below)
+- **Python**: 3.11+ with Poetry installed
+- **Network**: Connectivity to PostgreSQL server (default port 5436)
+
+### Development Setup
+1. **Clone Repository**: `git clone [repository-url] && cd pp-security-master`
+2. **Install Dependencies**: `poetry install`
+3. **Configure Environment**: Copy `.env.example` to `.env` and configure database connection
+4. **Verify Database**: `poetry run python tests/test_db_connection.py`
 5. **Run Tests**: `poetry run pytest -v --cov=src --cov-report=html`
 6. **Code Quality**: `poetry run nox -s lint` for formatting and linting
 
 > **Note**: Database migrations and CLI commands are currently under development
+
+### Database Setup
+
+#### PostgreSQL 17 on Unraid
+1. **Install via Unraid Community Apps**:
+   - Search for "PostgreSQL" in Community Applications
+   - Select PostgreSQL 17 container
+   - Configure environment variables:
+     ```
+     POSTGRES_DB=pp_master
+     POSTGRES_USER=pp_user
+     POSTGRES_PASSWORD=[secure_password]
+     ```
+   - Map port: `5436:5432` (or preferred external port)
+   - Set persistent storage: `/mnt/user/appdata/pp_postgres/data:/var/lib/postgresql/data`
+
+2. **Verify Installation**:
+   ```bash
+   # Test network connectivity
+   nc -zv [unraid-server-ip] 5436
+   
+   # Test database connection
+   poetry run python tests/test_db_connection.py
+   ```
+
+3. **Troubleshooting**: See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common issues
 
 > **Detailed Setup**: See [MVP.md](docs/project/MVP.md) for complete MVP scope and [PROJECT_PLAN.md](docs/project/PROJECT_PLAN.md) for infrastructure details.
 
@@ -118,4 +150,4 @@ This project is open-source and available under the MIT License.
 
 - [Portfolio Performance App](https://www.portfolio-performance.info/en/)
 - [Portfolio Performance Forum](https://forum.portfolio-performance.info/)
-- [Portfolio Performance Manual](https://help.portfolio-performance.info/en/)# pp-security-master
+- [Portfolio Performance Manual](https://help.portfolio-performance.info/en/)
