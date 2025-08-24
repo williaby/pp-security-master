@@ -27,9 +27,9 @@ def get_db_connection_params():
         (len(postgres_password) < 15 and postgres_password.endswith("!W")) or  # Truncated at #
         "\\" in postgres_password  # Has escape characters
     ):
-        # This is the known Unraid password with special characters
-        postgres_password = "cribrsk!W#9D%6^0" 
-        print("⚠️  Applied password workaround for dotenv parsing limitation")
+        # Password appears to be truncated or malformed; skip test with message
+        print("❌ Skipping: POSTGRES_PASSWORD appears truncated or malformed due to dotenv parsing issues. Please set the correct password via environment variable or .env file.")
+        return None, None, None, None, None
 
     return postgres_host, postgres_port, postgres_user, postgres_db, postgres_password
 
