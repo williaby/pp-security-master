@@ -308,6 +308,40 @@ class PPTransactionUnit(Base):
         return f"<PPTransactionUnit(transaction_id={self.transaction_id}, type='{self.unit_type}', amount={self.amount})>"
 
 
+class PPSecurity(Base):
+    """Portfolio Performance securities (separate from security master)."""
+
+    __tablename__ = "pp_securities"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    uuid: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        unique=True,
+        nullable=False,
+        default=uuid4,
+    )
+
+    # Basic security information
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    isin: Mapped[str | None] = mapped_column(String(12))
+    symbol: Mapped[str | None] = mapped_column(String(20))
+    wkn: Mapped[str | None] = mapped_column(String(20))
+    currency_code: Mapped[str] = mapped_column(String(3), nullable=False, default="USD")
+    note: Mapped[str | None] = mapped_column(Text)
+    is_retired: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    # Audit fields
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )
+
+    def __repr__(self) -> str:
+        return f"<PPSecurity(uuid='{self.uuid}', name='{self.name}', isin='{self.isin}')>"
+
+
 class PPSecurityPrice(Base):
     """Portfolio Performance daily security prices."""
 

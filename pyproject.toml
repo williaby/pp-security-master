@@ -29,6 +29,9 @@ homepage = "https://github.com/byron/pp-security-master"
 repository = "https://github.com/byron/pp-security-master"
 documentation = "https://github.com/byron/pp-security-master/wiki"
 
+[project.scripts]
+pp-master = "security_master.cli:main"
+
 # Poetry-specific configuration
 [tool.poetry]
 package-mode = false
