@@ -10,8 +10,8 @@
 
 The `pp-security-master` project was initialized before several global standards in
 `~/.claude/CLAUDE.md` and `~/.claude/.claude/rules/` solidified. This document
-catalogues the ~30 gaps found in an April 2026 audit and specifies exactly what to
-change in each of five dependency-ordered phases.
+catalogues the ~35 gaps found in an April 2026 audit and specifies exactly what to
+change in each of six dependency-ordered phases.
 
 The audit compared the project against:
 - Global `~/.claude/CLAUDE.md` (v1.4.0, 2026-04-19)
@@ -25,17 +25,87 @@ The audit compared the project against:
 
 ## Approach
 
-Five dependency-ordered phases. Each phase produces a working, committable state
+Six dependency-ordered phases. Each phase produces a working, committable state
 before the next phase starts. The ordering ensures no phase calls a tool or file
 that does not yet exist.
 
 | Phase | Name | Scope |
 |-------|------|-------|
+| 0 | Project Root Relocation | Move project from nested path to correct location |
 | 1 | Foundations | Missing files, metadata fixes |
 | 2 | Toolchain Replacements | Black/MyPy/safety out; Ruff format/BasedPyright/pip-audit in |
 | 3 | Pre-commit | Wire Phase 2 tools into `.pre-commit-config.yaml` |
 | 4 | CI Modernization | Migrate to org reusable workflows, pin SHAs, add hardening |
 | 5 | `.claude/` and Docs Cleanup | Settings, CLAUDE.md updates, em-dash scan |
+
+---
+
+## Phase 0: Project Root Relocation
+
+The project is nested one directory too deep. All files live at
+`/home/byron/dev/pp-security-master/pp-security-master/` when the correct root
+is `/home/byron/dev/pp-security-master/`. The outer directory contains only the
+inner one (confirmed at audit time), so no content conflicts exist.
+
+This phase must run before any other phase because subsequent phases create files
+at paths relative to the project root. Doing that work before the relocation would
+require redoing path references afterward.
+
+### Steps
+
+1. Open a terminal at `/home/byron/dev/pp-security-master/` (the outer directory).
+
+2. Move all contents (including hidden files and directories) out of the inner
+   directory and into the outer:
+
+   ```bash
+   # From /home/byron/dev/pp-security-master/
+   mv pp-security-master/{.,}* . 2>/dev/null || true
+   ```
+
+   If the glob approach causes issues with dotfiles, move explicitly:
+
+   ```bash
+   mv pp-security-master/.git .
+   mv pp-security-master/.github .
+   mv pp-security-master/.claude .
+   mv pp-security-master/.gitignore .
+   mv pp-security-master/.editorconfig .
+   mv pp-security-master/.dockerignore .
+   mv pp-security-master/.env.example .
+   mv pp-security-master/.gemini.json .
+   mv pp-security-master/.vscode .
+   mv pp-security-master/.yamllint.yml .
+   # Then move all non-hidden items
+   mv pp-security-master/* .
+   ```
+
+3. Remove the now-empty inner directory:
+
+   ```bash
+   rmdir pp-security-master
+   ```
+
+4. Update the VSCode workspace path if `.vscode/` contains any absolute paths
+   referencing the old nested location.
+
+5. Verify git still works from the new root:
+
+   ```bash
+   git status
+   git log --oneline -3
+   ```
+
+6. Close and reopen any IDE windows pointing to the old path, then re-open from
+   `/home/byron/dev/pp-security-master/`.
+
+### Verification
+
+- `git status` exits cleanly from `/home/byron/dev/pp-security-master/`
+- `ls CLAUDE.md README.md pyproject.toml` returns all three files
+- The inner `pp-security-master/` directory no longer exists
+- No absolute paths in `.vscode/`, `pyproject.toml`, or `Makefile` reference
+  the old nested path
 
 ---
 
@@ -455,6 +525,7 @@ to the root and remove the originals. Update any internal cross-references.
 | 32 | `CLAUDE.md` Essential Commands reference removed tools | 5 |
 | 33 | Em-dashes present in project documentation | 5 |
 | 34 | `AGENTS.md` and `GEMINI.md` in wrong directory | 5 |
+| 35 | Project nested one level too deep (`pp-security-master/pp-security-master/`) | 0 |
 
 ---
 
@@ -462,6 +533,9 @@ to the root and remove the originals. Update any internal cross-references.
 
 Each phase ends with a verification step before the next phase begins:
 
+- **Phase 0**: `git status` exits cleanly from `/home/byron/dev/pp-security-master/`;
+  `ls CLAUDE.md README.md pyproject.toml` returns all three; no inner
+  `pp-security-master/` directory exists
 - **Phase 1**: `git status` confirms all new files present; `poetry check` passes
 - **Phase 2**: `poetry run basedpyright` exits 0; `poetry run ruff format --check .`
   exits 0; `poetry run pip-audit` runs without error; `qlty check` passes
