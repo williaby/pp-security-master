@@ -209,9 +209,6 @@ def security(session):
     """Run security checks."""
     session.run("poetry", "install", "--with", "dev", external=True)
 
-    # Check for known vulnerabilities
-    session.run("safety", "check", "--json")
-
     # Run bandit for code security issues
     session.run("bandit", "-r", "src", "-ll")
 

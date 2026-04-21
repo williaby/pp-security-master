@@ -53,7 +53,7 @@ format: ## Format code
 	$(POETRY) run ruff check --fix .
 
 security: ## Run security checks
-	$(POETRY) run safety check
+	$(POETRY) run pip-audit
 	$(POETRY) run bandit -r src
 
 db-migrate: ## Run database migrations
