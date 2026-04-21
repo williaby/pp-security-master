@@ -101,3 +101,6 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Git worktrees (created by git worktree add)
+.worktrees/
