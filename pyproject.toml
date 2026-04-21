@@ -176,7 +176,7 @@ line-ending = "auto"
 
 # Dedicated isort configuration for import organization
 [tool.isort]
-profile = "ruff"
+profile = "black"
 line_length = 88
 multi_line_output = 3
 include_trailing_comma = true
