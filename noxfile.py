@@ -187,7 +187,7 @@ def lint(session):
     """Run linters."""
     args = session.posargs or SRC_LOCATIONS
     session.run("poetry", "install", "--with", "dev", external=True)
-    session.run("black", "--check", *args)
+    session.run("ruff", "format", "--check", *args)
     session.run("ruff", "check", *args)
 
     # Markdown linting
@@ -224,7 +224,7 @@ def format_code(session):
     """Format code."""
     args = session.posargs or SRC_LOCATIONS
     session.run("poetry", "install", "--with", "dev", external=True)
-    session.run("black", *args)
+    session.run("ruff", "format", *args)
     session.run("ruff", "check", "--fix", *args)
 
 

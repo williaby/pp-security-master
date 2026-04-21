@@ -42,14 +42,14 @@ test-with-timing: ## Run tests with detailed timing analysis
 	$(POETRY) run pytest --durations=20 --tb=short
 
 lint: ## Run linting checks
-	$(POETRY) run black --check .
+	$(POETRY) run ruff format --check .
 	$(POETRY) run ruff check .
 	$(POETRY) run mypy src
 	markdownlint **/*.md
 	yamllint .
 
 format: ## Format code
-	$(POETRY) run black .
+	$(POETRY) run ruff format .
 	$(POETRY) run ruff check --fix .
 
 security: ## Run security checks
