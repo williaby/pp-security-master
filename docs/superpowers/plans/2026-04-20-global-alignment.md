@@ -4,6 +4,8 @@
 
 **Goal:** Bring `pp-security-master` into full alignment with the global Claude standards, org-level GitHub workflows, and Python toolchain rules across six dependency-ordered phases.
 
+**Status as of 2026-04-20:** Phase 0 complete. Phases 1-5 not started.
+
 **Architecture:** Each phase builds on a stable base established by the previous phase. Phase 0 relocates the project to its correct directory. Phases 1-5 layer in files, tooling, CI, and documentation without revisiting completed work.
 
 **Tech Stack:** Python 3.11+, Poetry, Ruff, BasedPyright, pip-audit, darglint, interrogate, qlty CLI, pre-commit, GitHub Actions (org reusable workflows), nox, Make.
@@ -28,7 +30,7 @@ The project lives at `.../pp-security-master/pp-security-master/` but should be 
 **Files:**
 - Move: everything in `/home/byron/dev/pp-security-master/pp-security-master/` to `/home/byron/dev/pp-security-master/`
 
-- [ ] **Step 1: Verify the outer directory is clean**
+- [x] **Step 1: Verify the outer directory is clean**
 
 ```bash
 ls -la /home/byron/dev/pp-security-master/
@@ -36,7 +38,7 @@ ls -la /home/byron/dev/pp-security-master/
 
 Expected: only one entry -- `pp-security-master/`. If any other files exist, stop and investigate before proceeding.
 
-- [ ] **Step 2: Move all content out of the inner directory**
+- [x] **Step 2: Move all content out of the inner directory**
 
 Run from `/home/byron/dev/pp-security-master/`:
 
@@ -52,7 +54,7 @@ done
 mv pp-security-master/* .
 ```
 
-- [ ] **Step 3: Remove the now-empty inner directory**
+- [x] **Step 3: Remove the now-empty inner directory**
 
 ```bash
 rmdir /home/byron/dev/pp-security-master/pp-security-master
@@ -60,7 +62,7 @@ rmdir /home/byron/dev/pp-security-master/pp-security-master
 
 If `rmdir` fails, the directory is not empty. Run `ls -la /home/byron/dev/pp-security-master/pp-security-master/` to see what remains, move those items, then retry.
 
-- [ ] **Step 4: Verify git works from the new root**
+- [x] **Step 4: Verify git works from the new root**
 
 ```bash
 cd /home/byron/dev/pp-security-master
@@ -70,7 +72,7 @@ git log --oneline -3
 
 Expected: `git status` shows a clean working tree. `git log` shows the three most recent commits from the project history.
 
-- [ ] **Step 5: Check .vscode/settings.json for absolute paths**
+- [x] **Step 5: Check .vscode/settings.json for absolute paths**
 
 ```bash
 grep -r "pp-security-master/pp-security-master" .vscode/ || echo "No old paths found"
@@ -78,7 +80,7 @@ grep -r "pp-security-master/pp-security-master" .vscode/ || echo "No old paths f
 
 Expected: `No old paths found`. If matches exist, open `.vscode/settings.json` and remove the extra `pp-security-master/` segment from any paths found.
 
-- [ ] **Step 6: Commit the relocation (no code changes, just the moved state)**
+- [x] **Step 6: Commit the relocation (no code changes, just the moved state)**
 
 ```bash
 git add -A
