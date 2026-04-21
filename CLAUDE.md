@@ -140,3 +140,20 @@ pytest -m "security"           # Security assertion tests
 - **Schema Exports**: Database schema available in multiple formats (`schema_exports/`)
 - **Project References**: See `PP_REPOS_REFERENCE.md` for related repositories
 - **Taxonomy Guide**: Classification standards documented in `TAXONOMY_GUIDE.md`
+
+## Package Overrides
+
+- **Dependency manager**: Using `poetry` instead of `uv` -- this project
+  predates the `uv` canonical standard. No migration required until a future
+  major rework.
+
+## Global Rule References
+
+This project is governed by the following global rules in addition to this file:
+
+- `~/.claude/.claude/rules/python.md` -- linting, type checking, function quality gates
+- `~/.claude/.claude/rules/git-workflow.md` -- branch strategy, SHA pinning, pre-commit
+- `~/.claude/.claude/rules/pre-commit.md` -- pre-commit hook requirements
+- `~/.claude/.claude/rules/testing.md` -- coverage thresholds, test scope
+- `~/.claude/.claude/rules/writing.md` -- em-dash ban, AI pattern blacklist
+- `~/.claude/.claude/standards/packages.md` -- canonical package choices
