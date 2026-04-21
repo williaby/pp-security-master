@@ -7,7 +7,7 @@ build-backend = "poetry.core.masonry.api"
 name = "pp-security-master"
 version = "0.1.0"
 description = "Security-Master Service for Portfolio Performance (PP) - centralized asset classification and taxonomy management"
-authors = [{name = "Byron", email = "byron@example.com"}]
+authors = [{name = "Byron Williams", email = "byronawilliams@gmail.com"}]
 license = {text = "MIT"}
 readme = "README.md"
 keywords = ["portfolio-performance", "securities", "classification", "taxonomy", "finance"]
@@ -21,7 +21,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Office/Business :: Financial",
 ]
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11,<3.15"
 dynamic = ["dependencies"]
 
 [project.urls]
@@ -35,7 +35,7 @@ package-mode = false
 requires-poetry = ">=1.8.0"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.13"
+python = ">=3.11,<3.15"
 # Database dependencies
 sqlalchemy = "^2.0.36"
 psycopg2-binary = "^2.9"
