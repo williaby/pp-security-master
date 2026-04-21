@@ -43,24 +43,11 @@ help improve our code, documentation, and community processes.
   or `chore`.
   Example: `feat(classifier): add GICS sector fallback lookup`
 
-- **DCO Sign-off Required**
-  Every commit must include:
-
-  ```text
-  Signed-off-by: Your Name <you@example.com>
-  ```
-
-  Add with:
-
-  ```bash
-  git commit --signoff
-  ```
-
 ## Code Style
 
 - Follow [PEP 8](https://peps.python.org/pep-0008/) and Google-style docstrings.
-- Run `ruff format .` before committing (replaces Black).
-- Run `ruff check --fix .` and `poetry run basedpyright` to catch lint and type errors.
+- Run `poetry run black .` and `poetry run ruff format .` for formatting.
+- Run `poetry run ruff check --fix .` and `poetry run mypy src` for lint and type checks.
 - Imports must be grouped: standard library, third-party, local application.
 
 ## Local Development Setup
@@ -88,9 +75,10 @@ help improve our code, documentation, and community processes.
 4. **Run linting and type checking**:
 
    ```bash
+   poetry run black .
    poetry run ruff format .
    poetry run ruff check --fix .
-   poetry run basedpyright
+   poetry run mypy src
    ```
 
 5. **Run security checks**:

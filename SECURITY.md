@@ -28,8 +28,8 @@ security fixes.
 
 - **Static Analysis** with CodeQL, Ruff, and Bandit
 - **Dependency Scanning** with pip-audit on every CI run
-- **Secrets Detection** integrated in CI pipelines via detect-secrets
-- **SHA-pinned GitHub Actions** for tamper-resistant CI
+- **Secrets Detection** with GitGuardian on every push
+- **Pinned GitHub Actions** using major-version tags; SHA pinning is a planned improvement
 
 ## CVE and Advisory Workflow
 
