@@ -95,7 +95,6 @@ def pytest_runtest_makereport(item: Any, call: Any) -> None:
         and hasattr(item.config, "_coverage_enabled")
         and item.config._coverage_enabled
     ):
-
         test_path = str(item.fspath)
 
         # Security-master specific test type classification

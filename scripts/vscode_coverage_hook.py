@@ -183,8 +183,8 @@ class SecurityMasterCoverageReporter:
 </head>
 <body>
     <div class="header">
-        <div class="overall">PP Security-Master Coverage: {overall['percentage']:.1f}%</div>
-        <div class="timestamp">Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}</div>
+        <div class="overall">PP Security-Master Coverage: {overall["percentage"]:.1f}%</div>
+        <div class="timestamp">Generated: {time.strftime("%Y-%m-%d %H:%M:%S")}</div>
     </div>
 """
 
@@ -204,7 +204,7 @@ class SecurityMasterCoverageReporter:
         <div class="coverage-bar">
             <div class="coverage-fill {css_class}" style="width: {coverage}%"></div>
         </div>
-        <div>{coverage:.1f}% covered ({len(component_data['files'])} files)</div>
+        <div>{coverage:.1f}% covered ({len(component_data["files"])} files)</div>
         <div class="file-list">
 """
 
@@ -212,7 +212,7 @@ class SecurityMasterCoverageReporter:
                 file_coverage = file_info["coverage"]
                 html += f"""
             <div class="file-item">
-                <span>{Path(file_info['name']).name}</span>
+                <span>{Path(file_info["name"]).name}</span>
                 <span>{file_coverage:.1f}%</span>
             </div>"""
 

@@ -72,13 +72,11 @@ pytest-benchmark = ">=4.0.0"  # Performance testing
 pytest-html = ">=4.1.1"  # HTML test reports
 hypothesis = ">=6.98.9"
 faker = ">=37.0.0"
-black = "24.10.0"
 ruff = "0.12.3"
 mypy = "1.13.0"
 types-pyyaml = ">=6.0.12.12"
 types-python-dateutil = ">=2.8.19.20240106"
 bandit = {extras = ["toml"], version = "1.7.7"}
-safety = ">=3.0.1"
 detect-secrets = ">=1.5.0"
 pre-commit = ">=4.0.0"
 nox = ">=2025.1.0"
@@ -88,28 +86,6 @@ toml = "^0.10.2"
 pip-audit = "^2.9.0"
 isort = "^6.0.1"
 
-
-[tool.black]
-line-length = 88
-target-version = ['py311', 'py312']
-include = '\.pyi?$'
-extend-exclude = '''
-(
-  /(
-      \.eggs
-    | \.git
-    | \.hg
-    | \.mypy_cache
-    | \.nox
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-)
-'''
 
 [tool.ruff]
 line-length = 88
@@ -163,7 +139,8 @@ select = [
     "RUF", # ruff-specific
 ]
 ignore = [
-    "E501",    # line too long (handled by black)
+    "E501",    # line too long (handled by ruff format)
+    "COM812",  # trailing comma; conflicts with ruff format (ruff warns to disable this)
     "B008",    # do not perform function calls in argument defaults
     "C901",    # too complex
     "ANN401",  # dynamically typed expressions (Any)
@@ -189,7 +166,13 @@ max-branches = 18      # Increased from default 12 for industry standards
 max-statements = 75    # Increased from default 50 for industry standards
 
 [tool.ruff.lint.isort]
-known-first-party = ["src"]
+known-first-party = ["security_master"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
 
 # Dedicated isort configuration for import organization
 [tool.isort]

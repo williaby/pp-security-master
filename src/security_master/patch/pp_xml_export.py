@@ -87,16 +87,16 @@ class PPXMLExportService:
             if security.isin:
                 ElementTree.SubElement(security_elem, "isin").text = security.isin
             if security.symbol:
-                ElementTree.SubElement(security_elem, "tickerSymbol").text = (
-                    security.symbol
-                )
+                ElementTree.SubElement(
+                    security_elem, "tickerSymbol"
+                ).text = security.symbol
             if security.wkn:
                 ElementTree.SubElement(security_elem, "wkn").text = security.wkn
 
             # Quote feed configuration
-            ElementTree.SubElement(security_elem, "feed").text = (
-                "PP"  # Default to PP feed
-            )
+            ElementTree.SubElement(
+                security_elem, "feed"
+            ).text = "PP"  # Default to PP feed
 
             # Add price history
             self._add_price_history(security_elem, security.id)
@@ -138,9 +138,9 @@ class PPXMLExportService:
             # Account identification
             ElementTree.SubElement(account_elem, "uuid").text = str(account.uuid)
             ElementTree.SubElement(account_elem, "name").text = account.name
-            ElementTree.SubElement(account_elem, "currencyCode").text = (
-                account.currency_code
-            )
+            ElementTree.SubElement(
+                account_elem, "currencyCode"
+            ).text = account.currency_code
             ElementTree.SubElement(account_elem, "isRetired").text = str(
                 account.is_retired,
             ).lower()
@@ -182,12 +182,12 @@ class PPXMLExportService:
 
                 # Transaction core data
                 ElementTree.SubElement(trans_elem, "uuid").text = str(transaction.uuid)
-                ElementTree.SubElement(trans_elem, "date").text = (
-                    transaction.transaction_date.strftime("%Y-%m-%dT00:00")
-                )
-                ElementTree.SubElement(trans_elem, "currencyCode").text = (
-                    transaction.currency_code
-                )
+                ElementTree.SubElement(
+                    trans_elem, "date"
+                ).text = transaction.transaction_date.strftime("%Y-%m-%dT00:00")
+                ElementTree.SubElement(
+                    trans_elem, "currencyCode"
+                ).text = transaction.currency_code
                 ElementTree.SubElement(trans_elem, "amount").text = str(
                     int(transaction.amount * 100),
                 )  # PP uses cents
@@ -206,9 +206,9 @@ class PPXMLExportService:
                 )  # PP format
 
                 # Transaction type
-                ElementTree.SubElement(trans_elem, "type").text = (
-                    transaction.transaction_type
-                )
+                ElementTree.SubElement(
+                    trans_elem, "type"
+                ).text = transaction.transaction_type
 
                 # Add transaction units (fees, taxes)
                 self._add_transaction_units(trans_elem, transaction.id, "ACCOUNT")
@@ -265,12 +265,12 @@ class PPXMLExportService:
                 ElementTree.SubElement(ref_account_elem, "uuid").text = str(
                     portfolio.reference_account.uuid,
                 )
-                ElementTree.SubElement(ref_account_elem, "name").text = (
-                    portfolio.reference_account.name
-                )
-                ElementTree.SubElement(ref_account_elem, "currencyCode").text = (
-                    portfolio.reference_account.currency_code
-                )
+                ElementTree.SubElement(
+                    ref_account_elem, "name"
+                ).text = portfolio.reference_account.name
+                ElementTree.SubElement(
+                    ref_account_elem, "currencyCode"
+                ).text = portfolio.reference_account.currency_code
                 ElementTree.SubElement(ref_account_elem, "isRetired").text = str(
                     portfolio.reference_account.is_retired,
                 ).lower()
@@ -314,12 +314,12 @@ class PPXMLExportService:
 
                 # Transaction core data
                 ElementTree.SubElement(trans_elem, "uuid").text = str(transaction.uuid)
-                ElementTree.SubElement(trans_elem, "date").text = (
-                    transaction.transaction_date.strftime("%Y-%m-%dT00:00")
-                )
-                ElementTree.SubElement(trans_elem, "currencyCode").text = (
-                    transaction.currency_code
-                )
+                ElementTree.SubElement(
+                    trans_elem, "date"
+                ).text = transaction.transaction_date.strftime("%Y-%m-%dT00:00")
+                ElementTree.SubElement(
+                    trans_elem, "currencyCode"
+                ).text = transaction.currency_code
                 ElementTree.SubElement(trans_elem, "amount").text = str(
                     int(transaction.amount * 100),
                 )  # PP uses cents
@@ -337,9 +337,9 @@ class PPXMLExportService:
                 )  # PP format
 
                 # Transaction type
-                ElementTree.SubElement(trans_elem, "type").text = (
-                    transaction.transaction_type
-                )
+                ElementTree.SubElement(
+                    trans_elem, "type"
+                ).text = transaction.transaction_type
 
                 # Add transaction units (fees, taxes)
                 self._add_transaction_units(trans_elem, transaction.id, "PORTFOLIO")
@@ -374,12 +374,12 @@ class PPXMLExportService:
                     ElementTree.SubElement(account_trans, "uuid").text = str(
                         linked_trans.uuid,
                     )
-                    ElementTree.SubElement(account_trans, "date").text = (
-                        linked_trans.transaction_date.strftime("%Y-%m-%dT00:00")
-                    )
-                    ElementTree.SubElement(account_trans, "currencyCode").text = (
-                        linked_trans.currency_code
-                    )
+                    ElementTree.SubElement(
+                        account_trans, "date"
+                    ).text = linked_trans.transaction_date.strftime("%Y-%m-%dT00:00")
+                    ElementTree.SubElement(
+                        account_trans, "currencyCode"
+                    ).text = linked_trans.currency_code
                     ElementTree.SubElement(account_trans, "amount").text = str(
                         int(linked_trans.amount * 100),
                     )
@@ -399,9 +399,9 @@ class PPXMLExportService:
                     ElementTree.SubElement(account_trans, "shares").text = str(
                         int(linked_trans.shares * 100000000),
                     )
-                    ElementTree.SubElement(account_trans, "type").text = (
-                        linked_trans.transaction_type
-                    )
+                    ElementTree.SubElement(
+                        account_trans, "type"
+                    ).text = linked_trans.transaction_type
 
     def _add_dashboards_section(self, parent: ElementTree.Element) -> None:
         """Add dashboards section (typically empty)."""
