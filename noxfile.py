@@ -218,7 +218,13 @@ def security(session):
     session.run("bandit", "-r", "src", "-ll")
 
     # Audit pip packages
-    session.run("pip-audit")
+    # Accepted unfixable CVEs documented in docs/known-vulnerabilities.md
+    session.run(
+        "pip-audit",
+        "--ignore-vuln", "GHSA-4xh5-x5gv-qwph",  # pip 25.2 -- system pip, outside project control
+        "--ignore-vuln", "GHSA-6vgw-5pg2-w6jp",  # pip 25.2 -- system pip, outside project control
+        "--ignore-vuln", "PYSEC-2022-42969",       # py 1.11.0 -- transitive via interrogate, ReDoS not triggered
+    )
 
 
 @nox.session(python="3.11")

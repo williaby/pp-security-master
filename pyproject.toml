@@ -54,7 +54,7 @@ structlog = ">=24.0.0,<26.0.0"
 rich = "^14.0.0"
 tenacity = "^9.0.0"
 python-dateutil = "^2.9.0"
-cryptography = "^45.0.0"
+cryptography = "^46.0.0"
 defusedxml = "^0.7.1"
 pyyaml = "^6.0.2"
 toml = "^0.10.2"
@@ -314,7 +314,7 @@ output = "coverage.xml"
 [tool.bandit]
 targets = ["src"]
 exclude_dirs = ["tests", "scripts", "pytest_plugins"]
-skips = ["B101", "B601", "S603"]
+skips = ["B101", "B601", "B603"]
 
 [tool.bandit.assert_used]
 skips = ["*/test_*.py", "*_test.py"]
