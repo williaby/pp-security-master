@@ -173,6 +173,7 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.basedpyright]
+include = ["src/security_master"]
 pythonVersion = "3.11"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
