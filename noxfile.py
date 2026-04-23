@@ -199,9 +199,9 @@ def lint(session):
 
 @nox.session(python="3.11")
 def type_check(session):
-    """Run type checking with mypy."""
+    """Run type checking with basedpyright."""
     session.run("poetry", "install", "--with", "dev", external=True)
-    session.run("mypy", "src")
+    session.run("basedpyright")
 
 
 @nox.session(python="3.11")

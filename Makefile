@@ -44,7 +44,7 @@ test-with-timing: ## Run tests with detailed timing analysis
 lint: ## Run linting checks
 	$(POETRY) run ruff format --check .
 	$(POETRY) run ruff check .
-	$(POETRY) run mypy src
+	$(POETRY) run basedpyright
 	markdownlint **/*.md
 	yamllint .
 
@@ -72,5 +72,5 @@ clean: ## Clean build artifacts
 	find . -type f -name "*.pyo" -delete
 	find . -type f -name "*.coverage" -delete
 	rm -rf .coverage htmlcov coverage.xml
-	rm -rf .pytest_cache .mypy_cache .ruff_cache
+	rm -rf .pytest_cache .basedpyright .ruff_cache
 	rm -rf dist build *.egg-info
