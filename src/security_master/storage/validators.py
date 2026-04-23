@@ -26,7 +26,7 @@ class SecurityDataValidator:
             return False
 
         # ISIN check digit validation
-        chars = []
+        chars: list[str] = []
         for char in isin[:-1]:
             if char.isdigit():
                 chars.append(char)
@@ -145,7 +145,7 @@ class SecurityDataValidator:
     @classmethod
     def validate_security(cls, security: SecurityMaster) -> tuple[bool, list[str]]:
         """Validate a security record and return validation status and errors."""
-        errors = []
+        errors: list[str] = []
 
         # Required fields
         if not security.name:

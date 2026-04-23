@@ -73,9 +73,7 @@ pytest-html = ">=4.1.1"  # HTML test reports
 hypothesis = ">=6.98.9"
 faker = ">=37.0.0"
 ruff = "0.12.3"
-mypy = "1.13.0"
-types-pyyaml = ">=6.0.12.12"
-types-python-dateutil = ">=2.8.19.20240106"
+basedpyright = ">=1.1.400"
 bandit = {extras = ["toml"], version = "1.7.7"}
 detect-secrets = ">=1.5.0"
 pre-commit = ">=4.0.0"
@@ -174,6 +172,15 @@ indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
 
+[tool.basedpyright]
+include = ["src/security_master"]
+pythonVersion = "3.11"
+pythonPlatform = "All"
+typeCheckingMode = "strict"
+strictListInference = true
+strictDictionaryInference = true
+strictSetInference = true
+
 # Dedicated isort configuration for import organization
 [tool.isort]
 profile = "black"
@@ -187,41 +194,6 @@ known_first_party = ["src"]
 known_third_party = ["pytest", "httpx", "click", "pydantic", "sqlalchemy", "alembic"]
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 skip_glob = ["**/migrations/*", "**/venv/*", "**/.venv/*"]
-
-[tool.mypy]
-python_version = "3.11"
-mypy_path = "src"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-check_untyped_defs = true
-disallow_untyped_decorators = true
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_no_return = true
-warn_unreachable = true
-strict_equality = true
-plugins = ["pydantic.mypy"]
-
-[[tool.mypy.overrides]]
-module = ["tests.*", "scripts.*", "noxfile"]
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = [
-    "psycopg2.*",
-    "alembic.*",
-    "defusedxml.*",
-]
-ignore_missing_imports = true
-
-[tool.pydantic-mypy]
-init_forbid_extra = true
-init_typed = true
-warn_required_dynamic_aliases = true
-warn_untyped_fields = true
 
 [tool.pytest.ini_options]
 minversion = "6.0"
