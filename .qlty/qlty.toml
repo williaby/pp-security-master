@@ -1,0 +1,8 @@
+[plugins]
+enabled = ["ruff", "bandit"]
+
+[ruff]
+config = "pyproject.toml"
+
+[bandit]
+target = ["src"]
