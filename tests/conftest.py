@@ -165,7 +165,7 @@ def sample_broker_transaction() -> dict[str, Any]:
         "symbol": "AAPL",
         "isin": "US0378331005",
         "type": "BUY",
-        "quantity": Decimal("100"),
+        "quantity": Decimal(100),
         "price": Decimal("185.50"),
         "fees": Decimal("9.95"),
         "currency": "USD",

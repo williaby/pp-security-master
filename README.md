@@ -48,10 +48,11 @@ Portfolio Performance (PP) is a powerful open-source desktop portfolio tracker. 
 ### Development Setup
 1. **Clone Repository**: `git clone [repository-url] && cd pp-security-master`
 2. **Install Dependencies**: `poetry install`
-3. **Configure Environment**: Copy `.env.example` to `.env` and configure database connection
-4. **Verify Database**: `poetry run python tests/test_db_connection.py`
-5. **Run Tests**: `poetry run pytest -v --cov=src --cov-report=html`
-6. **Code Quality**: `poetry run nox -s lint` for formatting and linting
+3. **Install qlty CLI**: `curl https://qlty.sh | bash` (standalone quality runner, not a Python package)
+4. **Configure Environment**: Copy `.env.example` to `.env` and configure database connection
+5. **Verify Database**: `poetry run python tests/test_db_connection.py`
+6. **Run Tests**: `poetry run pytest -v --cov=src --cov-report=html`
+7. **Code Quality**: `poetry run nox -s lint` for formatting and linting
 
 > **Note**: Database migrations and CLI commands are currently under development
 

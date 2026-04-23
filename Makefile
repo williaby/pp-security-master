@@ -47,6 +47,9 @@ lint: ## Run linting checks
 	$(POETRY) run basedpyright
 	markdownlint **/*.md
 	yamllint .
+	$(POETRY) run darglint src/
+	$(POETRY) run interrogate src/ --fail-under 70
+	$(POETRY) run interrogate scripts/ --fail-under 85
 
 format: ## Format code
 	$(POETRY) run ruff format .

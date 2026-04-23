@@ -1,0 +1,37 @@
+config_version = "0"
+
+# Mirror pyproject.toml [tool.ruff] exclude list
+[[exclude]]
+file_patterns = ["docs/planning/**"]
+plugins = ["ruff", "bandit"]
+
+[[exclude]]
+file_patterns = ["sample_data/**"]
+plugins = ["ruff", "bandit"]
+
+[[exclude]]
+file_patterns = ["schema_exports/**"]
+plugins = ["ruff", "bandit"]
+
+# Mirror pyproject.toml [tool.bandit] exclude_dirs list
+[[exclude]]
+file_patterns = ["tests/**"]
+plugins = ["bandit"]
+
+[[exclude]]
+file_patterns = ["scripts/**"]
+plugins = ["bandit"]
+
+[[exclude]]
+file_patterns = ["pytest_plugins/**"]
+plugins = ["bandit"]
+
+[[source]]
+name = "default"
+default = true
+
+[[plugin]]
+name = "ruff"
+
+[[plugin]]
+name = "bandit"
