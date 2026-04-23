@@ -383,7 +383,7 @@ The following tasks are ready for execution now, in order:
 
 1. Create `feature/phase-2a-toolchain-swaps` branch off current `main`
 2. Remove `black` and `safety` from `pyproject.toml`; remove `[tool.black]`; add
-   `[tool.ruff.format]` config block; update isort profile from `"black"` to `"ruff"`
+   `[tool.ruff.format]` config block; keep isort profile as `"black"` (the `"ruff"` value is not a valid isort profile)
 3. Update `noxfile.py` to replace `black` invocations with `ruff format` and remove `safety`
    invocations
 4. Update `Makefile` to replace `black` invocations with `ruff format` and replace `safety`

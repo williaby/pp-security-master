@@ -21,7 +21,7 @@ Nox (task runner), Make (CLI shortcuts)
 
 | File | Change |
 |------|--------|
-| `pyproject.toml` | Remove `black` dep (line 75), remove `safety` dep (line 81), remove `[tool.black]` section (lines 92-112), update E501 comment (line 166), add `[tool.ruff.format]` block (after line 192), update isort profile (line 196) |
+| `pyproject.toml` | Remove `black` dep (line 75), remove `safety` dep (line 81), remove `[tool.black]` section (lines 92-112), update E501 comment (line 166), add `[tool.ruff.format]` block (after line 192), keep isort profile as `"black"` (not changed) |
 | `noxfile.py` | Replace `black --check` (line 190), replace `black` format (line 227), remove safety invocation and comment (lines 212-213) |
 | `Makefile` | Replace `black --check` (line 45), replace `black` format (line 52), replace `safety check` (line 56) |
 
@@ -135,19 +135,15 @@ line-ending = "auto"
 [tool.isort]
 ```
 
-- [ ] **Step 6: Update the isort profile in pyproject.toml**
+- [ ] **Step 6: Verify the isort profile in pyproject.toml**
 
-In `pyproject.toml`, in the `[tool.isort]` section, change line 196 from:
+In `pyproject.toml`, in the `[tool.isort]` section, keep the existing value:
 
 ```toml
 profile = "black"
 ```
 
-to:
-
-```toml
-profile = "ruff"
-```
+Do not change this to `"ruff"` -- `"ruff"` is not a valid isort profile value. The valid options are: black, django, pycharm, google, open_stack, plone, attrs, hug, wemake, appnexus. The `"black"` profile remains correct and compatible with ruff format.
 
 - [ ] **Step 7: Replace the black invocation in the noxfile.py lint session**
 
@@ -447,7 +443,7 @@ Branch 2a section:
 | Remove `black = "24.10.0"` from dev deps | Task 6 Step 2 |
 | Remove `safety = ">=3.0.1"` from dev deps | Task 8 Step 1 |
 | Remove `[tool.black]` section | Task 6 Step 3 |
-| Update `isort.profile` from `"black"` to `"ruff"` | Task 6 Step 6 |
+| Keep `isort.profile` as `"black"` (`"ruff"` is not valid) | Task 6 Step 6 |
 | Remove `E501` comment referencing black | Task 6 Step 4 |
 | Add `[tool.ruff.format]` config block | Task 6 Step 5 |
 | Replace `black --check` in lint session | Task 6 Step 7 |

@@ -165,7 +165,7 @@ max-branches = 18      # Increased from default 12 for industry standards
 max-statements = 75    # Increased from default 50 for industry standards
 
 [tool.ruff.lint.isort]
-known-first-party = ["src"]
+known-first-party = ["security_master"]
 
 [tool.ruff.format]
 quote-style = "double"

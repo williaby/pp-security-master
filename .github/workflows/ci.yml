@@ -264,7 +264,7 @@ jobs:
       - name: Run linting
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          poetry run black . --check
+          poetry run ruff format --check .
           poetry run ruff check .
 
       - name: Run markdown and YAML linting

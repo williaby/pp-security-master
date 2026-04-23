@@ -67,7 +67,7 @@ main
 - Remove `black = "24.10.0"` from `[tool.poetry.group.dev.dependencies]`
 - Remove `safety = ">=3.0.1"` from `[tool.poetry.group.dev.dependencies]`
 - Remove the entire `[tool.black]` section
-- Update `[tool.ruff.lint.isort]` `profile` from `"black"` to `"ruff"`
+- Keep `[tool.isort]` `profile` as `"black"` (`"ruff"` is not a valid isort profile value; the existing `"black"` profile remains compatible with ruff format)
 - Remove the `E501` ignore comment text "(handled by black)" -- the rule remains suppressed but
   the comment must not reference a removed tool
 - Add `[tool.ruff.format]` config block:
