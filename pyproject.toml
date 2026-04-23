@@ -140,7 +140,7 @@ select = [
 ]
 ignore = [
     "E501",    # line too long (handled by ruff format)
-    "COM812",  # trailing comma missing — conflicts with ruff format; ruff warns to disable this
+    "COM812",  # trailing comma; conflicts with ruff format (ruff warns to disable this)
     "B008",    # do not perform function calls in argument defaults
     "C901",    # too complex
     "ANN401",  # dynamically typed expressions (Any)
