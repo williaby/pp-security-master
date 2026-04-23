@@ -14,3 +14,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix CI `Run linting` step to call `ruff format --check` instead of removed `black` binary
 - Correct `[tool.ruff.lint.isort]` `known-first-party` from `"src"` to `"security_master"` (actual importable package name)
 - Correct planning docs: `"ruff"` is not a valid isort profile; keep `profile = "black"` in `[tool.isort]`
+- Add `COM812` to `lint.ignore`; ruff format and COM812 conflict by design (ruff's own warning)
