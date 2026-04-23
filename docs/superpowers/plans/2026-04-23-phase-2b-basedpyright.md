@@ -445,6 +445,8 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 **Files:**
 - Modify: `src/security_master/patch/pp_xml_export.py`
 
+**Root cause (confirmed by pre-run):** `pp_xml_export.py` generates 95+ `reportAttributeAccessIssue` errors because it imports from `defusedxml` for XML *building*, but `defusedxml` has no type stubs. This is also architecturally wrong: `defusedxml` is a secure XML *parser* (prevents XXE attacks); it should not be used as a builder. The correct fix is replacing all `defusedxml` imports with the stdlib `xml.etree.ElementTree`, which has full type stubs.
+
 - [ ] **Step 1: Run basedpyright scoped to patch/**
 
 ```bash
@@ -454,62 +456,106 @@ grep -c " - error:" /tmp/bp-patch.txt || echo "0 errors"
 
 If this prints `0 errors`, skip to Task 5. Do not create an empty commit.
 
-- [ ] **Step 2: Fix each error reported in patch/**
+- [ ] **Step 2: Replace defusedxml imports with stdlib**
 
-`pp_xml_export.py` (488 lines) uses `ElementTree` and SQLAlchemy queries. Common patterns in this file:
-
-**Pattern A -- `ElementTree` return from `defusedxml`:**
-
-BasedPyright may not resolve `defusedxml`'s return types (no stubs). If a parse call returns `Unknown`, annotate the variable:
+In `src/security_master/patch/pp_xml_export.py`, the current import block at lines 9-11 is:
 
 ```python
-import xml.etree.ElementTree as stdlib_ET
-
-# Annotate the result explicitly
-tree: stdlib_ET.ElementTree = defusedxml.ElementTree.parse(filepath)
-root: stdlib_ET.Element = tree.getroot()
+from defusedxml import ElementTree
+from defusedxml import ElementTree as safe_ET
+from defusedxml import minidom as safe_minidom
 ```
 
-**Pattern B -- `SubElement` result typed as `Element`:**
-
-`ElementTree.SubElement(parent, tag)` returns `Element`. If BasedPyright infers `Unknown`, annotate:
+Replace those three lines with:
 
 ```python
-security_elem: stdlib_ET.Element = ElementTree.SubElement(securities_elem, "security")
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
 ```
 
-**Pattern C -- SQLAlchemy query `Unknown` (same as storage Pattern C):**
+The `safe_ET` alias was used only in `validate_export` (one `safe_ET.fromstring()` call). The `safe_minidom` alias was used only in `_prettify_xml`. Both are covered by the replacements above.
+
+- [ ] **Step 3: Update all call sites in pp_xml_export.py**
+
+There are four name patterns to replace across the file (do not search/replace blindly -- verify each occurrence):
+
+| Old name | New name | Count | Where used |
+| -------- | -------- | ----- | ---------- |
+| `ElementTree.Element(` | `ET.Element(` | 1 | `generate_complete_backup` root creation |
+| `ElementTree.SubElement(` | `ET.SubElement(` | ~40 | Every section-builder method |
+| `ElementTree.tostring(` | `ET.tostring(` | 1 | `_prettify_xml` |
+| `safe_minidom.parseString(` | `minidom.parseString(` | 1 | `_prettify_xml` |
+| `safe_ET.fromstring(` | `ET.fromstring(` | 1 | `validate_export` |
+| `ElementTree.ParseError` | `ET.ParseError` | 1 | `validate_export` except clause |
+
+To apply all replacements at once using sed (run from the worktree root):
+
+```bash
+sed -i \
+  -e 's/ElementTree\.Element(/ET.Element(/g' \
+  -e 's/ElementTree\.SubElement(/ET.SubElement(/g' \
+  -e 's/ElementTree\.tostring(/ET.tostring(/g' \
+  -e 's/safe_minidom\.parseString(/minidom.parseString(/g' \
+  -e 's/safe_ET\.fromstring(/ET.fromstring(/g' \
+  -e 's/ElementTree\.ParseError/ET.ParseError/g' \
+  src/security_master/patch/pp_xml_export.py
+```
+
+After running sed, verify the file has no remaining references to `defusedxml`, `safe_ET`, `safe_minidom`, or bare `ElementTree.`:
+
+```bash
+grep -n "defusedxml\|safe_ET\|safe_minidom\|ElementTree\." \
+  src/security_master/patch/pp_xml_export.py
+```
+
+Expected: no output (zero matches). If any remain, fix them manually.
+
+- [ ] **Step 4: Verify the type annotation on _prettify_xml**
+
+The `_prettify_xml` method takes an `ElementTree.Element` parameter. After the rename, the signature at line 437 should read:
 
 ```python
-prices: list[PPSecurityPrice] = (
-    self.session.query(PPSecurityPrice)
-    .filter_by(security_id=security_id)
-    .order_by(PPSecurityPrice.price_date)
-    .all()
-)
+def _prettify_xml(self, elem: ET.Element) -> str:
 ```
 
-- [ ] **Step 3: Re-run basedpyright on patch/ until clean**
+Confirm this is correct in the file. The return type `ET.tostring(elem, "unicode")` returns `str`, and `minidom.parseString(rough_string)` takes a `str` -- both are typed correctly in stdlib.
+
+- [ ] **Step 5: Re-run basedpyright on patch/ until clean**
 
 ```bash
 poetry run basedpyright src/security_master/patch/
 ```
 
-Repeat Step 2 for any remaining errors. Do not proceed until this exits with 0 errors.
+Expected: 0 errors. If any remain (e.g., SQLAlchemy Unknown types from `.query().all()` calls), add explicit type annotations:
 
-- [ ] **Step 4: Confirm no ruff regressions**
+```python
+# Before (Unknown inferred type)
+securities = self.session.query(SecurityMaster).all()
+
+# After (explicit annotation)
+securities: list[SecurityMaster] = self.session.query(SecurityMaster).all()
+```
+
+Repeat until `basedpyright src/security_master/patch/` exits 0.
+
+- [ ] **Step 6: Confirm no ruff regressions**
 
 ```bash
 poetry run ruff check src/security_master/patch/
 ```
 
-Expected: 0 violations.
+Expected: 0 violations. If ruff flags the new `import xml.etree.ElementTree as ET` import order, run `ruff check --fix src/security_master/patch/` to auto-sort.
 
-- [ ] **Step 5: Commit patch fixes**
+- [ ] **Step 7: Commit patch fixes**
 
 ```bash
 git add src/security_master/patch/
-git commit -m "fix(types): resolve BasedPyright strict errors in patch/
+git commit -m "fix(types): replace defusedxml with stdlib ET in pp_xml_export.py
+
+defusedxml has no type stubs and is architecturally incorrect for an
+XML builder (it is a secure parser). Replace with xml.etree.ElementTree
+(stdlib, fully typed) and xml.dom.minidom. Resolves 95+ BasedPyright
+reportAttributeAccessIssue errors in patch/.
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ```
