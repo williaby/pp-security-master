@@ -47,7 +47,7 @@ class TransactionBase(Base):
 
     # Import metadata
     import_batch_id: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
-    import_date: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    import_date: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None))
     source_file: Mapped[str | None] = mapped_column(String(255))
     source_line_number: Mapped[int | None] = mapped_column()
 
@@ -57,11 +57,11 @@ class TransactionBase(Base):
     error_message: Mapped[str | None] = mapped_column(Text)
 
     # Audit fields
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None))
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=lambda: datetime.now(UTC),
-        onupdate=lambda: datetime.now(UTC),
+        default=lambda: datetime.now(UTC).replace(tzinfo=None),
+        onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
     )
 
 
@@ -265,11 +265,11 @@ class ConsolidatedTransaction(Base):
     export_date: Mapped[datetime | None] = mapped_column(DateTime)
 
     # Audit fields
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None))
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=lambda: datetime.now(UTC),
-        onupdate=lambda: datetime.now(UTC),
+        default=lambda: datetime.now(UTC).replace(tzinfo=None),
+        onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
     )
 
     def __repr__(self) -> str:
@@ -315,11 +315,11 @@ class ImportBatch(Base):
     )  # JSON config used for import
 
     # Audit fields
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None))
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=lambda: datetime.now(UTC),
-        onupdate=lambda: datetime.now(UTC),
+        default=lambda: datetime.now(UTC).replace(tzinfo=None),
+        onupdate=lambda: datetime.now(UTC).replace(tzinfo=None),
     )
 
     def __repr__(self) -> str:
