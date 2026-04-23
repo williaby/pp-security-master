@@ -87,16 +87,12 @@ class PPXMLExportService:
             if security.isin:
                 ET.SubElement(security_elem, "isin").text = security.isin
             if security.symbol:
-                ET.SubElement(
-                    security_elem, "tickerSymbol"
-                ).text = security.symbol
+                ET.SubElement(security_elem, "tickerSymbol").text = security.symbol
             if security.wkn:
                 ET.SubElement(security_elem, "wkn").text = security.wkn
 
             # Quote feed configuration
-            ET.SubElement(
-                security_elem, "feed"
-            ).text = "PP"  # Default to PP feed
+            ET.SubElement(security_elem, "feed").text = "PP"  # Default to PP feed
 
             # Add price history
             self._add_price_history(security_elem, security.id)
@@ -138,9 +134,7 @@ class PPXMLExportService:
             # Account identification
             ET.SubElement(account_elem, "uuid").text = str(account.uuid)
             ET.SubElement(account_elem, "name").text = account.name
-            ET.SubElement(
-                account_elem, "currencyCode"
-            ).text = account.currency_code
+            ET.SubElement(account_elem, "currencyCode").text = account.currency_code
             ET.SubElement(account_elem, "isRetired").text = str(
                 account.is_retired,
             ).lower()
@@ -206,9 +200,7 @@ class PPXMLExportService:
                 )  # PP format
 
                 # Transaction type
-                ET.SubElement(
-                    trans_elem, "type"
-                ).text = transaction.transaction_type
+                ET.SubElement(trans_elem, "type").text = transaction.transaction_type
 
                 # Add transaction units (fees, taxes)
                 self._add_transaction_units(trans_elem, transaction.id, "ACCOUNT")
@@ -337,9 +329,7 @@ class PPXMLExportService:
                 )  # PP format
 
                 # Transaction type
-                ET.SubElement(
-                    trans_elem, "type"
-                ).text = transaction.transaction_type
+                ET.SubElement(trans_elem, "type").text = transaction.transaction_type
 
                 # Add transaction units (fees, taxes)
                 self._add_transaction_units(trans_elem, transaction.id, "PORTFOLIO")
