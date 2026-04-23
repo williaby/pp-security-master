@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from decimal import Decimal
 
 from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Numeric, String, Text
@@ -47,7 +47,7 @@ class TransactionBase(Base):
 
     # Import metadata
     import_batch_id: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
-    import_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    import_date: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     source_file: Mapped[str | None] = mapped_column(String(255))
     source_line_number: Mapped[int | None] = mapped_column()
 
@@ -57,11 +57,11 @@ class TransactionBase(Base):
     error_message: Mapped[str | None] = mapped_column(Text)
 
     # Audit fields
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
 
@@ -265,11 +265,11 @@ class ConsolidatedTransaction(Base):
     export_date: Mapped[datetime | None] = mapped_column(DateTime)
 
     # Audit fields
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     def __repr__(self) -> str:
@@ -315,11 +315,11 @@ class ImportBatch(Base):
     )  # JSON config used for import
 
     # Audit fields
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     def __repr__(self) -> str:

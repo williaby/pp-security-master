@@ -202,9 +202,9 @@ class SecurityMatcher:
     @classmethod
     def find_best_match(
         cls,
-        pp_security: dict,
-        kubera_holdings: list[dict],
-    ) -> dict | None:
+        pp_security: dict[str, Any],
+        kubera_holdings: list[dict[str, Any]],
+    ) -> dict[str, Any] | None:
         """Find the best matching Kubera holding for a Portfolio Performance security."""
 
         # Try ISIN match first (most reliable)

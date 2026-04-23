@@ -5,8 +5,8 @@ Schema export utility for visualizing database schema with dbdiagram.io
 
 from pathlib import Path
 
-from sqlalchemy import create_engine
-from sqlalchemy.schema import CreateTable
+from sqlalchemy import create_mock_engine
+from sqlalchemy.sql.ddl import ExecutableDDLElement
 
 from .models import (
     Base,
@@ -15,18 +15,17 @@ from .models import (
 
 def generate_postgres_ddl() -> str:
     """Generate PostgreSQL DDL statements from SQLAlchemy models."""
-    engine = create_engine(
-        "postgresql://",
-        strategy="mock",
-        executor=lambda _sql, *_: None,
-    )
+    ddl_statements: list[str] = []
 
-    ddl_statements = []
+    def _collect_ddl(
+        sql: ExecutableDDLElement,
+        *_args: object,
+        **_kwargs: object,
+    ) -> None:
+        ddl_statements.append(str(sql.compile(dialect=engine.dialect)))
 
-    # Generate CREATE TABLE statements for each model
-    for table in Base.metadata.tables.values():
-        create_table = CreateTable(table).compile(engine)
-        ddl_statements.append(str(create_table))
+    engine = create_mock_engine("postgresql://", _collect_ddl)
+    Base.metadata.create_all(engine)
 
     return "\n\n".join(ddl_statements)
 
