@@ -184,7 +184,7 @@ def get_repository_info() -> dict[str, str]:
         if remote_url.startswith("git@"):
             # SSH format: git@github.com:owner/repo.git
             # Split on '@', then ':'
-            user_host, path_part = remote_url.split("@", 1)
+            _user_host, path_part = remote_url.split("@", 1)
             if path_part.startswith("github.com:"):
                 repo_part = path_part[len("github.com:") :].replace(".git", "")
                 if "/" in repo_part:

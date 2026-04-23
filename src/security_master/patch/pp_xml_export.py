@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     # stdlib has complete type stubs; defusedxml.ElementTree re-exports the same API
-    import xml.etree.ElementTree as ET  # nosemgrep: python.lang.security.use-defused-xml.use-defused-xml
+    import xml.etree.ElementTree as ET  # nosec B405  # nosemgrep: python.lang.security.use-defused-xml.use-defused-xml
 else:
     import defusedxml.ElementTree as ET  # noqa: N817  # safe parser at runtime
 
