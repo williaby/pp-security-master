@@ -25,7 +25,7 @@ def generate_postgres_ddl() -> str:
         ddl_statements.append(str(sql.compile(dialect=engine.dialect)))
 
     engine = create_mock_engine("postgresql://", _collect_ddl)
-    Base.metadata.create_all(engine)
+    Base.metadata.create_all(engine, checkfirst=False)
 
     return "\n\n".join(ddl_statements)
 

@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 from datetime import UTC, datetime
 from pathlib import Path
 
+import defusedxml
 import defusedxml.ElementTree as defused_ET
 import defusedxml.minidom as defused_minidom
 from sqlalchemy.orm import Session
@@ -427,8 +428,11 @@ class PPXMLExportService:
     def _prettify_xml(self, elem: ET.Element) -> str:
         """Return a pretty-printed XML string for the Element."""
         rough_string = ET.tostring(elem, "unicode")
-        reparsed = defused_minidom.parseString(rough_string)
-        return str(reparsed.toprettyxml(indent="  "))
+        try:
+            reparsed = defused_minidom.parseString(rough_string)
+            return str(reparsed.toprettyxml(indent="  "))
+        except defusedxml.DefusedXmlException as e:
+            raise ValueError(f"XML prettification failed: {e}") from e
 
     def export_to_file(self, file_path: str, config_name: str = "default") -> None:
         """Export complete PP XML backup to file."""
@@ -453,7 +457,7 @@ class PPXMLExportService:
                 "bookmarks": len(root.findall(".//bookmark")),
             }
 
-        except ET.ParseError as e:
+        except (ET.ParseError, defusedxml.DefusedXmlException) as e:
             raise ValueError(f"Invalid XML generated: {e}") from e
 
 

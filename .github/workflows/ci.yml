@@ -259,7 +259,7 @@ jobs:
       - name: Run type checking
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          poetry run mypy src
+          poetry run basedpyright
 
       - name: Run linting
         run: |
