@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace `datetime.utcnow` (deprecated) with `lambda: datetime.now(UTC).replace(tzinfo=None)` across all model `server_default` fields in `models.py`, `pp_models.py`, and `transaction_models.py`
 - Upgrade to SQLAlchemy 2.x `create_mock_engine` in `schema_export.py`; add `checkfirst=False` to `Base.metadata.create_all` so mock engine emits all CREATE TABLE statements
 - Tighten type annotations in `mappers.py` (bare `dict` and `list[dict]` to `dict[str, Any]` / `list[dict[str, Any]]`) and `validators.py` (`list[str]` annotations on local variables)
-- Switch XML generation in `pp_xml_export.py` to stdlib `xml.etree.ElementTree` while keeping `defusedxml` for all parsing operations
+- Switch XML generation in `pp_xml_export.py` to use `defusedxml.ElementTree` for all runtime XML operations; use `TYPE_CHECKING` guard so BasedPyright reads stdlib stubs while the runtime import stays on defusedxml
 - Replace `black` formatter with `ruff format` across `noxfile.py`, `Makefile`, and CI workflow
 - Replace `safety` vulnerability scanner with `pip-audit` in `noxfile.py`, `Makefile`, and CI workflow
 - Fix CI `Run linting` step to call `ruff format --check` instead of removed `black` binary
@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Add `# nosemgrep: python.lang.maintainability.return.return-not-in-function` to all SQLAlchemy `mapped_column` lambda defaults in `models.py`, `pp_models.py`, and `transaction_models.py`; semgrep misreads the implicit lambda return as a bare return-not-in-function
 - Broaden `except` clause in `PPXMLExportService.validate_export` to catch `defusedxml.DefusedXmlException` in addition to `ET.ParseError`; defusedxml security violations do not inherit from `ParseError`
 - Add `try/except defusedxml.DefusedXmlException` around `defused_minidom.parseString()` in `_prettify_xml` to convert XML security violations to `ValueError` instead of propagating unhandled
 

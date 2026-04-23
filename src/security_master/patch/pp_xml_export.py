@@ -3,12 +3,20 @@ Portfolio Performance XML export service for complete backup generation.
 Generates valid PP XML backup files that can restore a complete PP instance.
 """
 
-import xml.etree.ElementTree as ET
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # stdlib has complete type stubs; defusedxml.ElementTree re-exports the same API
+    import xml.etree.ElementTree as ET  # nosemgrep: python.lang.security.use-defused-xml.use-defused-xml
+else:
+    import defusedxml.ElementTree as ET  # noqa: N817  # safe parser at runtime
+
 from datetime import UTC, datetime
 from pathlib import Path
 
 import defusedxml
-import defusedxml.ElementTree as defused_ET
 import defusedxml.minidom as defused_minidom
 from sqlalchemy.orm import Session
 
@@ -445,7 +453,7 @@ class PPXMLExportService:
         """Validate exported XML and return statistics."""
         try:
             # Use defusedxml for safe parsing to validate the generated output
-            root = defused_ET.fromstring(xml_content)
+            root = ET.fromstring(xml_content)
 
             return {
                 "securities": len(root.findall(".//security")),
