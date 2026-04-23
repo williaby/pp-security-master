@@ -115,6 +115,11 @@ class SecurityMaster(Base):
     )  # 0.00-1.00
 
     def __repr__(self) -> str:
+        """Return a debug-friendly string representation of this SecurityMaster record.
+
+        Returns:
+            String in the form <SecurityMaster(id=..., name=..., isin=..., symbol=...)>.
+        """
         return f"<SecurityMaster(id={self.id}, name='{self.name}', isin='{self.isin}', symbol='{self.symbol}')>"
 
 
@@ -152,6 +157,11 @@ class KuberaSheet(Base):
     )
 
     def __repr__(self) -> str:
+        """Return a debug-friendly string representation of this KuberaSheet record.
+
+        Returns:
+            String in the form <KuberaSheet(id=..., name=..., pp_group=...)>.
+        """
         return f"<KuberaSheet(id={self.id}, name='{self.sheet_name}', pp_group='{self.pp_group_name}')>"
 
 
@@ -199,6 +209,11 @@ class KuberaSection(Base):
     )
 
     def __repr__(self) -> str:
+        """Return a debug-friendly string representation of this KuberaSection record.
+
+        Returns:
+            String in the form <KuberaSection(id=..., name=..., pp_account=...)>.
+        """
         return f"<KuberaSection(id={self.id}, name='{self.section_name}', pp_account='{self.pp_account_name}')>"
 
 
@@ -339,6 +354,11 @@ class KuberaHolding(Base):
     )
 
     def __repr__(self) -> str:
+        """Return a debug-friendly string representation of this KuberaHolding record.
+
+        Returns:
+            String in the form <KuberaHolding(id=..., name=..., ticker=..., quantity=..., value=...)>.
+        """
         return f"<KuberaHolding(id={self.id}, name='{self.name}', ticker='{self.ticker}', quantity={self.quantity}, value={self.current_value})>"
 
 
@@ -418,4 +438,9 @@ class HoldingComparison(Base):
     )
 
     def __repr__(self) -> str:
+        """Return a debug-friendly string representation of this HoldingComparison record.
+
+        Returns:
+            String in the form <HoldingComparison(id=..., security=..., pp_value=..., kubera_value=..., matched=...)>.
+        """
         return f"<HoldingComparison(id={self.id}, security='{self.security_name}', pp_value={self.pp_value}, kubera_value={self.kubera_value}, matched={self.is_matched})>"

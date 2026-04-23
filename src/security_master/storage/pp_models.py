@@ -399,12 +399,20 @@ class PPSecurityPrice(Base):
 
     @property
     def price_decimal(self) -> Decimal:
-        """Convert PP integer price to decimal."""
+        """Convert PP integer price to decimal.
+
+        Returns:
+            Price as a Decimal value (PP integer divided by 100,000,000).
+        """
         return Decimal(self.price_value) / Decimal("100000000")
 
     @price_decimal.setter
     def price_decimal(self, value: Decimal) -> None:
-        """Set price from decimal value."""
+        """Set price from decimal value.
+
+        Args:
+            value: Decimal price to store as a PP integer (multiplied by 100,000,000).
+        """
         self.price_value = int(value * Decimal("100000000"))
 
     def __repr__(self) -> str:

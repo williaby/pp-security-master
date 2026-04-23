@@ -41,7 +41,18 @@ class PPXMLExportService:
         self.session = session
 
     def generate_complete_backup(self, config_name: str = "default") -> str:
-        """Generate complete PP XML backup file."""
+        """Generate complete PP XML backup file.
+
+        Args:
+            config_name: Name of the active PPClientConfig record to use.
+                Defaults to "default".
+
+        Returns:
+            Pretty-printed XML string representing the complete PP backup.
+
+        Raises:
+            ValueError: When no active PP configuration is found for config_name.
+        """
 
         # Get client configuration
         config = (
@@ -73,7 +84,11 @@ class PPXMLExportService:
         return self._prettify_xml(root)
 
     def _add_securities_section(self, parent: ET.Element) -> None:
-        """Add securities section with complete price history."""
+        """Add securities section with complete price history.
+
+        Args:
+            parent: Parent XML element to append the securities section to.
+        """
         securities_elem = ET.SubElement(parent, "securities")
 
         # Get all securities with their prices
@@ -111,7 +126,12 @@ class PPXMLExportService:
         security_elem: ET.Element,
         security_id: int,
     ) -> None:
-        """Add complete price history for a security."""
+        """Add complete price history for a security.
+
+        Args:
+            security_elem: XML element for the security to append prices to.
+            security_id: Database ID of the security whose prices to load.
+        """
         prices = (
             self.session.query(PPSecurityPrice)
             .filter_by(security_id=security_id)
@@ -128,11 +148,19 @@ class PPXMLExportService:
                 price_elem.set("v", str(price.price_value))
 
     def _add_watchlists_section(self, parent: ET.Element) -> None:
-        """Add watchlists section (typically empty)."""
+        """Add watchlists section (typically empty).
+
+        Args:
+            parent: Parent XML element to append the watchlists section to.
+        """
         ET.SubElement(parent, "watchlists")
 
     def _add_accounts_section(self, parent: ET.Element) -> None:
-        """Add accounts section with all transactions."""
+        """Add accounts section with all transactions.
+
+        Args:
+            parent: Parent XML element to append the accounts section to.
+        """
         accounts_elem = ET.SubElement(parent, "accounts")
 
         accounts = self.session.query(PPAccount).filter_by(is_retired=False).all()
@@ -166,7 +194,12 @@ class PPXMLExportService:
         account_elem: ET.Element,
         account_id: int,
     ) -> None:
-        """Add all transactions for an account."""
+        """Add all transactions for an account.
+
+        Args:
+            account_elem: XML element for the account to append transactions to.
+            account_id: Database ID of the account whose transactions to load.
+        """
         transactions = (
             self.session.query(PPAccountTransaction)
             .filter_by(account_id=account_id)
@@ -226,7 +259,14 @@ class PPXMLExportService:
         transaction_id: int,
         transaction_type: str,
     ) -> None:
-        """Add fee and tax units for a transaction."""
+        """Add fee and tax units for a transaction.
+
+        Args:
+            transaction_elem: XML element for the transaction to append units to.
+            transaction_id: Database ID of the transaction whose units to load.
+            transaction_type: Type discriminator used to filter units ("ACCOUNT"
+                or "PORTFOLIO").
+        """
         units = (
             self.session.query(PPTransactionUnit)
             .filter_by(transaction_id=transaction_id, transaction_type=transaction_type)
@@ -242,7 +282,11 @@ class PPXMLExportService:
             amount_elem.text = str(int(unit.amount * 100))  # PP uses cents
 
     def _add_portfolios_section(self, parent: ET.Element) -> None:
-        """Add portfolios section with all portfolio transactions."""
+        """Add portfolios section with all portfolio transactions.
+
+        Args:
+            parent: Parent XML element to append the portfolios section to.
+        """
         portfolios_elem = ET.SubElement(parent, "portfolios")
 
         portfolios = self.session.query(PPPortfolio).filter_by(is_retired=False).all()
@@ -296,7 +340,12 @@ class PPXMLExportService:
         portfolio_elem: ET.Element,
         portfolio_id: int,
     ) -> None:
-        """Add all transactions for a portfolio."""
+        """Add all transactions for a portfolio.
+
+        Args:
+            portfolio_elem: XML element for the portfolio to append transactions to.
+            portfolio_id: Database ID of the portfolio whose transactions to load.
+        """
         transactions = (
             self.session.query(PPPortfolioTransaction)
             .filter_by(portfolio_id=portfolio_id)
@@ -403,11 +452,19 @@ class PPXMLExportService:
                     ).text = linked_trans.transaction_type
 
     def _add_dashboards_section(self, parent: ET.Element) -> None:
-        """Add dashboards section (typically empty)."""
+        """Add dashboards section (typically empty).
+
+        Args:
+            parent: Parent XML element to append the dashboards section to.
+        """
         ET.SubElement(parent, "dashboards")
 
     def _add_properties_section(self, parent: ET.Element) -> None:
-        """Add properties section from settings."""
+        """Add properties section from settings.
+
+        Args:
+            parent: Parent XML element to append the properties section to.
+        """
         properties_elem = ET.SubElement(parent, "properties")
 
         # Get properties from settings
@@ -421,7 +478,11 @@ class PPXMLExportService:
             ET.SubElement(entry_elem, "string").text = prop.setting_value
 
     def _add_settings_section(self, parent: ET.Element) -> None:
-        """Add settings section with bookmarks."""
+        """Add settings section with bookmarks.
+
+        Args:
+            parent: Parent XML element to append the settings section to.
+        """
         settings_elem = ET.SubElement(parent, "settings")
 
         # Add bookmarks
@@ -434,7 +495,17 @@ class PPXMLExportService:
             ET.SubElement(bookmark_elem, "pattern").text = bookmark.pattern
 
     def _prettify_xml(self, elem: ET.Element) -> str:
-        """Return a pretty-printed XML string for the Element."""
+        """Return a pretty-printed XML string for the Element.
+
+        Args:
+            elem: Root XML Element to serialize and prettify.
+
+        Returns:
+            Indented XML string with two-space indentation.
+
+        Raises:
+            ValueError: When defusedxml raises DefusedXmlException during parsing.
+        """
         rough_string = ET.tostring(elem, "unicode")
         try:
             reparsed = defused_minidom.parseString(rough_string)
@@ -443,14 +514,31 @@ class PPXMLExportService:
             raise ValueError(f"XML prettification failed: {e}") from e
 
     def export_to_file(self, file_path: str, config_name: str = "default") -> None:
-        """Export complete PP XML backup to file."""
+        """Export complete PP XML backup to file.
+
+        Args:
+            file_path: Filesystem path where the XML file will be written.
+            config_name: Name of the active PPClientConfig record to use.
+                Defaults to "default".
+        """
         xml_content = self.generate_complete_backup(config_name)
 
         with Path(file_path).open("w", encoding="utf-8") as f:
             f.write(xml_content)
 
     def validate_export(self, xml_content: str) -> dict[str, int]:
-        """Validate exported XML and return statistics."""
+        """Validate exported XML and return statistics.
+
+        Args:
+            xml_content: XML string to validate and count elements in.
+
+        Returns:
+            Dict with counts for securities, accounts, portfolios,
+            account_transactions, portfolio_transactions, prices, and bookmarks.
+
+        Raises:
+            ValueError: When the XML is invalid or defusedxml raises an exception.
+        """
         try:
             # Use defusedxml for safe parsing to validate the generated output
             root = ET.fromstring(xml_content)
@@ -471,20 +559,48 @@ class PPXMLExportService:
 
 # Utility functions for PP data conversion
 def pp_amount_to_decimal(pp_amount: int) -> float:
-    """Convert PP integer amount (cents) to decimal."""
+    """Convert PP integer amount (cents) to decimal.
+
+    Args:
+        pp_amount: PP integer amount in cents.
+
+    Returns:
+        Amount as a float (divided by 100).
+    """
     return pp_amount / 100.0
 
 
 def decimal_to_pp_amount(amount: float) -> int:
-    """Convert decimal amount to PP integer (cents)."""
+    """Convert decimal amount to PP integer (cents).
+
+    Args:
+        amount: Decimal amount to convert.
+
+    Returns:
+        PP integer amount (multiplied by 100).
+    """
     return int(amount * 100)
 
 
 def pp_shares_to_decimal(pp_shares: int) -> float:
-    """Convert PP integer shares to decimal."""
+    """Convert PP integer shares to decimal.
+
+    Args:
+        pp_shares: PP integer share count.
+
+    Returns:
+        Share count as a float (divided by 100,000,000).
+    """
     return pp_shares / 100000000.0
 
 
 def decimal_to_pp_shares(shares: float) -> int:
-    """Convert decimal shares to PP integer format."""
+    """Convert decimal shares to PP integer format.
+
+    Args:
+        shares: Decimal share count to convert.
+
+    Returns:
+        PP integer share count (multiplied by 100,000,000).
+    """
     return int(shares * 100000000)

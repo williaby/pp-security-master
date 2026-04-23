@@ -74,6 +74,8 @@ hypothesis = ">=6.98.9"
 faker = ">=37.0.0"
 ruff = "0.12.3"
 basedpyright = ">=1.1.400"
+darglint = ">=1.8.1"
+interrogate = ">=1.7.0"
 bandit = {extras = ["toml"], version = "1.7.7"}
 detect-secrets = ">=1.5.0"
 pre-commit = ">=4.0.0"
@@ -171,6 +173,20 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = false
+ignore-magic = false
+ignore-semiprivate = false
+ignore-private = false
+fail-under = 70
+verbose = 0
+quiet = false
+
+[tool.darglint]
+strictness = "long"
+ignore_regex = "^_"
 
 [tool.basedpyright]
 include = ["src/security_master"]

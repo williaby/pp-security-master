@@ -196,6 +196,11 @@ def lint(session):
     # YAML linting
     session.run("yamllint", ".", external=True)
 
+    # Docstring quality gates
+    session.run("darglint", "src/")
+    session.run("interrogate", "src/", "--fail-under", "70")
+    session.run("interrogate", "scripts/", "--fail-under", "85")
+
 
 @nox.session(python="3.11")
 def type_check(session):

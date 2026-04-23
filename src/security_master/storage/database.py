@@ -8,7 +8,14 @@ from .models import Base
 
 
 def get_database_url() -> str:
-    """Get database URL from environment variables."""
+    """Construct the database connection URL from environment variables.
+
+    Reads DB_HOST, DB_PORT, DB_NAME, DB_USER, and DB_PASSWORD with
+    development-friendly defaults when variables are absent.
+
+    Returns:
+        PostgreSQL connection URL as a string.
+    """
     db_host = os.getenv("DB_HOST", "localhost")
     db_port = os.getenv("DB_PORT", "5432")
     db_name = os.getenv("DB_NAME", "security_master")
@@ -19,7 +26,15 @@ def get_database_url() -> str:
 
 
 def create_db_engine(database_url: str | None = None) -> Engine:
-    """Create database engine."""
+    """Create a SQLAlchemy engine with connection pooling configured.
+
+    Args:
+        database_url: PostgreSQL connection URL. When None, calls
+            get_database_url() to read from environment variables.
+
+    Returns:
+        SQLAlchemy Engine with pool_pre_ping enabled and pool_recycle=300.
+    """
     if database_url is None:
         database_url = get_database_url()
 
@@ -32,19 +47,43 @@ def create_db_engine(database_url: str | None = None) -> Engine:
 
 
 def create_tables(engine: Engine) -> None:
-    """Create all tables."""
+    """Create all ORM-mapped tables in the target database if they do not exist.
+
+    Args:
+        engine: SQLAlchemy Engine connected to the target database.
+    """
     Base.metadata.create_all(bind=engine)
 
 
 def get_session_factory(engine: Engine) -> Callable[[], Session]:
-    """Create session factory."""
+    """Build a callable session factory bound to the given engine.
+
+    Args:
+        engine: SQLAlchemy Engine to bind new sessions to.
+
+    Returns:
+        Callable that returns a fresh Session on each invocation.
+    """
     return sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def get_db_session(
     session_factory: Callable[[], Session],
 ) -> Generator[Session, None, None]:
-    """Get database session."""
+    """Yield a database session that commits on success and rolls back on error.
+
+    Commits automatically on clean exit. Rolls back and re-raises on any
+    exception. Always closes the session in the finally block.
+
+    Args:
+        session_factory: Callable that produces a new Session instance.
+
+    Yields:
+        An active, open database Session.
+
+    Raises:
+        Exception: Re-raises any exception after rolling back the session.
+    """
     session = session_factory()
     try:
         yield session

@@ -18,7 +18,15 @@ class SecurityDataValidator:
 
     @classmethod
     def validate_isin(cls, isin: str | None) -> bool:
-        """Validate ISIN format and check digit."""
+        """Validate ISIN format and check digit.
+
+        Args:
+            isin: ISIN string to validate, or None for optional fields.
+
+        Returns:
+            True when isin is None, empty, or passes format and check-digit
+            validation. False when format or check digit is invalid.
+        """
         if not isin:
             return True  # Optional field
 
@@ -43,26 +51,58 @@ class SecurityDataValidator:
 
     @classmethod
     def validate_wkn(cls, wkn: str | None) -> bool:
-        """Validate WKN format."""
+        """Validate WKN format.
+
+        Args:
+            wkn: WKN string to validate, or None for optional fields.
+
+        Returns:
+            True when wkn is None, empty, or matches the 6-character alphanumeric
+            pattern. False when the format is invalid.
+        """
         if not wkn:
             return True  # Optional field
         return bool(cls.WKN_PATTERN.match(wkn))
 
     @classmethod
     def validate_symbol(cls, symbol: str | None) -> bool:
-        """Validate trading symbol format."""
+        """Validate trading symbol format.
+
+        Args:
+            symbol: Ticker symbol to validate, or None for optional fields.
+
+        Returns:
+            True when symbol is None, empty, or matches the allowed pattern.
+            False when the format is invalid.
+        """
         if not symbol:
             return True  # Optional field
         return bool(cls.SYMBOL_PATTERN.match(symbol))
 
     @classmethod
     def validate_currency(cls, currency: str) -> bool:
-        """Validate currency code (ISO 4217)."""
+        """Validate currency code (ISO 4217).
+
+        Args:
+            currency: Three-letter currency code to validate.
+
+        Returns:
+            True when currency is a non-empty 3-character uppercase string.
+            False otherwise.
+        """
         return bool(currency and len(currency) == 3 and currency.isupper())
 
     @classmethod
     def calculate_data_quality_score(cls, security: SecurityMaster) -> Decimal:
-        """Calculate data quality score (0.00-1.00) based on completeness and validity."""
+        """Calculate data quality score (0.00-1.00) based on completeness and validity.
+
+        Args:
+            security: SecurityMaster record to score.
+
+        Returns:
+            Decimal score between 0.00 and 1.00 representing data quality,
+            weighted across identification, pricing, classification, and source fields.
+        """
         score = Decimal("0.0")
 
         # Core identification (40% weight)
@@ -144,7 +184,15 @@ class SecurityDataValidator:
 
     @classmethod
     def validate_security(cls, security: SecurityMaster) -> tuple[bool, list[str]]:
-        """Validate a security record and return validation status and errors."""
+        """Validate a security record and return validation status and errors.
+
+        Args:
+            security: SecurityMaster record to validate.
+
+        Returns:
+            Tuple of (is_valid, errors) where is_valid is True when no errors
+            were found and errors is a list of human-readable error messages.
+        """
         errors: list[str] = []
 
         # Required fields
