@@ -47,7 +47,7 @@ help improve our code, documentation, and community processes.
 
 - Follow [PEP 8](https://peps.python.org/pep-0008/) and Google-style docstrings.
 - Run `poetry run ruff format .` for formatting.
-- Run `poetry run ruff check --fix .` and `poetry run mypy src` for lint and type checks.
+- Run `poetry run ruff check --fix .` and `poetry run basedpyright` for lint and type checks.
 - Imports must be grouped: standard library, third-party, local application.
 
 ## Local Development Setup
@@ -77,7 +77,7 @@ help improve our code, documentation, and community processes.
    ```bash
    poetry run ruff format .
    poetry run ruff check --fix .
-   poetry run mypy src
+   poetry run basedpyright
    ```
 
 5. **Run security checks**:
