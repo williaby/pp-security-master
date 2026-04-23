@@ -89,7 +89,7 @@ isort = "^6.0.1"
 
 [tool.ruff]
 line-length = 88
-target-version = "py311"
+target-version = "py312"
 src = ["src", "tests"]
 exclude = [
     "*.yaml",
@@ -136,17 +136,27 @@ select = [
     "ERA", # eradicate
     "PGH", # pygrep-hooks
     "PL",  # pylint
-    "RUF", # ruff-specific
+    "RUF",   # ruff-specific
+    "EM",    # flake8-errmsg: error message string literals
+    "SLF",   # flake8-self: private member access
+    "RSE",   # flake8-raise: raise statement best practices
+    "FA",    # flake8-future-annotations
+    "T10",   # flake8-debugger: no breakpoint() or pdb
+    "TCH",   # flake8-type-checking: TYPE_CHECKING imports
+    "FBT",   # flake8-boolean-trap
+    "TRY",   # tryceratops: try/except structural patterns
+    "FURB",  # refurb: modernization
+    "LOG",   # flake8-logging: logging best practices
+    "ASYNC", # flake8-async: async/await best practices
+    "PERF",  # perflint: performance anti-patterns
 ]
 ignore = [
     "E501",    # line too long (handled by ruff format)
     "COM812",  # trailing comma; conflicts with ruff format (ruff warns to disable this)
     "B008",    # do not perform function calls in argument defaults
-    "C901",    # too complex
     "ANN401",  # dynamically typed expressions (Any)
     "S101",    # use of assert detected
     "PLR0913", # too many arguments
-    "BLE001",  # blind exception catching (needed for generic error handlers)
     "UP038",   # isinstance syntax (Python compatibility)
     "PLR2004", # magic numbers (for obvious values)
     "ARG002",  # unused arguments (interface compatibility)
@@ -159,10 +169,10 @@ ignore = [
 "noxfile.py" = ["ANN", "D"]
 "*.yaml" = ["ALL"]
 "*.yml" = ["ALL"]
-"pytest_plugins/*" = ["S603"]
+"pytest_plugins/*" = ["S603", "SLF001"]
 
 [tool.ruff.lint.pylint]
-max-branches = 18      # Increased from default 12 for industry standards
+max-branches = 12
 max-statements = 75    # Increased from default 50 for industry standards
 
 [tool.ruff.lint.isort]

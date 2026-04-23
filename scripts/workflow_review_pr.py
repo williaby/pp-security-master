@@ -147,10 +147,11 @@ def validate_pr_url(url: str) -> bool:
                 "❌ URL must be a GitHub PR URL (format: https://github.com/owner/repo/pull/123)",
             )
             return False
-        return True
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         print(f"❌ Invalid URL format: {e}")
         return False
+    else:
+        return True
 
 
 def extract_pr_info(url: str) -> dict[str, str]:

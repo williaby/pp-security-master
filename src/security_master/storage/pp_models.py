@@ -404,7 +404,7 @@ class PPSecurityPrice(Base):
         Returns:
             Price as a Decimal value (PP integer divided by 100,000,000).
         """
-        return Decimal(self.price_value) / Decimal("100000000")
+        return Decimal(self.price_value) / Decimal(100000000)
 
     @price_decimal.setter
     def price_decimal(self, value: Decimal) -> None:
@@ -413,7 +413,7 @@ class PPSecurityPrice(Base):
         Args:
             value: Decimal price to store as a PP integer (multiplied by 100,000,000).
         """
-        self.price_value = int(value * Decimal("100000000"))
+        self.price_value = int(value * Decimal(100000000))
 
     def __repr__(self) -> str:
         return f"<PPSecurityPrice(security_id={self.security_id}, date={self.price_date}, price={self.price_decimal})>"

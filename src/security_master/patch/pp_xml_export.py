@@ -10,6 +10,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     # stdlib has complete type stubs; defusedxml.ElementTree re-exports the same API
     import xml.etree.ElementTree as ET  # nosec B405  # nosemgrep: python.lang.security.use-defused-xml.use-defused-xml
+
+    from sqlalchemy.orm import Session
 else:
     import defusedxml.ElementTree as ET  # noqa: N817  # safe parser at runtime
 
@@ -18,7 +20,6 @@ from pathlib import Path
 
 import defusedxml
 import defusedxml.minidom as defused_minidom
-from sqlalchemy.orm import Session
 
 from security_master.storage.models import SecurityMaster
 from security_master.storage.pp_models import (
@@ -62,7 +63,8 @@ class PPXMLExportService:
         )
 
         if not config:
-            raise ValueError(f"No active PP configuration found for '{config_name}'")
+            msg = f"No active PP configuration found for '{config_name}'"
+            raise ValueError(msg)
 
         # Create root client element
         root = ET.Element("client")
@@ -511,7 +513,8 @@ class PPXMLExportService:
             reparsed = defused_minidom.parseString(rough_string)
             return str(reparsed.toprettyxml(indent="  "))
         except defusedxml.DefusedXmlException as e:
-            raise ValueError(f"XML prettification failed: {e}") from e
+            msg = f"XML prettification failed: {e}"
+            raise ValueError(msg) from e
 
     def export_to_file(self, file_path: str, config_name: str = "default") -> None:
         """Export complete PP XML backup to file.
@@ -554,7 +557,8 @@ class PPXMLExportService:
             }
 
         except (ET.ParseError, defusedxml.DefusedXmlException) as e:
-            raise ValueError(f"Invalid XML generated: {e}") from e
+            msg = f"Invalid XML generated: {e}"
+            raise ValueError(msg) from e
 
 
 # Utility functions for PP data conversion
