@@ -90,7 +90,12 @@ class SecurityDataValidator:
             True when currency is a non-empty 3-character uppercase string.
             False otherwise.
         """
-        return bool(currency and len(currency) == 3 and currency.isupper())
+        return bool(
+            currency
+            and len(currency) == 3
+            and currency.isalpha()
+            and currency.isupper()
+        )
 
     @classmethod
     def _identification_score(cls, security: SecurityMaster) -> Decimal:

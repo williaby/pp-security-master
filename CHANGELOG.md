@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `darglint` and `interrogate` docstring quality gates to `noxfile.py` with per-directory coverage thresholds (`src/` at 70%, `scripts/` at 85%)
+- Add `qlty` CLI integration with `.qlty/qlty.toml` configuration covering bandit, ruff, and basedpyright plugins
+- Expand Ruff rule set to PyStrict-aligned standard: `ANN`, `ARG`, `ASYNC`, `C4`, `DTZ`, `ERA`, `FBT`, `FLY`, `FURB`, `G`, `ICN`, `INT`, `ISC`, `LOG`, `PERF`, `PGH`, `PIE`, `PL`, `PT`, `PTH`, `PYI`, `Q`, `RET`, `RSE`, `RUF`, `S`, `SIM`, `SLOT`, `T10`, `T20`, `TC`, `TID`, `TRY`, `UP`, `W` rule groups added to `[tool.ruff.lint] select`
+- Document accepted pip-audit CVE exceptions in `docs/known-vulnerabilities.md` (GHSA-4xh5-x5gv-qwph, GHSA-6vgw-5pg2-w6jp, PYSEC-2022-42969)
+
 ### Changed
 
 - Replace `mypy` with `basedpyright` in strict mode across `pyproject.toml`, `noxfile.py`, `Makefile`, and `.github/workflows/ci.yml`
@@ -27,4 +34,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `# nosemgrep: python.lang.maintainability.return.return-not-in-function` to all SQLAlchemy `mapped_column` lambda defaults in `models.py`, `pp_models.py`, and `transaction_models.py`; semgrep misreads the implicit lambda return as a bare return-not-in-function
 - Broaden `except` clause in `PPXMLExportService.validate_export` to catch `defusedxml.DefusedXmlException` in addition to `ET.ParseError`; defusedxml security violations do not inherit from `ParseError`
 - Add `try/except defusedxml.DefusedXmlException` around `defused_minidom.parseString()` in `_prettify_xml` to convert XML security violations to `ValueError` instead of propagating unhandled
-
+- Correct `qlty.toml` format and add path exclusions for qlty 0.612.0 compatibility

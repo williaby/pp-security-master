@@ -84,7 +84,7 @@ def pytest_sessionfinish(session: Any) -> None:
         if result.returncode == 0 and "✅" in result.stdout:
             logger.info("✅ Coverage reports updated")
 
-    except (subprocess.TimeoutExpired, Exception):
+    except Exception:
         logger.exception("Coverage hook failed")
 
 

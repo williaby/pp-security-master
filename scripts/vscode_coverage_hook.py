@@ -17,7 +17,8 @@ import logging
 import sys
 import time
 from pathlib import Path
-from xml.etree import ElementTree as ET
+
+import defusedxml.ElementTree as ET  # noqa: N817  # safe parser at runtime
 
 logger = logging.getLogger(__name__)
 
@@ -268,7 +269,7 @@ def main():
         if not success:
             sys.exit(1)
 
-    except BaseException:
+    except Exception:
         logger.exception("❌ Error generating coverage report")
         sys.exit(1)
 
