@@ -226,7 +226,7 @@ def perf(session):
     )
 
 
-@nox.session(python="3.11")
+@nox.session(python="3.12")
 def lint(session):
     """Run linters.
 
@@ -250,7 +250,7 @@ def lint(session):
     session.run("interrogate", "scripts/", "--fail-under", "85")
 
 
-@nox.session(python="3.11")
+@nox.session(python="3.12")
 def type_check(session):
     """Run type checking with basedpyright.
 
@@ -261,7 +261,7 @@ def type_check(session):
     session.run("basedpyright")
 
 
-@nox.session(python="3.11")
+@nox.session(python="3.12")
 def security(session):
     """Run security checks.
 
@@ -288,7 +288,7 @@ def security(session):
     )
 
 
-@nox.session(python="3.11")
+@nox.session(python="3.12")
 def format_code(session):
     """Format code.
 
