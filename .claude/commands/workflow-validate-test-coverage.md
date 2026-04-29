@@ -65,7 +65,7 @@ Provide a comprehensive test coverage report with the following sections:
 
 For each file modified/created in this phase and issue:
 
-```
+```text
 ## File: src/path/to/file.py
 **Coverage Status**: ✅ Adequate | ⚠️ Partial | ❌ Missing
 **Current Coverage**: X% (if measurable)
@@ -92,7 +92,7 @@ For each file modified/created in this phase and issue:
 
 ### 5. Validation Checklist
 
-```
+```text
 Pre-Commit Test Coverage Checklist:
 - [ ] All new files have minimum 80% coverage
 - [ ] All public methods have unit tests

@@ -5,14 +5,17 @@ This directory contains custom slash commands that extend the workflow capabilit
 ## Available Commands
 
 ### `/workflow-prepare-pr`
+
 Prepare and create pull requests with comprehensive validation and safety checks.
 
 **Usage:**
+
 ```bash
 /workflow-prepare-pr [options] <phase> <issue>
 ```
 
 **Examples:**
+
 ```bash
 /workflow-prepare-pr 0 P0-001
 /workflow-prepare-pr --dry-run --security 0 P0-003
@@ -20,6 +23,7 @@ Prepare and create pull requests with comprehensive validation and safety checks
 ```
 
 **Key Features:**
+
 - Validates issue format (PX-XXX) and phase consistency
 - Automatically determines appropriate target branch
 - Repository context awareness
@@ -27,14 +31,17 @@ Prepare and create pull requests with comprehensive validation and safety checks
 - Dry run capability for testing
 
 ### `/workflow-review-pr`
+
 Review existing pull requests with comprehensive analysis and multi-agent validation.
 
 **Usage:**
+
 ```bash
 /workflow-review-pr [options] <pr_url>
 ```
 
 **Examples:**
+
 ```bash
 /workflow-review-pr https://github.com/byron/pp-security-master/pull/123
 /workflow-review-pr --mode security-focus --security https://github.com/byron/pp-security-master/pull/456
@@ -42,6 +49,7 @@ Review existing pull requests with comprehensive analysis and multi-agent valida
 ```
 
 **Key Features:**
+
 - Adaptive review modes (quick to comprehensive analysis)
 - Security-focused and performance-focused analysis
 - Multi-agent consensus capabilities
@@ -60,6 +68,7 @@ These commands have been specifically adapted for the pp-security-master project
 ## Integration with MCP Tools
 
 Both commands generate parameters for the underlying MCP tools:
+
 - `mcp__zen__pr_prepare` for PR preparation
 - `mcp__zen__pr_review` for PR review
 
@@ -68,6 +77,7 @@ The commands handle all the complexity of parameter validation and formatting, m
 ## Validation
 
 All commands include comprehensive validation:
+
 - Issue format validation
 - Phase consistency checks
 - Repository context detection
@@ -77,6 +87,7 @@ All commands include comprehensive validation:
 ## Testing
 
 All commands support dry-run mode for testing:
+
 ```bash
 /workflow-prepare-pr --dry-run 0 P0-001
 ```
