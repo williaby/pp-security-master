@@ -314,13 +314,13 @@ Expected: no output. Do not proceed to Task 5 until this exits with zero output.
 
 ---
 
-## Task 5: Add **repr** docstrings to models.py (interrogate fix)
+## Task 5: Add `__repr__` docstrings to models.py (interrogate fix)
 
 **Files:**
 
 - Modify: `src/security_master/storage/models.py`
 
-- [ ] **Step 1: Add one-line docstrings to all five **repr** methods**
+- [ ] **Step 1: Add one-line docstrings to all five `__repr__` methods**
 
 Locate each `__repr__` method (lines 117, 154, 201, 341, 420 approximately) and add a one-line docstring. darglint will skip these because of `ignore_regex = "^_"`, so a single line is all interrogate needs:
 
