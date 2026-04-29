@@ -31,7 +31,11 @@ from urllib.parse import urlparse
 
 
 def parse_arguments() -> argparse.Namespace:
-    """Parse command line arguments for the workflow prepare PR command."""
+    """Parse command line arguments for the workflow prepare PR command.
+
+    Returns:
+        The result.
+    """
     parser = argparse.ArgumentParser(
         description="Prepare and create pull requests with comprehensive validation",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -128,7 +132,15 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def validate_issue_format(phase: str, issue: str) -> bool:
-    """Validate issue format matches pp-security-master patterns (PX-XXX)."""
+    """Validate issue format matches pp-security-master patterns (PX-XXX).
+
+    Args:
+        issue: The issue value.
+        phase: The phase value.
+
+    Returns:
+        The result.
+    """
     # Check if issue follows PX-XXX format
     issue_pattern = re.compile(r"^P\d+-\d{3}$")
     if not issue_pattern.match(issue):
@@ -143,7 +155,15 @@ def validate_issue_format(phase: str, issue: str) -> bool:
 
 
 def determine_target_branch(phase: str, target: str) -> str:
-    """Determine appropriate target branch based on phase and current branch."""
+    """Determine appropriate target branch based on phase and current branch.
+
+    Args:
+        phase: The phase value.
+        target: The target value.
+
+    Returns:
+        The result.
+    """
     if target != "auto":
         return target
     # For pp-security-master, phase 0 work typically targets main
@@ -174,7 +194,11 @@ def determine_target_branch(phase: str, target: str) -> str:
 
 
 def get_repository_info() -> dict[str, str]:
-    """Get repository information from git remote."""
+    """Get repository information from git remote.
+
+    Returns:
+        The result.
+    """
     try:
         remote_url = subprocess.check_output(
             ["git", "config", "--get", "remote.origin.url"],
@@ -217,7 +241,14 @@ def get_repository_info() -> dict[str, str]:
 
 
 def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
-    """Build parameters for the MCP pr_prepare function."""
+    """Build parameters for the MCP pr_prepare function.
+
+    Args:
+        args: The args value.
+
+    Returns:
+        The result.
+    """
     params = {
         "dry_run": args.dry_run,
         "no_push": not args.force_push,  # Invert logic - no_push is opposite of force_push
@@ -243,7 +274,14 @@ def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def log_change(phase: str, issue: str, action: str, details: str) -> None:
-    """Log the workflow action to the change log."""
+    """Log the workflow action to the change log.
+
+    Args:
+        issue: The issue value.
+        phase: The phase value.
+        action: The action value.
+        details: The details value.
+    """
     log_file = Path("docs/planning/claude-file-change-log.md")
     if not log_file.parent.exists():
         log_file.parent.mkdir(parents=True, exist_ok=True)
@@ -261,7 +299,11 @@ def log_change(phase: str, issue: str, action: str, details: str) -> None:
 
 
 def validate_environment() -> bool:
-    """Validate that the environment is ready for PR creation."""
+    """Validate that the environment is ready for PR creation.
+
+    Returns:
+        The result.
+    """
     print("🔍 Validating environment...")
     # Check if we're in a git repository
     if not Path(".git").exists():
@@ -274,7 +316,11 @@ def validate_environment() -> bool:
 
 
 def main() -> int:
-    """Main entry point for the workflow prepare PR command."""
+    """Main entry point for the workflow prepare PR command.
+
+    Returns:
+        The result.
+    """
     args = parse_arguments()
     print(f"🚀 Starting workflow prepare PR for Phase {args.phase}, Issue {args.issue}")
     # Validate issue format for pp-security-master

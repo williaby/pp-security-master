@@ -23,7 +23,11 @@ logger = logging.getLogger(__name__)
 
 
 def pytest_configure(config: Any) -> None:
-    """Called after command line options have been parsed."""
+    """Called after command line options have been parsed.
+
+    Args:
+        config: The config value.
+    """
     # Register custom marker
     config.addinivalue_line(
         "markers",
@@ -46,7 +50,11 @@ def pytest_configure(config: Any) -> None:
 
 
 def pytest_sessionfinish(session: Any) -> None:
-    """Called after test run completion to trigger coverage reports."""
+    """Called after test run completion to trigger coverage reports.
+
+    Args:
+        session: The session value.
+    """
     # Only run if coverage was enabled and tests ran
     if not getattr(session.config, "_coverage_enabled", False):
         return
@@ -89,7 +97,12 @@ def pytest_sessionfinish(session: Any) -> None:
 
 
 def pytest_runtest_makereport(item: Any, call: Any) -> None:
-    """Set coverage context based on test type for better tracking."""
+    """Set coverage context based on test type for better tracking.
+
+    Args:
+        item: The item value.
+        call: The call value.
+    """
     if (
         call.when == "call"
         and hasattr(item.config, "_coverage_enabled")

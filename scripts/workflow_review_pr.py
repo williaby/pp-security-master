@@ -35,7 +35,11 @@ from urllib.parse import urlparse
 
 
 def parse_arguments() -> argparse.Namespace:
-    """Parse command line arguments for the workflow review PR command."""
+    """Parse command line arguments for the workflow review PR command.
+
+    Returns:
+        The result.
+    """
     parser = argparse.ArgumentParser(
         description="Review pull requests with comprehensive analysis and multi-agent validation",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -134,7 +138,14 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def validate_pr_url(url: str) -> bool:
-    """Validate that the provided URL is a valid GitHub PR URL."""
+    """Validate that the provided URL is a valid GitHub PR URL.
+
+    Args:
+        url: The url value.
+
+    Returns:
+        The result.
+    """
     try:
         parsed = urlparse(url)
         if parsed.netloc != "github.com":
@@ -155,7 +166,14 @@ def validate_pr_url(url: str) -> bool:
 
 
 def extract_pr_info(url: str) -> dict[str, str]:
-    """Extract PR information from the URL."""
+    """Extract PR information from the URL.
+
+    Args:
+        url: The url value.
+
+    Returns:
+        The result.
+    """
     parsed = urlparse(url)
     parts = parsed.path.strip("/").split("/")
     return {
@@ -167,7 +185,14 @@ def extract_pr_info(url: str) -> dict[str, str]:
 
 
 def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
-    """Build parameters for the MCP pr_review function."""
+    """Build parameters for the MCP pr_review function.
+
+    Args:
+        args: The args value.
+
+    Returns:
+        The result.
+    """
     params = {
         "pr_url": args.pr_url,
         "mode": args.mode,
@@ -190,7 +215,13 @@ def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def log_change(pr_info: dict[str, str], action: str, details: str) -> None:
-    """Log the workflow action to the change log."""
+    """Log the workflow action to the change log.
+
+    Args:
+        pr_info: The pr info value.
+        action: The action value.
+        details: The details value.
+    """
     log_file = Path("docs/planning/claude-file-change-log.md")
     if not log_file.parent.exists():
         log_file.parent.mkdir(parents=True, exist_ok=True)
@@ -210,7 +241,11 @@ def log_change(pr_info: dict[str, str], action: str, details: str) -> None:
 
 
 def validate_environment() -> bool:
-    """Validate that the environment is ready for PR review."""
+    """Validate that the environment is ready for PR review.
+
+    Returns:
+        The result.
+    """
     print("🔍 Validating environment...")
     # Check if we have GitHub CLI available (for potential PR operations)
     import shutil
@@ -224,7 +259,11 @@ def validate_environment() -> bool:
 
 
 def main() -> int:
-    """Main entry point for the workflow review PR command."""
+    """Main entry point for the workflow review PR command.
+
+    Returns:
+        The result.
+    """
     args = parse_arguments()
     print(f"🔍 Starting PR review for: {args.pr_url}")
     # Validate PR URL

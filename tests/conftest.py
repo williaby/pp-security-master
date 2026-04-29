@@ -16,7 +16,11 @@ import pytest
 
 
 def pytest_runtest_setup(item) -> None:
-    """Set coverage context based on test path and markers."""
+    """Set coverage context based on test path and markers.
+
+    Args:
+        item: The item value.
+    """
     test_path = str(item.fspath)
 
     # Determine context from test path
@@ -52,13 +56,21 @@ def pytest_runtest_setup(item) -> None:
 
 @pytest.fixture(scope="session")
 def test_db_url() -> str:
-    """Provide test database URL."""
+    """Provide test database URL.
+
+    Returns:
+        The result.
+    """
     return "postgresql://test_user:test_pass@localhost:5432/test_pp_security_master"
 
 
 @pytest.fixture
 def mock_database_connection():
-    """Mock database connection for unit tests."""
+    """Mock database connection for unit tests.
+
+    Returns:
+        The result.
+    """
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
@@ -67,7 +79,11 @@ def mock_database_connection():
 
 @pytest.fixture
 def mock_sqlalchemy_engine():
-    """Mock SQLAlchemy engine for unit tests."""
+    """Mock SQLAlchemy engine for unit tests.
+
+    Yields:
+        The result.
+    """
     with patch("sqlalchemy.create_engine") as mock_engine:
         yield mock_engine
 
@@ -79,7 +95,11 @@ def mock_sqlalchemy_engine():
 
 @pytest.fixture
 def mock_openfigi_client():
-    """Mock OpenFIGI API client for testing."""
+    """Mock OpenFIGI API client for testing.
+
+    Returns:
+        The result.
+    """
     mock_client = MagicMock()
     mock_client.classify_security.return_value = {
         "data": [
@@ -99,7 +119,11 @@ def mock_openfigi_client():
 
 @pytest.fixture
 def mock_http_client():
-    """Mock HTTP client for external API testing."""
+    """Mock HTTP client for external API testing.
+
+    Yields:
+        The result.
+    """
     with patch("httpx.AsyncClient") as mock_client:
         yield mock_client
 
@@ -111,7 +135,11 @@ def mock_http_client():
 
 @pytest.fixture
 def sample_security_data() -> dict[str, Any]:
-    """Provide sample security data for testing."""
+    """Provide sample security data for testing.
+
+    Returns:
+        The result.
+    """
     return {
         "isin": "US0378331005",
         "symbol": "AAPL",
@@ -127,7 +155,11 @@ def sample_security_data() -> dict[str, Any]:
 
 @pytest.fixture
 def sample_fund_data() -> dict[str, Any]:
-    """Provide sample fund/ETF data for testing."""
+    """Provide sample fund/ETF data for testing.
+
+    Returns:
+        The result.
+    """
     return {
         "isin": "US46090E1038",
         "symbol": "SPY",
@@ -143,7 +175,11 @@ def sample_fund_data() -> dict[str, Any]:
 
 @pytest.fixture
 def sample_bond_data() -> dict[str, Any]:
-    """Provide sample bond data for testing."""
+    """Provide sample bond data for testing.
+
+    Returns:
+        The result.
+    """
     return {
         "isin": "US912828R770",
         "symbol": "T 2.25 02/15/2052",
@@ -158,7 +194,11 @@ def sample_bond_data() -> dict[str, Any]:
 
 @pytest.fixture
 def sample_broker_transaction() -> dict[str, Any]:
-    """Provide sample broker transaction for testing."""
+    """Provide sample broker transaction for testing.
+
+    Returns:
+        The result.
+    """
     return {
         "transaction_id": "TXN-001",
         "date": date(2024, 1, 15),
@@ -191,13 +231,24 @@ def sample_broker_transaction() -> dict[str, Any]:
     ],
 )
 def invalid_isin_inputs(request):
-    """Provide invalid ISIN inputs for edge case testing."""
+    """Provide invalid ISIN inputs for edge case testing.
+
+    Args:
+        request: The request value.
+
+    Returns:
+        The result.
+    """
     return request.param
 
 
 @pytest.fixture
 def invalid_symbol_inputs() -> list[Any]:
-    """Provide invalid symbol inputs for testing."""
+    """Provide invalid symbol inputs for testing.
+
+    Returns:
+        The result.
+    """
     return [
         "",  # Empty string
         None,  # None value
@@ -210,7 +261,11 @@ def invalid_symbol_inputs() -> list[Any]:
 
 @pytest.fixture
 def security_classification_edge_cases() -> list[dict[str, Any]]:
-    """Provide edge cases for security classification testing."""
+    """Provide edge cases for security classification testing.
+
+    Returns:
+        The result.
+    """
     return [
         {"input": None, "expected_error": "ValidationError"},
         {"input": "", "expected_error": "ValidationError"},
@@ -230,14 +285,25 @@ def security_classification_edge_cases() -> list[dict[str, Any]]:
 
 @pytest.fixture
 def temp_directory() -> Generator[Path, None, None]:
-    """Provide temporary directory for file testing."""
+    """Provide temporary directory for file testing.
+
+    Yields:
+        The result.
+    """
     with tempfile.TemporaryDirectory() as temp_dir:
         yield Path(temp_dir)
 
 
 @pytest.fixture
 def sample_pp_xml_file(temp_directory: Path) -> Path:
-    """Create sample Portfolio Performance XML file for testing."""
+    """Create sample Portfolio Performance XML file for testing.
+
+    Args:
+        temp_directory: The temp directory value.
+
+    Returns:
+        The result.
+    """
     xml_content = """<?xml version="1.0" encoding="UTF-8"?>
 <client version="0.65.0">
     <securities>
@@ -275,7 +341,14 @@ def sample_pp_xml_file(temp_directory: Path) -> Path:
 
 @pytest.fixture
 def sample_wells_csv_file(temp_directory: Path) -> Path:
-    """Create sample Wells Fargo CSV file for testing."""
+    """Create sample Wells Fargo CSV file for testing.
+
+    Args:
+        temp_directory: The temp directory value.
+
+    Returns:
+        The result.
+    """
     csv_content = """Date,Description,Amount,Symbol,Quantity,Price
 2024-01-15,BUY AAPL,"-1,855.00",AAPL,100,185.50
 2024-01-20,DIVIDEND AAPL,23.00,AAPL,,
@@ -288,7 +361,14 @@ def sample_wells_csv_file(temp_directory: Path) -> Path:
 
 @pytest.fixture
 def sample_ibkr_xml_file(temp_directory: Path) -> Path:
-    """Create sample IBKR Flex Query XML file for testing."""
+    """Create sample IBKR Flex Query XML file for testing.
+
+    Args:
+        temp_directory: The temp directory value.
+
+    Returns:
+        The result.
+    """
     xml_content = """<?xml version="1.0" encoding="UTF-8"?>
 <FlexQueryResponse queryName="Test" type="AF">
     <FlexStatements>
@@ -315,7 +395,11 @@ def sample_ibkr_xml_file(temp_directory: Path) -> Path:
 
 @pytest.fixture
 def benchmark_data() -> dict[str, Any]:
-    """Provide benchmark data for performance testing."""
+    """Provide benchmark data for performance testing.
+
+    Returns:
+        The result.
+    """
     return {
         "large_security_list": [f"US{i:010d}" for i in range(1000)],
         "complex_classification_data": {"equities": 500, "funds": 300, "bonds": 200},
@@ -330,7 +414,11 @@ def benchmark_data() -> dict[str, Any]:
 
 @pytest.fixture
 def test_config() -> dict[str, Any]:
-    """Provide test configuration settings."""
+    """Provide test configuration settings.
+
+    Returns:
+        The result.
+    """
     return {
         "database": {
             "url": "postgresql://test_user:test_pass@localhost:5432/test_db",
@@ -352,7 +440,11 @@ def test_config() -> dict[str, Any]:
 
 @pytest.fixture(autouse=True)
 def setup_test_environment():
-    """Automatically set up test environment variables."""
+    """Automatically set up test environment variables.
+
+    Yields:
+        The result.
+    """
     test_env = {
         "TESTING": "true",
         "LOG_LEVEL": "DEBUG",
@@ -384,13 +476,21 @@ def setup_test_environment():
 
 @pytest.fixture
 def mock_logger():
-    """Mock logger for testing."""
+    """Mock logger for testing.
+
+    Returns:
+        The result.
+    """
     return MagicMock()
 
 
 @pytest.fixture
 def mock_file_system():
-    """Mock file system operations."""
+    """Mock file system operations.
+
+    Yields:
+        The result.
+    """
     with (
         patch("pathlib.Path.exists") as mock_exists,
         patch("pathlib.Path.read_text") as mock_read,
@@ -407,7 +507,11 @@ def mock_file_system():
 
 @pytest.fixture
 def malicious_inputs() -> list[str]:
-    """Provide malicious inputs for security testing."""
+    """Provide malicious inputs for security testing.
+
+    Returns:
+        The result.
+    """
     return [
         "'; DROP TABLE securities; --",  # SQL injection
         "<script>alert('xss')</script>",  # XSS
@@ -422,7 +526,11 @@ def malicious_inputs() -> list[str]:
 
 @pytest.fixture
 def valid_but_edge_case_inputs() -> list[dict[str, Any]]:
-    """Provide valid but edge case inputs for robustness testing."""
+    """Provide valid but edge case inputs for robustness testing.
+
+    Returns:
+        The result.
+    """
     return [
         {"isin": "US" + "0" * 9, "name": ""},  # Valid ISIN, empty name
         {"isin": "GB0002634946", "name": "A" * 255},  # Maximum name length
