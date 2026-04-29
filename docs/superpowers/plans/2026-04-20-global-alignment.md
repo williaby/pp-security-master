@@ -4,7 +4,7 @@
 
 **Goal:** Bring `pp-security-master` into full alignment with the global Claude standards, org-level GitHub workflows, and Python toolchain rules across six dependency-ordered phases.
 
-**Status as of 2026-04-29:** Phase 0 complete. Phase 1 complete (merged PR #9). Phase 2a (safety removal, ruff format), Phase 2b (basedpyright), and Phase 2c (darglint, interrogate, qlty, PyStrict Ruff) complete (merged PR #13). Phases 3-5 not started.
+**Status as of 2026-04-29:** Phase 0 complete. Phase 1 complete (merged PR #9). Phase 2a, Phase 2b, and Phase 2c complete (merged PR #13). Phase 3 complete (PR open, pending merge). Phases 4-5 not started.
 
 **Architecture:** Each phase builds on a stable base established by the previous phase. Phase 0 relocates the project to its correct directory. Phases 1-5 layer in files, tooling, CI, and documentation without revisiting completed work.
 
