@@ -52,11 +52,11 @@ class SecurityMasterCoverageReporter:
             tree = ET.parse(xml_path)
             root = tree.getroot()
 
-            for coverage_elem in root.findall(".//coverage"):
+            coverage_elem = root if root.tag == "coverage" else root.find(".//coverage")
+            if coverage_elem is not None:
                 data["overall"]["percentage"] = (
                     float(coverage_elem.get("line-rate", 0)) * 100
                 )
-                break
 
             for package in root.findall(".//package"):
                 for class_elem in package.findall("classes/class"):
