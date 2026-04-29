@@ -301,7 +301,7 @@ def format_code(session):
     session.run("ruff", "check", "--fix", *args)
 
 
-@nox.session(python="3.11")
+@nox.session(python="3.12")
 def pre_commit(session):
     """Run pre-commit on all files.
 
@@ -309,4 +309,6 @@ def pre_commit(session):
         session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
-    session.run("pre-commit", "run", "--all-files")
+    session.run("pre-commit", "install", external=True)
+    session.run("pre-commit", "install", "--hook-type", "commit-msg", external=True)
+    session.run("pre-commit", "run", "--all-files", external=True)

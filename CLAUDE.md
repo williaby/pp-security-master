@@ -66,6 +66,11 @@ poetry run pytest -v --cov=src --cov-report=html --cov-report=term-missing
 poetry run safety check
 poetry run bandit -r src
 poetry run pip-audit
+
+# Run pre-commit on all files
+poetry run pre-commit run --all-files
+# Or via nox (also installs hooks)
+poetry run nox -s pre_commit
 ```
 
 ### Task Automation
