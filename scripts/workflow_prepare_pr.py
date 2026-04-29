@@ -135,7 +135,7 @@ def validate_issue_format(phase: str, issue: str) -> bool:
         print(f"❌ Issue format should be PX-XXX (e.g., P0-001), got: {issue}")
         return False
     # Extract phase from issue and validate consistency
-    issue_phase = issue.split("-")[0][1:]  # Extract phase number from P0-001 -> 0
+    issue_phase = issue.split("-", 1)[0][1:]  # Extract phase number from P0-001 -> 0
     if phase != issue_phase:
         print(f"❌ Phase mismatch: phase={phase}, issue phase={issue_phase}")
         return False
@@ -164,10 +164,11 @@ def determine_target_branch(phase: str, target: str) -> str:
                 ["git", "rev-parse", "--verify", f"origin/{phase_branch}"],
                 stderr=subprocess.DEVNULL,
             )
-            return phase_branch
         except subprocess.CalledProcessError:
             # Fall back to main if phase branch doesn't exist
             return "main"
+        else:
+            return phase_branch
     except subprocess.CalledProcessError:
         return "main"
 
@@ -184,7 +185,7 @@ def get_repository_info() -> dict[str, str]:
         if remote_url.startswith("git@"):
             # SSH format: git@github.com:owner/repo.git
             # Split on '@', then ':'
-            user_host, path_part = remote_url.split("@", 1)
+            _user_host, path_part = remote_url.split("@", 1)
             if path_part.startswith("github.com:"):
                 repo_part = path_part[len("github.com:") :].replace(".git", "")
                 if "/" in repo_part:

@@ -104,3 +104,7 @@ Thumbs.db
 
 # Git worktrees (created by git worktree add)
 .worktrees/
+
+# qlty runtime directories (qlty.toml is committed; runtime artifacts are not)
+.qlty/*
+!.qlty/qlty.toml

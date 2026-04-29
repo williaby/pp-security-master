@@ -18,7 +18,15 @@ class SecurityDataValidator:
 
     @classmethod
     def validate_isin(cls, isin: str | None) -> bool:
-        """Validate ISIN format and check digit."""
+        """Validate ISIN format and check digit.
+
+        Args:
+            isin: ISIN string to validate, or None for optional fields.
+
+        Returns:
+            True when isin is None, empty, or passes format and check-digit
+            validation. False when format or check digit is invalid.
+        """
         if not isin:
             return True  # Optional field
 
@@ -43,72 +51,108 @@ class SecurityDataValidator:
 
     @classmethod
     def validate_wkn(cls, wkn: str | None) -> bool:
-        """Validate WKN format."""
+        """Validate WKN format.
+
+        Args:
+            wkn: WKN string to validate, or None for optional fields.
+
+        Returns:
+            True when wkn is None, empty, or matches the 6-character alphanumeric
+            pattern. False when the format is invalid.
+        """
         if not wkn:
             return True  # Optional field
         return bool(cls.WKN_PATTERN.match(wkn))
 
     @classmethod
     def validate_symbol(cls, symbol: str | None) -> bool:
-        """Validate trading symbol format."""
+        """Validate trading symbol format.
+
+        Args:
+            symbol: Ticker symbol to validate, or None for optional fields.
+
+        Returns:
+            True when symbol is None, empty, or matches the allowed pattern.
+            False when the format is invalid.
+        """
         if not symbol:
             return True  # Optional field
         return bool(cls.SYMBOL_PATTERN.match(symbol))
 
     @classmethod
     def validate_currency(cls, currency: str) -> bool:
-        """Validate currency code (ISO 4217)."""
-        return bool(currency and len(currency) == 3 and currency.isupper())
+        """Validate currency code (ISO 4217).
+
+        Args:
+            currency: Three-letter currency code to validate.
+
+        Returns:
+            True when currency is a non-empty 3-character uppercase string.
+            False otherwise.
+        """
+        return bool(
+            currency
+            and len(currency) == 3
+            and currency.isalpha()
+            and currency.isupper()
+        )
 
     @classmethod
-    def calculate_data_quality_score(cls, security: SecurityMaster) -> Decimal:
-        """Calculate data quality score (0.00-1.00) based on completeness and validity."""
-        score = Decimal("0.0")
+    def _identification_score(cls, security: SecurityMaster) -> Decimal:
+        """Score core identification fields (name, ISIN, symbol, WKN) at 40% weight.
 
-        # Core identification (40% weight)
-        identification_score = 0
-        identification_checks = 0
+        Args:
+            security: SecurityMaster record to score.
+
+        Returns:
+            Decimal contribution (0.0 to 0.4) from identification completeness.
+        """
+        earned = 0
+        total = 5  # 1 name + 2 ISIN + 1 symbol + 1 WKN
 
         if security.name:
-            identification_score += 1
-        identification_checks += 1
-
+            earned += 1
         if cls.validate_isin(security.isin) and security.isin:
-            identification_score += 2  # ISIN is most important
-        identification_checks += 2
-
+            earned += 2  # ISIN is most important
         if cls.validate_symbol(security.symbol) and security.symbol:
-            identification_score += 1
-        identification_checks += 1
-
+            earned += 1
         if cls.validate_wkn(security.wkn) and security.wkn:
-            identification_score += 1
-        identification_checks += 1
+            earned += 1
 
-        score += Decimal(str(identification_score / identification_checks * 0.4))
+        return Decimal(str(earned / total * 0.4))
 
-        # Pricing data (20% weight)
-        pricing_score = 0
-        pricing_checks = 0
+    @classmethod
+    def _pricing_score(cls, security: SecurityMaster) -> Decimal:
+        """Score pricing data fields (price, date, currency) at 20% weight.
+
+        Args:
+            security: SecurityMaster record to score.
+
+        Returns:
+            Decimal contribution (0.0 to 0.2) from pricing completeness.
+        """
+        earned = 0
+        total = 3
 
         if security.latest_price is not None:
-            pricing_score += 1
-        pricing_checks += 1
-
+            earned += 1
         if security.latest_date:
-            pricing_score += 1
-        pricing_checks += 1
-
+            earned += 1
         if security.currency and cls.validate_currency(security.currency):
-            pricing_score += 1
-        pricing_checks += 1
+            earned += 1
 
-        if pricing_checks > 0:
-            score += Decimal(str(pricing_score / pricing_checks * 0.2))
+        return Decimal(str(earned / total * 0.2))
 
-        classification_score = 0
-        classification_checks = 0
+    @classmethod
+    def _classification_and_source_score(cls, security: SecurityMaster) -> Decimal:
+        """Score classification fields (30%) and data source fields (10%).
 
+        Args:
+            security: SecurityMaster record to score.
+
+        Returns:
+            Decimal contribution (0.0 to 0.4) from classification and source completeness.
+        """
         classification_fields = [
             security.sector,
             security.type_of_security_level1,
@@ -116,35 +160,48 @@ class SecurityDataValidator:
             security.region,
             security.market,
         ]
+        classification_total = len(classification_fields)
+        classification_earned = sum(1 for f in classification_fields if f)
+        classification_contribution = Decimal(
+            str(classification_earned / classification_total * 0.3)
+        )
 
-        for field in classification_fields:
-            if field:
-                classification_score += 1
-            classification_checks += 1
+        source_earned = sum(
+            [bool(security.quote_feed_latest), bool(security.data_source)]
+        )
+        source_contribution = Decimal(str(source_earned / 2 * 0.1))
 
-        if classification_checks > 0:
-            score += Decimal(str(classification_score / classification_checks * 0.3))
+        return classification_contribution + source_contribution
 
-        # Data sources and feeds (10% weight)
-        source_score = 0
-        source_checks = 0
+    @classmethod
+    def calculate_data_quality_score(cls, security: SecurityMaster) -> Decimal:
+        """Calculate data quality score (0.00-1.00) based on completeness and validity.
 
-        if security.quote_feed_latest:
-            source_score += 1
-        source_checks += 1
+        Args:
+            security: SecurityMaster record to score.
 
-        if security.data_source:
-            source_score += 1
-        source_checks += 1
-
-        if source_checks > 0:
-            score += Decimal(str(source_score / source_checks * 0.1))
-
+        Returns:
+            Decimal score between 0.00 and 1.00 representing data quality,
+            weighted across identification, pricing, classification, and source fields.
+        """
+        score = (
+            cls._identification_score(security)
+            + cls._pricing_score(security)
+            + cls._classification_and_source_score(security)
+        )
         return min(score, Decimal("1.00"))
 
     @classmethod
     def validate_security(cls, security: SecurityMaster) -> tuple[bool, list[str]]:
-        """Validate a security record and return validation status and errors."""
+        """Validate a security record and return validation status and errors.
+
+        Args:
+            security: SecurityMaster record to validate.
+
+        Returns:
+            Tuple of (is_valid, errors) where is_valid is True when no errors
+            were found and errors is a list of human-readable error messages.
+        """
         errors: list[str] = []
 
         # Required fields

@@ -17,7 +17,8 @@ import logging
 import sys
 import time
 from pathlib import Path
-from xml.etree import ElementTree as ET
+
+import defusedxml.ElementTree as ET  # noqa: N817  # safe parser at runtime
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,70 @@ class SecurityMasterCoverageReporter:
             "json": coverage_json if coverage_json.exists() else None,
         }
 
+    def _parse_xml_coverage(self, xml_path: Path, data: dict) -> None:
+        """Parse coverage XML file and populate data in place.
+
+        Args:
+            xml_path: Path to the coverage XML file.
+            data: Coverage data dict to update with parsed results.
+        """
+        try:
+            tree = ET.parse(xml_path)
+            root = tree.getroot()
+
+            coverage_elem = root if root.tag == "coverage" else root.find(".//coverage")
+            if coverage_elem is not None:
+                data["overall"]["percentage"] = (
+                    float(coverage_elem.get("line-rate", 0)) * 100
+                )
+
+            for package in root.findall(".//package"):
+                for class_elem in package.findall("classes/class"):
+                    filename = class_elem.get("filename", "")
+                    if filename.startswith("src/"):
+                        lines = class_elem.findall("lines/line")
+                        covered = sum(
+                            1 for line in lines if line.get("hits", "0") != "0"
+                        )
+                        total = len(lines)
+                        if total > 0:
+                            data["files"][filename] = {
+                                "coverage": (covered / total) * 100,
+                                "lines_covered": covered,
+                                "lines_total": total,
+                            }
+        except (ET.ParseError, ValueError):
+            logger.exception("Error parsing coverage XML")
+
+    def _parse_json_coverage(self, json_path: Path, data: dict) -> None:
+        """Parse coverage JSON file and populate data in place.
+
+        Args:
+            json_path: Path to the coverage JSON file.
+            data: Coverage data dict to update with parsed results.
+        """
+        try:
+            with json_path.open() as f:
+                json_data = json.load(f)
+
+            data["overall"]["percentage"] = json_data.get("totals", {}).get(
+                "percent_covered",
+                0,
+            )
+
+            for filename, file_data in json_data.get("files", {}).items():
+                if filename.startswith("src/"):
+                    summary = file_data.get("summary", {})
+                    covered = summary.get("covered_lines", 0)
+                    total = summary.get("num_statements", 0)
+                    data["files"][filename] = {
+                        "coverage": summary.get("percent_covered", 0),
+                        "lines_covered": covered,
+                        "lines_total": total,
+                    }
+        except (json.JSONDecodeError, OSError):
+            logger.exception("Error parsing coverage JSON")
+
     def load_coverage_data(self) -> dict:
         """Load coverage data from XML and JSON files."""
         files = self.find_coverage_files()
@@ -52,63 +117,11 @@ class SecurityMasterCoverageReporter:
             "files": {},
         }
 
-        # Parse XML for detailed file coverage
         if files["xml"]:
-            try:
-                tree = ET.parse(files["xml"])
-                root = tree.getroot()
+            self._parse_xml_coverage(files["xml"], data)
 
-                # Overall coverage
-                for coverage_elem in root.findall(".//coverage"):
-                    data["overall"]["percentage"] = (
-                        float(coverage_elem.get("line-rate", 0)) * 100
-                    )
-                    break
-
-                # File-level coverage
-                for package in root.findall(".//package"):
-                    for class_elem in package.findall("classes/class"):
-                        filename = class_elem.get("filename", "")
-                        if filename.startswith("src/"):
-                            lines = class_elem.findall("lines/line")
-                            covered = sum(
-                                1 for line in lines if line.get("hits", "0") != "0"
-                            )
-                            total = len(lines)
-
-                            if total > 0:
-                                data["files"][filename] = {
-                                    "coverage": (covered / total) * 100,
-                                    "lines_covered": covered,
-                                    "lines_total": total,
-                                }
-            except Exception as e:
-                logger.error(f"Error parsing coverage XML: {e}")
-
-        # Parse JSON for additional data
         if files["json"]:
-            try:
-                with open(files["json"]) as f:
-                    json_data = json.load(f)
-
-                data["overall"]["percentage"] = json_data.get("totals", {}).get(
-                    "percent_covered",
-                    0,
-                )
-
-                for filename, file_data in json_data.get("files", {}).items():
-                    if filename.startswith("src/"):
-                        summary = file_data.get("summary", {})
-                        covered = summary.get("covered_lines", 0)
-                        total = summary.get("num_statements", 0)
-
-                        data["files"][filename] = {
-                            "coverage": summary.get("percent_covered", 0),
-                            "lines_covered": covered,
-                            "lines_total": total,
-                        }
-            except Exception as e:
-                logger.error(f"Error parsing coverage JSON: {e}")
+            self._parse_json_coverage(files["json"], data)
 
         return data
 
@@ -256,8 +269,8 @@ def main():
         if not success:
             sys.exit(1)
 
-    except Exception as e:
-        logger.error(f"❌ Error generating coverage report: {e}")
+    except Exception:
+        logger.exception("❌ Error generating coverage report")
         sys.exit(1)
 
 
