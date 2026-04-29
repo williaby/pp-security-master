@@ -89,9 +89,10 @@ repos:
         types: [python]
         pass_filenames: false
 
-      # Em-dash guard: block the — character in all text files
+      # Em-dash guard: block the U+2014 character in all text files
       - id: no-em-dash
         name: No em-dashes
         language: pygrep
         entry: "—"
         types: [text]
+        exclude: '^\.pre-commit-config\.yaml$'

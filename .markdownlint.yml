@@ -12,7 +12,18 @@ MD033: false
 # MD041: First line should be a top-level heading -- disabled for non-doc files
 MD041: false
 
-# MD060: Table column style -- use "consistent" rather than "aligned";
-# "aligned" is impractical for tables with long CVE IDs and prose notes
+# MD024: Duplicate headings -- only flag headings that are siblings (same
+# level under the same parent); planning docs reuse names like "Description"
+# and "Acceptance Criteria" under each numbered task/issue section.
+MD024:
+  siblings_only: true
+
+# MD025: Multiple H1 headings -- docs with YAML front matter have a "title"
+# field; set front_matter_title to '' so the title field does not count as H1.
+MD025:
+  front_matter_title: ''
+
+# MD060: Table column style -- "consistent" enforces a single style within each
+# table; "aligned" is impractical for tables with long CVE IDs and prose notes
 MD060:
   style: consistent

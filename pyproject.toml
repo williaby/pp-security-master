@@ -291,7 +291,7 @@ output = "coverage.xml"
 [tool.bandit]
 targets = ["src"]
 exclude_dirs = ["tests", "scripts", "pytest_plugins"]
-skips = ["B101", "B601", "S603"]
+skips = ["B101", "B601"]
 
 [tool.bandit.assert_used]
 skips = ["*/test_*.py", "*_test.py"]
