@@ -1,6 +1,7 @@
 # ADR-012: Data Quality Reporting and Reconciliation Framework
 
 ## Status
+
 Accepted
 
 ## Context
@@ -12,30 +13,35 @@ Maintaining high data quality is vital for Portfolio Performance (PP) Security M
 We will implement a comprehensive data quality reporting and reconciliation framework with five core reporting capabilities:
 
 ### 1. Security Master Data Quality Reporting
+
 - **Gap Identification**: Reports highlighting securities missing classifications, pricing, or complete metadata
 - **Manual Assignment Tracking**: Dashboard for positions requiring manual category assignment
 - **Pricing Staleness**: Quarterly alerts for securities needing price updates
 - **Data Completeness Metrics**: Coverage percentages by asset class and data source
 
 ### 2. Transaction Deduplication Detection
+
 - **Duplicate Transaction Reports**: Automated detection of potential duplicates during import
 - **Fuzzy Matching Algorithms**: Identify near-duplicates with slight variations in dates, amounts, or descriptions
 - **Manual Review Queue**: Workflow for reviewing and resolving detected duplicates
 - **Import Audit Trail**: Complete history of transaction imports with deduplication statistics
 
 ### 3. Point-in-Time Position Reconciliation
+
 - **Kubera Report Reconciliation**: Compare current PP positions to external Kubera reports
 - **Broker Statement Reconciliation**: Monthly, quarterly, and annual statement validation against account positions
 - **Position Variance Reporting**: Identify and track discrepancies with tolerance thresholds
 - **Reconciliation Dashboard**: Visual representation of reconciliation status across all accounts
 
 ### 4. Portfolio Analysis Report Export
+
 - **Quantitative Metrics Export**: Risk metrics, performance attribution, sector allocation
 - **Custom Report Builder**: Flexible reporting engine for ad-hoc analysis
 - **Standardized Formats**: Excel, PDF, and JSON export capabilities
 - **Historical Trending**: Period-over-period analysis and trending reports
 
 ### 5. Standardized Quarterly Client Reporting
+
 - **Consolidated Account View**: 1-2 page summary covering all client accounts
 - **Key Performance Indicators**: Returns, risk metrics, allocation summaries
 - **Quantitative Insights**: Automated commentary on portfolio performance and positioning
@@ -44,7 +50,8 @@ We will implement a comprehensive data quality reporting and reconciliation fram
 ## Implementation Strategy
 
 ### Technical Architecture
-```
+
+```text
 src/security_master/reporting/
 ├── data_quality/       # Security master gap analysis and metrics
 ├── reconciliation/     # Position and transaction reconciliation
@@ -55,12 +62,14 @@ src/security_master/reporting/
 ```
 
 ### Database Schema Extensions
+
 - **reporting_metrics**: Store calculated data quality metrics
 - **reconciliation_runs**: Track reconciliation execution and results
 - **duplicate_candidates**: Store potential duplicate transactions for review
 - **client_report_configs**: Customizable client reporting templates
 
 ### Reporting Engine Components
+
 1. **Scheduled Jobs**: Automated daily/weekly data quality checks
 2. **Alert System**: Email/dashboard notifications for critical data gaps
 3. **Export Pipeline**: Standardized report generation and distribution
@@ -69,6 +78,7 @@ src/security_master/reporting/
 ## Consequences
 
 ### Positive
+
 - **Operational Excellence**: Proactive identification of data quality issues
 - **Client Confidence**: Professional, standardized reporting builds trust
 - **Regulatory Compliance**: Comprehensive audit trail and reconciliation capabilities
@@ -76,6 +86,7 @@ src/security_master/reporting/
 - **Data Integrity**: Multiple validation layers ensure position accuracy
 
 ### Challenges
+
 - **Implementation Complexity**: Five distinct reporting domains require significant development
 - **Performance Impact**: Regular reconciliation and quality checks may affect system performance
 - **Storage Requirements**: Historical reconciliation data and report archives increase storage needs

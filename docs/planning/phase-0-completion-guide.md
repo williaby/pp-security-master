@@ -10,9 +10,10 @@ purpose: "Success criteria, completion checklist, and troubleshooting for Phase 
 
 # Phase 0: Foundation & Prerequisites - Completion Guide
 
-**Completion Validation and Success Criteria**
+## Completion Validation and Success Criteria
 
-> **Navigation**: 
+> **Navigation**:
+>
 > - [Phase Overview](./phase-0-foundation-overview.md)
 > - [Issues P0-001 to P0-005](./phase-0-issues-P0-001-to-P0-005.md)
 > - [Issues P0-006 to P0-010](./phase-0-issues-P0-006-to-P0-010.md)
@@ -25,24 +26,28 @@ purpose: "Success criteria, completion checklist, and troubleshooting for Phase 
 ### Technical Validation Checklist
 
 #### Infrastructure and Environment
+
 - [ ] PostgreSQL 17 operational on Unraid with external access
 - [ ] Development environment standardized and documented
 - [ ] Repository structure organized and maintainable
 - [ ] All development tools integrated and functional
 
 #### Database and Schema
+
 - [ ] Security master table created with comprehensive taxonomy fields
 - [ ] Alembic migration system operational with rollback capability
 - [ ] Database connection management with pooling and error handling
 - [ ] All database operations covered by comprehensive tests
 
 #### Application Foundation
+
 - [ ] Configuration system loading settings from all environments
 - [ ] Data validation framework operational with business rules
 - [ ] ORM layer providing clean database abstraction
 - [ ] Error handling and logging integrated across all components
 
 #### Quality and Performance
+
 - [ ] Code coverage >80% for all Phase 0 components
 - [ ] All quality tools (Black, Ruff, MyPy) operational and enforced
 - [ ] Performance benchmarks established and documented
@@ -51,18 +56,21 @@ purpose: "Success criteria, completion checklist, and troubleshooting for Phase 
 ### Business Validation Checklist
 
 #### Developer Experience
+
 - [ ] New developer can set up complete environment in <30 minutes
 - [ ] All common development tasks automated through Make targets
 - [ ] Pre-commit hooks prevent low-quality code from being committed
 - [ ] Documentation covers all setup and development procedures
 
 #### System Foundation
+
 - [ ] Database can store and retrieve security master records
 - [ ] Data validation prevents invalid data from entering system
 - [ ] All required taxonomy fields operational and validated
 - [ ] System ready for institution data import development
 
 #### Risk Mitigation
+
 - [ ] Database backup and recovery procedures tested
 - [ ] Configuration system prevents invalid system states
 - [ ] Error handling provides clear feedback for troubleshooting
@@ -74,30 +82,35 @@ purpose: "Success criteria, completion checklist, and troubleshooting for Phase 
 
 ### Sign-off Requirements
 
-**Technical Lead Approval**
+#### Technical Lead Approval
+
 - All development tools operational and team trained
 - Code quality standards established and enforced
 - Architecture foundation solid and extensible
 
-**Database Administrator Approval**  
+#### Database Administrator Approval
+
 - PostgreSQL installation secure and performant
 - Migration system reliable and tested
 - Backup and recovery procedures validated
 
-**Project Manager Approval**
+#### Project Manager Approval
+
 - All Phase 0 deliverables completed on schedule
 - Team productivity established and sustainable
 - Phase 1 readiness confirmed and documented
 
 ### Phase 1 Readiness Assessment
 
-**Prerequisites for Phase 1**
+#### Prerequisites for Phase 1
+
 - ✅ Development environment standardized across team
 - ✅ Database foundation operational and tested  
 - ✅ Configuration and validation frameworks ready
 - ✅ Quality tools and automation integrated
 
-**Phase 1 Preparation Tasks**
+#### Phase 1 Preparation Tasks
+
 - [ ] Wells Fargo CSV sample data collected and analyzed
 - [ ] Institution data import requirements finalized
 - [ ] Phase 1 team assignments confirmed
@@ -105,19 +118,22 @@ purpose: "Success criteria, completion checklist, and troubleshooting for Phase 
 
 ### Success Metrics Achieved
 
-**Development Velocity**
+#### Development Velocity
+
 - Environment setup time: <30 minutes (target: <30 minutes) ✅
 - Database operation response time: <10ms (target: <50ms) ✅  
 - Code quality enforcement: 100% through pre-commit hooks ✅
 - Test coverage: >80% (target: >80%) ✅
 
-**Technical Foundation**
+#### Technical Foundation
+
 - Database connection reliability: >99.9% ✅
 - Configuration validation: 100% invalid states prevented ✅
 - Data validation accuracy: >99% invalid data caught ✅
 - Error handling coverage: All major error paths covered ✅
 
-**Team Productivity**
+#### Team Productivity
+
 - Developer onboarding time: <2 hours (target: <4 hours) ✅
 - Common task automation: 100% through Make targets ✅
 - Documentation completeness: All major processes documented ✅
@@ -131,7 +147,8 @@ purpose: "Success criteria, completion checklist, and troubleshooting for Phase 
 
 #### Development Environment Issues
 
-**Python Version Problems**
+#### Python Version Problems
+
 ```bash
 # Problem: Python 3.11 not found
 # Solution: Install via pyenv
@@ -146,7 +163,8 @@ poetry env use python3.11
 poetry install
 ```
 
-**Poetry Configuration Issues**
+## Poetry Configuration Issues
+
 ```bash
 # Problem: Virtual environment not in project
 # Solution: Reconfigure Poetry
@@ -165,9 +183,10 @@ poetry install
 poetry shell
 ```
 
-#### Database Connection Issues
+### Database Connection Issues
 
-**Connection Refused**
+#### Connection Refused
+
 ```bash
 # Problem: psql connection refused
 # Diagnosis:
@@ -181,7 +200,8 @@ nslookup unraid.lan  # Test DNS resolution
 # 4. Verify credentials in .env file
 ```
 
-**Authentication Failed**
+## Authentication Failed
+
 ```bash
 # Problem: Authentication failed for user pp_user
 # Solutions:
@@ -191,9 +211,10 @@ nslookup unraid.lan  # Test DNS resolution
 docker exec -it postgresql-17 psql -U postgres -c "\du"
 ```
 
-#### Emergency Recovery Procedures
+### Emergency Recovery Procedures
 
-**Complete Environment Reset**
+#### Complete Environment Reset
+
 ```bash
 # Nuclear option: Start completely fresh
 rm -rf .venv
@@ -204,7 +225,8 @@ poetry install
 poetry shell
 ```
 
-**Getting Help**
+## Getting Help
+
 - Run individual validation scripts: `./scripts/validate_issue_P0-*.sh`
 - Check complete validation: `./scripts/validate_phase_0_complete.sh`
 - Contact technical lead with specific error messages and environment details
@@ -221,4 +243,4 @@ poetry shell
 
 ---
 
-*Generated from the original phase-0-foundation.md file for improved LLM processing.*
+### Generated from the original phase-0-foundation.md file for improved LLM processing

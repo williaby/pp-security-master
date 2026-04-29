@@ -23,16 +23,19 @@ We will implement a **four-tier hierarchical data sourcing strategy** for securi
 **Maintenance**: Zero additional overhead - PP team maintains these sources  
 
 #### **1.1 Portfolio Performance Built-in Quote Providers**
+
 - **Yahoo Finance Integration**: PP's primary price and basic data source
 - **Portfolio Performance Historical Data**: Existing price feeds and basic security metadata
 - **PP Security Database**: Securities already known to Portfolio Performance ecosystem
 
-#### **1.2 Portfolio Performance Quote Feed APIs** 
+#### **1.2 Portfolio Performance Quote Feed APIs**
+
 - **Feed Types**: PP supports multiple quote providers (Yahoo, Alpha Vantage, etc.)
 - **Coverage**: Basic OHLC pricing, fundamental security identification (ISIN, symbol, name)
 - **Integration**: Direct integration with PP's existing quote feed infrastructure
 
 #### **1.3 Portfolio Performance Community Data**
+
 - **Taxonomy Classifications**: User-contributed classifications in PP ecosystem
 - **Security Master Imports**: PP XML imports from other users with enhanced classifications
 - **Community Templates**: Shared classification schemas from PP forum/community
@@ -44,24 +47,28 @@ We will implement a **four-tier hierarchical data sourcing strategy** for securi
 **Maintenance**: Community-maintained, direct integration possible  
 
 #### **2.1 pp-portfolio-classifier Core Functionality**
-- **GitHub Repository**: https://github.com/fizban99/pp-portfolio-classifier
+
+- **GitHub Repository**: <https://github.com/fizban99/pp-portfolio-classifier>
 - **Fund Analysis**: Mutual fund and ETF holdings breakdown and classification
 - **Data Sources**: Morningstar, fund prospectuses, regulatory filings
 - **Output Format**: Direct compatibility with Portfolio Performance taxonomy structure
 
 #### **2.2 Enhanced pp-portfolio-classifier Integration**
+
 - **Automated Classification**: Batch processing of fund/ETF portfolios
 - **Holdings Analysis**: Underlying asset classification for complex instruments
 - **Sector Mapping**: GICS sector assignment based on underlying holdings
 - **Custom Integration**: Enhanced version with database persistence and API wrapper
 
 #### **2.3 pp-portfolio-classifier Data Coverage**
+
 - **Mutual Funds**: Comprehensive analysis of fund holdings and objectives
 - **ETFs**: Index tracking and holdings-based classification
 - **Complex Instruments**: REITs, closed-end funds, structured products
 - **Geographic Coverage**: Primarily US/European funds with some international coverage
 
 #### **2.4 BlackRock Quarterly Holdings Reports (PDF Integration)**
+
 - **Data Source**: Quarterly holdings reports published by BlackRock for iShares ETFs
 - **Asset Allocation Focus**: Detailed sector and geographic breakdowns for asset allocation analysis
 - **Coverage**: Comprehensive holdings data for iShares ETF portfolio
@@ -76,24 +83,28 @@ We will implement a **four-tier hierarchical data sourcing strategy** for securi
 **Maintenance**: Project team responsibility - sustainable API integrations only  
 
 #### **3.1 OpenFIGI API Integration**
+
 - **Coverage**: Comprehensive equity and bond identification and classification
 - **Cost Model**: Free tier with rate limits, paid tiers for higher volume
 - **Data Quality**: Bloomberg-maintained, institutional-grade reference data
 - **Classification**: GICS sectors, industry groups, security types
 
-#### **3.2 Alpha Vantage API Integration** 
+#### **3.2 Alpha Vantage API Integration**
+
 - **Coverage**: Fundamental data, company profiles, financial statements
 - **Cost Model**: Free tier with daily limits, affordable paid tiers
 - **Data Quality**: Good coverage for US/major international equities
 - **Use Case**: Supplement OpenFIGI for fundamental analysis data
 
 #### **3.3 Financial Modeling Prep API**
+
 - **Coverage**: Company profiles, financial ratios, ESG data
 - **Cost Model**: Freemium model with reasonable paid tiers
 - **Data Quality**: Good for US equities, growing international coverage
 - **Use Case**: Enhanced fundamental data and ESG classifications
 
 #### **3.4 Government and Regulatory Sources**
+
 - **SEC EDGAR**: US regulatory filings, fund prospectuses
 - **ESMA FIRDS**: European regulatory reference data
 - **National Regulators**: Country-specific regulatory databases
@@ -106,18 +117,21 @@ We will implement a **four-tier hierarchical data sourcing strategy** for securi
 **Maintenance**: Manual processes with workflow management and audit trails  
 
 #### **4.1 Manual Classification Interface**
+
 - **Web UI**: Browser-based classification interface for unmatched securities
 - **Workflow Management**: Assignment, review, approval processes
 - **Data Validation**: Cross-reference checks against other sources
 - **Audit Trail**: Complete history of manual classifications and changes
 
 #### **4.2 Private Investment Processing**
+
 - **Private Equity**: Manual classification with industry/sector assignment
 - **Real Estate**: Property type, geographic, and asset class classification
 - **Alternative Investments**: Commodities, collectibles, cryptocurrency
 - **Documentation Requirements**: Supporting documentation for manual entries
 
 #### **4.3 Expert Review and Override Capability**
+
 - **Automated Override**: Manual corrections to automated classifications
 - **Expert Validation**: Subject matter expert review of complex classifications
 - **Quality Assurance**: Systematic review of high-value or high-risk classifications
@@ -161,6 +175,7 @@ def classify_security(security_identifier):
 ### Data Quality and Confidence Scoring
 
 #### **Confidence Levels by Tier**
+
 - **Tier 1 (PP Native)**: Confidence 0.95+ (proven, community-validated)
 - **Tier 2 (pp-classifier)**: Confidence 0.90+ (specialized tool, maintained)
 - **Tier 2 (BlackRock Holdings)**: Confidence 0.95+ (authoritative fund manager source)
@@ -168,6 +183,7 @@ def classify_security(security_identifier):
 - **Tier 4 (Manual)**: Confidence variable (depends on expertise and documentation)
 
 #### **Data Freshness Requirements**
+
 - **Tier 1**: Real-time or daily updates (PP managed)
 - **Tier 2**: Weekly batch processing (fund holdings change infrequently)
 - **Tier 2 (BlackRock)**: Quarterly updates (aligned with regulatory filing schedule)
@@ -177,12 +193,14 @@ def classify_security(security_identifier):
 ### Cost Management Strategy
 
 #### **Budget Allocation by Tier**
+
 - **Tier 1**: $0/month (leverages existing PP infrastructure)
 - **Tier 2**: $0/month (open source, community maintained)
 - **Tier 3**: $200-500/month (API costs, primarily OpenFIGI and Alpha Vantage)
 - **Tier 4**: Staff time allocation (2-4 hours/week for manual classification)
 
 #### **Cost Controls**
+
 - API rate limiting and intelligent caching
 - Batch processing during off-peak hours
 - Quarterly cost review and optimization
@@ -268,7 +286,7 @@ def classify_security(security_identifier):
 ## References
 
 - Portfolio Performance Quote Feed Documentation
-- pp-portfolio-classifier GitHub Repository: https://github.com/fizban99/pp-portfolio-classifier
-- OpenFIGI API Documentation: https://www.openfigi.com/api
-- Alpha Vantage API Documentation: https://www.alphavantage.co/documentation/
+- pp-portfolio-classifier GitHub Repository: <https://github.com/fizban99/pp-portfolio-classifier>
+- OpenFIGI API Documentation: <https://www.openfigi.com/api>
+- Alpha Vantage API Documentation: <https://www.alphavantage.co/documentation/>
 - Portfolio Performance Community Forum Classification Discussions

@@ -1,6 +1,6 @@
 # **Portfolio-Performance Security-Master & Classification Project Plan**
 
-*(Complete roadmap and technical implementation details)*
+## (Complete roadmap and technical implementation details)
 
 > **Quick Links**: [MVP Definition](MVP.md) | [Architecture Decisions](docs/adr/) | [Database Schema](schema_exports/) | [Sample Data](sample_data/)
 
@@ -10,7 +10,7 @@
 
 > **For MVP scope and immediate deliverables, see [MVP.md](MVP.md)**
 
-Portfolio Performance (PP) is an elegant desktop tracker yet ships without an enterprise-grade security master. As positions arrive from Interactive Brokers, Wells Fargo, AltoIRA, and PDFs, inconsistencies creep in—ticker aliases, duplicate ISINs, and missing sector tags hamper analytics. This project erects a dedicated "Security-Master Service" that:
+Portfolio Performance (PP) is an elegant desktop tracker yet ships without an enterprise-grade security master. As positions arrive from Interactive Brokers, Wells Fargo, AltoIRA, and PDFs, inconsistencies creep in: ticker aliases, duplicate ISINs, and missing sector tags hamper analytics. This project erects a dedicated "Security-Master Service" that:
 
 * centralises identifiers and taxonomies in a PostgreSQL 17 instance running natively on your Unraid server,
 * re-uses the open-source **pp-portfolio-classifier** to dissect funds and ETFs,
@@ -24,9 +24,9 @@ The result? New users can **clone → install Postgres via Community Apps → im
 
 ## 1 Background & Problem Statement
 
-PP recognises only a flat asset-class list and expects users to tag every security by hand. That model collapses when you manage hundreds of ISINs across multiple custodians and want to slice by GICS, TRBC, or CFI. Manual upkeep breeds drift; “APPL” sneaks in beside “AAPL”; a bond masquerades as cash. Meanwhile, Unraid already hosts your home lab and offers a maintained PostgreSQL template—so the infrastructure backbone is one click away. Without a disciplined master you are, metaphorically, building a skyscraper on shifting sand.
+PP recognises only a flat asset-class list and expects users to tag every security by hand. That model collapses when you manage hundreds of ISINs across multiple custodians and want to slice by GICS, TRBC, or CFI. Manual upkeep breeds drift; “APPL” sneaks in beside “AAPL”; a bond masquerades as cash. Meanwhile, Unraid already hosts your home lab and offers a maintained PostgreSQL template, so the infrastructure backbone is one click away. Without a disciplined master you are, metaphorically, building a skyscraper on shifting sand.
 
-*Bullet List*
+### Bullet List
 
 * **Symptoms:** inconsistent tags, duplicate tickers, slow analytics.
 * **Root cause:** PP lacks an authoritative master and automated ingestion.
@@ -37,20 +37,23 @@ PP recognises only a flat asset-class list and expects users to tag every securi
 ## 2 Project Goals & Success Criteria
 
 ### 2.1 Core Classification Goals
+
 1. **Accuracy** – ≥ 95 % of listed securities auto-classified to GICS Level 2 or TRBC Level 3.
 2. **Completeness** – 100 % of positions present in PP exist in the master within 24 h of import.
 3. **Reproducibility** – every taxonomy snapshot and API payload stored with hash & timestamp.
 
 ### 2.2 Portfolio Performance Integration Goals
-4. **Complete Backup Restoration** – Generate valid PP XML backup files from database that fully restore PP instances.
-5. **Bidirectional Synchronization** – Import complete PP XML backups and export complete restoration files.
-6. **Transaction Preservation** – Maintain complete transaction history with all fees, taxes, and cross-references.
-7. **Data Sovereignty** – Database becomes authoritative source for all Portfolio Performance data.
+
+1. **Complete Backup Restoration** – Generate valid PP XML backup files from database that fully restore PP instances.
+2. **Bidirectional Synchronization** – Import complete PP XML backups and export complete restoration files.
+3. **Transaction Preservation** – Maintain complete transaction history with all fees, taxes, and cross-references.
+4. **Data Sovereignty** – Database becomes authoritative source for all Portfolio Performance data.
 
 ### 2.3 Operational Goals  
-8. **On-boarding** – a *Quick-Start* doc enabling a new analyst to stand the platform up on Windows/macOS in ≤ 30 min.
-9. **Zero Data Loss** – Round-trip validation: PP XML → Database → PP XML produces identical results.
-10. **Performance** – Generate complete backup for 10,000+ transactions within 30 seconds.
+
+1. **On-boarding** – a *Quick-Start* doc enabling a new analyst to stand the platform up on Windows/macOS in ≤ 30 min.
+2. **Zero Data Loss** – Round-trip validation: PP XML → Database → PP XML produces identical results.
+3. **Performance** – Generate complete backup for 10,000+ transactions within 30 seconds.
 
 ---
 
@@ -71,12 +74,12 @@ PP recognises only a flat asset-class list and expects users to tag every securi
 
 ### 3.2 Data Flow Pattern
 
-```
+```text
 Raw Institution Data → Institution Tables → Consolidated Views → PP Export
      (Transactions)    (Per-Institution)    (Group/Account)    (XML/JSON)
 ```
 
-*Institution-Specific Benefits:*
+#### Institution-Specific Benefits
 
 * **Wells Fargo:** CSV import with account hierarchy preservation
 * **Interactive Brokers:** Flex Query XML with complex derivatives support  
@@ -96,25 +99,28 @@ Raw Institution Data → Institution Tables → Consolidated Views → PP Export
 
 ### 4.1 Transaction-Centric Database Schema
 
-**Institution Transaction Tables:**
-- `transactions_wells_fargo` - Wells Fargo CSV imports with account hierarchy
-- `transactions_interactive_brokers` - IBKR Flex Query data with derivatives support
-- `transactions_altoira` - AltoIRA PDF parsing with manual review workflow  
-- `transactions_kubera` - Kubera aggregated data for validation
+#### Institution Transaction Tables
 
-**Consolidated Views:**
-- `v_holdings_by_group` - Portfolio Performance group-level positions
-- `v_holdings_by_account` - Portfolio Performance account-level positions
-- `v_transactions_for_pp_export` - Normalized transactions for PP XML/JSON export
-- `v_data_quality_summary` - Cross-institution validation and quality metrics
+* `transactions_wells_fargo` - Wells Fargo CSV imports with account hierarchy
+* `transactions_interactive_brokers` - IBKR Flex Query data with derivatives support
+* `transactions_altoira` - AltoIRA PDF parsing with manual review workflow  
+* `transactions_kubera` - Kubera aggregated data for validation
 
-**Security Master Table:**
-- Complete taxonomy classification (GICS, TRBC, CFI, BRX-Plus custom)
-- Data quality scoring (0.00-1.00) based on completeness
-- OpenFIGI API integration for equity/bond classification
-- Portfolio Performance securities import compatibility
+#### Consolidated Views
 
-*Key Benefits:*
+* `v_holdings_by_group` - Portfolio Performance group-level positions
+* `v_holdings_by_account` - Portfolio Performance account-level positions
+* `v_transactions_for_pp_export` - Normalized transactions for PP XML/JSON export
+* `v_data_quality_summary` - Cross-institution validation and quality metrics
+
+#### Security Master Table
+
+* Complete taxonomy classification (GICS, TRBC, CFI, BRX-Plus custom)
+* Data quality scoring (0.00-1.00) based on completeness
+* OpenFIGI API integration for equity/bond classification
+* Portfolio Performance securities import compatibility
+
+#### Key Benefits
 
 * **Data Lineage:** Complete traceability from institution source to PP export
 * **Quality Validation:** Institution-to-institution comparison for accuracy
@@ -127,55 +133,64 @@ Loads GICS CSV, TRBC CSV, ISO 10962 CFI list. Files live under `data/` with SHA-
 
 ### 4.3 Institution-Specific Extraction Layer
 
-**Wells Fargo Adapter:**
-- CSV parser with account type detection (IRA, Taxable, etc.)
-- Investment objective and sub-account mapping
-- Transaction type normalization (Buy/Sell/Dividend/Transfer)
+#### Wells Fargo Adapter
 
-**Interactive Brokers Adapter:**  
-- Flex Query XML parsing with trade ID preservation
-- Complex derivatives support (options, futures, strikes, expiry)
-- IBKR fee breakdown (commission, regulatory, exchange fees)
+* CSV parser with account type detection (IRA, Taxable, etc.)
+* Investment objective and sub-account mapping
+* Transaction type normalization (Buy/Sell/Dividend/Transfer)
 
-**AltoIRA Adapter:**
-- PDF statement parsing with OCR confidence scoring
-- Manual review workflow for low-confidence extractions
-- Page-level transaction extraction with audit trail
+#### Interactive Brokers Adapter
 
-**Kubera Adapter:**
-- JSON API integration with sheet/section hierarchy preservation  
-- Real-time aggregated data for cross-validation
-- Provider connection tracking (Finicity, Yodlee, manual)
+* Flex Query XML parsing with trade ID preservation
+* Complex derivatives support (options, futures, strikes, expiry)
+* IBKR fee breakdown (commission, regulatory, exchange fees)
 
-*Common Features:*
-- Import batch tracking with rollback capabilities
-- Raw file archival to `data/raw/{institution}/{YYYYMMDD}`
-- Data quality scoring and error flagging
+#### AltoIRA Adapter
+
+* PDF statement parsing with OCR confidence scoring
+* Manual review workflow for low-confidence extractions
+* Page-level transaction extraction with audit trail
+
+#### Kubera Adapter
+
+* JSON API integration with sheet/section hierarchy preservation  
+* Real-time aggregated data for cross-validation
+* Provider connection tracking (Finicity, Yodlee, manual)
+
+#### Common Features
+
+* Import batch tracking with rollback capabilities
+* Raw file archival to `data/raw/{institution}/{YYYYMMDD}`
+* Data quality scoring and error flagging
 
 ### 4.4 Classification Engine
 
 **Four-Tier Data Sourcing Hierarchy** (See [ADR-003](docs/adr/ADR-003-securities-master-data-sourcing-hierarchy.md))
 
 #### **Tier 1: Portfolio Performance Native Sources**
-- **PP Quote Feeds**: Yahoo Finance and PP built-in providers for basic security data
-- **PP Community Data**: User-contributed classifications and community templates
-- **PP Historical Data**: Existing price feeds and security metadata
+
+* **PP Quote Feeds**: Yahoo Finance and PP built-in providers for basic security data
+* **PP Community Data**: User-contributed classifications and community templates
+* **PP Historical Data**: Existing price feeds and security metadata
 
 #### **Tier 2: External Library Integration** (See [ADR-008](docs/adr/ADR-008-external-repository-integration-strategy.md))
-- **Automated Fund Analysis**: [pp-portfolio-classifier](https://github.com/fizban99/pp-portfolio-classifier) for mutual fund and ETF holdings breakdown
-- **XML Data Integration**: [ppxml2db](https://github.com/pfalcon/ppxml2db) for PP XML ⇄ database round-trip conversion
-- **Holdings-Based Classification**: Underlying asset analysis for complex instruments
-- **Open Source Integration**: Zero-cost, community-maintained classification engines
+
+* **Automated Fund Analysis**: [pp-portfolio-classifier](https://github.com/fizban99/pp-portfolio-classifier) for mutual fund and ETF holdings breakdown
+* **XML Data Integration**: [ppxml2db](https://github.com/pfalcon/ppxml2db) for PP XML ⇄ database round-trip conversion
+* **Holdings-Based Classification**: Underlying asset analysis for complex instruments
+* **Open Source Integration**: Zero-cost, community-maintained classification engines
 
 #### **Tier 3: Custom API Development**
-- **OpenFIGI API**: Bloomberg-maintained equity and bond classification ([openfigi.com][6])
-- **Alpha Vantage API**: Fundamental data and company profiles
-- **Regulatory Sources**: SEC EDGAR, ESMA FIRDS for comprehensive coverage
+
+* **OpenFIGI API**: Bloomberg-maintained equity and bond classification ([openfigi.com][6])
+* **Alpha Vantage API**: Fundamental data and company profiles
+* **Regulatory Sources**: SEC EDGAR, ESMA FIRDS for comprehensive coverage
 
 #### **Tier 4: Manual Processes**
-- **Web UI Classification**: Browser-based interface for unmatched securities
-- **Expert Review**: Manual override and private investment classification
-- **Quality Assurance**: Systematic review with audit trails
+
+* **Web UI Classification**: Browser-based interface for unmatched securities
+* **Expert Review**: Manual override and private investment classification
+* **Quality Assurance**: Systematic review with audit trails
 
 *Classification Logic*: Cascade through tiers with confidence scoring and cost optimization
 
@@ -184,18 +199,21 @@ Loads GICS CSV, TRBC CSV, ISO 10962 CFI list. Files live under `data/` with SHA-
 **Advanced Quantitative Analytics** (See [ADR-009](docs/adr/ADR-009-institutional-grade-quantitative-portfolio-analytics.md))
 
 #### **Core Analytics Capabilities**
-- **Risk-Adjusted Metrics**: Sharpe Ratio, Treynor Ratio, Information Ratio, Alpha, Beta, Tracking Error
-- **Portfolio Optimization**: Mean-variance optimization, risk parity, factor-based optimization
-- **Risk Analysis**: Monte Carlo simulation, VaR/CVaR, stress testing, scenario analysis
-- **Performance Attribution**: Factor decomposition, sector/security attribution, style analysis
+
+* **Risk-Adjusted Metrics**: Sharpe Ratio, Treynor Ratio, Information Ratio, Alpha, Beta, Tracking Error
+* **Portfolio Optimization**: Mean-variance optimization, risk parity, factor-based optimization
+* **Risk Analysis**: Monte Carlo simulation, VaR/CVaR, stress testing, scenario analysis
+* **Performance Attribution**: Factor decomposition, sector/security attribution, style analysis
 
 #### **External Analytics Integration**
-- **Monte Carlo Simulation**: [pyscripter/XLRisk](https://github.com/pyscripter/XLRisk) for comprehensive risk modeling
-- **Portfolio Optimization**: [lequant40/portfolio_allocation_js](https://github.com/lequant40/portfolio_allocation_js) for modern portfolio theory algorithms
-- **Risk Metrics**: [mayest/Portfolio-Performance](https://github.com/mayest/Portfolio-Performance) for Excel-based analytics integration
+
+* **Monte Carlo Simulation**: [pyscripter/XLRisk](https://github.com/pyscripter/XLRisk) for comprehensive risk modeling
+* **Portfolio Optimization**: [lequant40/portfolio_allocation_js](https://github.com/lequant40/portfolio_allocation_js) for modern portfolio theory algorithms
+* **Risk Metrics**: [mayest/Portfolio-Performance](https://github.com/mayest/Portfolio-Performance) for Excel-based analytics integration
 
 #### **Analytics Architecture**
-```
+
+```text
 src/analytics/
 ├── core/              # Risk-adjusted performance metrics
 ├── adapters/          # External library integration adapters  
@@ -205,17 +223,19 @@ src/analytics/
 
 ### 4.6 Architecture Enhancements
 
-**Event Sourcing & CQRS Implementation:**
-- **Event Sourcing**: Complete transaction audit trail with event sourcing pattern for regulatory compliance
-- **CQRS Pattern**: Separate read/write models for classification operations vs. export generation
-- **Async Processing**: Asynchronous classification pipeline for large dataset processing (10k+ transactions)
-- **Feature Flags**: Graduated rollout system for new classification sources and institution parsers
+#### Event Sourcing & CQRS Implementation
 
-**Technical Implementation Patterns:**
-- Async task queues for classification processing with progress tracking
-- Event-driven architecture for real-time data quality monitoring
-- Feature toggle framework for safe deployment of classification engines
-- Distributed caching layer for API rate limit management
+* **Event Sourcing**: Complete transaction audit trail with event sourcing pattern for regulatory compliance
+* **CQRS Pattern**: Separate read/write models for classification operations vs. export generation
+* **Async Processing**: Asynchronous classification pipeline for large dataset processing (10k+ transactions)
+* **Feature Flags**: Graduated rollout system for new classification sources and institution parsers
+
+#### Technical Implementation Patterns
+
+* Async task queues for classification processing with progress tracking
+* Event-driven architecture for real-time data quality monitoring
+* Feature toggle framework for safe deployment of classification engines
+* Distributed caching layer for API rate limit management
 
 ### 4.7 Manual Override UI
 
@@ -225,31 +245,34 @@ FastAPI + React micro-frontend served on `https://unraid.lan:5050`; JWT auth bou
 
 **🎯 Full Backup Restoration Capability** (See [ADR-002](docs/adr/ADR-002-portfolio-performance-backup-restoration.md))
 
-**PP-Specific Database Tables:**
-- `pp_client_config` - PP version and base currency configuration
-- `pp_accounts` / `pp_portfolios` - Account and portfolio hierarchies with UUIDs
-- `pp_account_transactions` / `pp_portfolio_transactions` - Complete transaction history
-- `pp_transaction_units` - Granular fee and tax breakdown
-- `pp_security_prices` - Complete daily price history
-- `pp_settings` / `pp_bookmarks` - User configuration and preferences
+#### PP-Specific Database Tables
+
+* `pp_client_config` - PP version and base currency configuration
+* `pp_accounts` / `pp_portfolios` - Account and portfolio hierarchies with UUIDs
+* `pp_account_transactions` / `pp_portfolio_transactions` - Complete transaction history
+* `pp_transaction_units` - Granular fee and tax breakdown
+* `pp_security_prices` - Complete daily price history
+* `pp_settings` / `pp_bookmarks` - User configuration and preferences
 
 **XML Export Engine:** (`pp_xml_export.py`)
-- Generate complete, restorable PP XML backup files from database
-- Preserve all UUIDs, cross-references, and transaction relationships  
-- Include complete price history and user settings
-- Support multiple PP versions and configurations
 
-**Bidirectional Synchronization:**
+* Generate complete, restorable PP XML backup files from database
+* Preserve all UUIDs, cross-references, and transaction relationships  
+* Include complete price history and user settings
+* Support multiple PP versions and configurations
+
+#### Bidirectional Synchronization
 
 1. **Import Capability** - Parse complete PP XML backups into database
 2. **Export Capability** - Generate valid PP XML backups from database  
 3. **Round-trip Validation** - PP XML → Database → PP XML produces identical results
 
-**Integration Benefits:**
-- **Data Sovereignty**: Database becomes authoritative source for PP data
-- **Disaster Recovery**: Generate PP backups from database at any time
-- **Advanced Analytics**: SQL access to complete portfolio history
-- **Multi-Instance Support**: Manage multiple PP configurations from single database
+#### Integration Benefits
+
+* **Data Sovereignty**: Database becomes authoritative source for PP data
+* **Disaster Recovery**: Generate PP backups from database at any time
+* **Advanced Analytics**: SQL access to complete portfolio history
+* **Multi-Instance Support**: Manage multiple PP configurations from single database
 
 ---
 
@@ -259,7 +282,7 @@ FastAPI + React micro-frontend served on `https://unraid.lan:5050`; JWT auth bou
 
 Install **PostgreSQL 17 – Official** via Apps; map `/var/lib/postgresql/data` to `/mnt/user/appdata/pp_postgres/data`; set `POSTGRES_USER=pp_user`, `POSTGRES_DB=pp_master`, strong password, and `TZ=America/Los_Angeles`. Auto-start and activate “Update notifications”. ([unraid.net][8], [forums.unraid.net][9])
 
-*Bullet List*
+#### Bullet List
 
 * Backups: CA-Backup nightly at 02:00, WAL-quiesce script for consistency.
 * Monitoring: optional pgAdmin container on port 5051.
@@ -273,7 +296,7 @@ Install **PostgreSQL 17 – Official** via Apps; map `/var/lib/postgresql/data` 
 
 ## 6 Repository & Code Organisation
 
-```
+```text
 portfolio-master/
 ├─ data/                    # taxonomies, raw archives
 ├─ docs/
@@ -307,7 +330,7 @@ portfolio-master/
 └─ .env.example
 ```
 
-*Bullet List*
+### Bullet List
 
 * Ruff + Black + MyPy enforced in Nox; CycloneDX SBOM published on CI.
 
@@ -332,7 +355,7 @@ GitHub Actions workflows: **lint-test**, **security-scan** (Bandit, Trivy), **sn
 
 ## 9 Risk Management & Mitigations
 
-*Bullet List*
+### Bullet List
 
 * **Vendor HTML shifts** break fund scraper → unit tests with live URLs & fallback to cached X-Ray JSON.
 * **API throttling** from OpenFIGI → local result cache + back-off logic.
@@ -367,36 +390,41 @@ GitHub Actions workflows: **lint-test**, **security-scan** (Bandit, Trivy), **sn
 ### Phase Gate Requirements
 
 **Phase Gate 1 (After Phase 3):** Go/No-Go decision based on:
-- All institution parsers operational with data validation
-- Database performance meets baseline requirements
-- Data quality framework operational
+
+* All institution parsers operational with data validation
+* Database performance meets baseline requirements
+* Data quality framework operational
 
 **Phase Gate 2 (After Phase 6):** Go/No-Go decision based on:
-- Analytics engine performance validated
-- API integration resilience demonstrated  
-- Database schema stable and optimized
+
+* Analytics engine performance validated
+* API integration resilience demonstrated  
+* Database schema stable and optimized
 
 **Phase Gate 3 (After Phase 9.6):** Go/No-Go decision based on:
-- End-to-end integration fully validated across all institution → PP export flows
-- Performance requirements met under production load (10k+ transaction datasets)
-- Security penetration testing completed successfully
-- Complete rollback procedures tested and validated
+
+* End-to-end integration fully validated across all institution → PP export flows
+* Performance requirements met under production load (10k+ transaction datasets)
+* Security penetration testing completed successfully
+* Complete rollback procedures tested and validated
 
 ### Must-Have Before Production
 
-**Critical Production Requirements:**
-- Automated integration test suite covering all institution → PP export flows
-- Performance benchmarks validated for datasets matching target user scale (10k+ transactions)
-- Complete rollback procedures implemented for all destructive operations
-- Security penetration testing completed for authentication and data access paths
-- Data validation framework operational with comprehensive quality checks
-- Classification fallback strategy implemented with manual override procedures
+#### Critical Production Requirements
+
+* Automated integration test suite covering all institution → PP export flows
+* Performance benchmarks validated for datasets matching target user scale (10k+ transactions)
+* Complete rollback procedures implemented for all destructive operations
+* Security penetration testing completed for authentication and data access paths
+* Data validation framework operational with comprehensive quality checks
+* Classification fallback strategy implemented with manual override procedures
 
 ### Parallel Execution Strategy
-- Phase 2 & early Phase 3 can overlap (external integration while starting parsers)
-- Phase 4 & 5 can partially overlap (PP integration while building classification)
-- Phase 7 can start during Phase 6 (migration planning while analytics development)
-- Phase 11 can start during Phase 9.5 (monitoring setup during integration testing)
+
+* Phase 2 & early Phase 3 can overlap (external integration while starting parsers)
+* Phase 4 & 5 can partially overlap (PP integration while building classification)
+* Phase 7 can start during Phase 6 (migration planning while analytics development)
+* Phase 11 can start during Phase 9.5 (monitoring setup during integration testing)
 
 ---
 
@@ -430,7 +458,7 @@ GitHub Actions workflows: **lint-test**, **security-scan** (Bandit, Trivy), **sn
 
 ---
 
-**Ready to roll?** Once Postgres is humming on Unraid you can pull the first broker file, run `pp-master classify`, and watch Portfolio Performance snap into focus—no manual tagging, no hidden YAML, just clean, verifiable data.
+**Ready to roll?** Once Postgres is humming on Unraid you can pull the first broker file, run `pp-master classify`, and watch Portfolio Performance snap into focus: no manual tagging, no hidden YAML, just clean, verifiable data.
 
 [1]: https://www.openfigi.com/api/documentation?utm_source=chatgpt.com "Documentation | OpenFIGI"
 [2]: https://forums.unraid.net/topic/137710-plugin-appdatabackup/?utm_source=chatgpt.com "[Plugin] Appdata.Backup - Plugin Support - Forums - Unraid"
@@ -438,7 +466,6 @@ GitHub Actions workflows: **lint-test**, **security-scan** (Bandit, Trivy), **sn
 [4]: https://www.lseg.com/en/data-analytics/financial-data/indices/global-equity-indices?utm_source=chatgpt.com "Global Equity Indices - LSEG"
 [5]: https://www.morningstar.com/help-center/portfolio/xray?utm_source=chatgpt.com "X-Ray | Help - Morningstar"
 [6]: https://www.openfigi.com/about/faq?utm_source=chatgpt.com "FAQ - OpenFIGI"
-[7]: https://help.portfolio-performance.info/en/reference/file/import/?utm_source=chatgpt.com "File > Import - Portfolio Performance Manual"
 [8]: https://unraid.net/community/apps/p54?srsltid=AfmBOoqPgRGM-1JGaXIzi8OTXWNWfS0UPFcw4OBQzb53lUCxJJ6aXxRF&token=-keAFncVqtwn2BPR3rxp3bD-ryfAD8jk&utm_source=chatgpt.com "Community Apps - Unraid"
 [9]: https://forums.unraid.net/topic/190277-upgrading-postgresql-v15-v17-for-teslamate/?utm_source=chatgpt.com "Upgrading PostgreSQL v15 ->v17 (for TeslaMate) - Forums - Unraid"
 [10]: https://help.portfolio-performance.info/en/reference/file/import/csv-import/?utm_source=chatgpt.com "Importing a CSV file - Portfolio Performance Manual"

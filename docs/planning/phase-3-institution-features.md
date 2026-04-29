@@ -19,9 +19,11 @@ purpose: "Multi-institution support with complete data pipeline validation."
 ## Phase Overview
 
 ### Objective
+
 Implement complete multi-institution support with specialized data adapters for Interactive Brokers, AltoIRA, and Kubera, plus advanced cross-institution validation and data quality frameworks.
 
 ### Success Criteria
+
 - [ ] All four institutions (Wells Fargo, IBKR, AltoIRA, Kubera) importing successfully
 - [ ] Cross-institution validation identifies discrepancies with >95% accuracy  
 - [ ] Batch processing handles 50,000+ transactions across all institutions
@@ -29,6 +31,7 @@ Implement complete multi-institution support with specialized data adapters for 
 - [ ] Data quality scores show consistent improvement across all institutions
 
 ### Key Deliverables
+
 - Interactive Brokers Flex Query XML parser with derivatives support
 - AltoIRA PDF parsing with OCR confidence scoring
 - Kubera JSON API integration for validation and reconciliation
@@ -47,11 +50,13 @@ Implement complete multi-institution support with specialized data adapters for 
 **Week**: 11  
 
 #### Description
+
 Implement IBKR Flex Query XML parser supporting complex derivatives, options, and international securities.
 
 #### Implementation Steps
 
-**Step 1: IBKR XML Parser Structure Setup**
+#### Step 1: IBKR XML Parser Structure Setup
+
 ```bash
 # Create IBKR extractor module
 mkdir -p src/security_master/extractor/interactive_brokers
@@ -164,7 +169,8 @@ EOF
 poetry add lxml xmltodict
 ```
 
-**Step 2: IBKR XML Parser Implementation**
+## Step 2: IBKR XML Parser Implementation
+
 ```bash
 cat > src/security_master/extractor/interactive_brokers/parser.py << 'EOF'
 """IBKR Flex Query XML parser implementation."""
@@ -443,7 +449,8 @@ class IBKRFlexQueryParser:
 EOF
 ```
 
-**Step 3: Integration Testing**
+## Step 3: Integration Testing
+
 ```bash
 # Create IBKR parser tests
 cat > tests/unit/test_ibkr_parser.py << 'EOF'
@@ -548,7 +555,8 @@ cat > sample_data/interactive_brokers/sample_flex_query.xml << 'EOF'
 EOF
 ```
 
-**Validation Commands:**
+## Validation Commands (1)
+
 ```bash
 # Test IBKR parser import
 python -c "
@@ -572,7 +580,8 @@ print(f'Parsed {len(result[\"transactions\"])} transactions')
 poetry run pytest tests/unit/test_ibkr_parser.py -v
 ```
 
-#### Acceptance Criteria
+### Acceptance Criteria
+
 - [ ] XML parser handling IBKR Flex Query format variations
 - [ ] Complex derivatives support (options, futures, strikes, expiry dates)
 - [ ] Multi-currency transaction handling
@@ -591,11 +600,13 @@ poetry run pytest tests/unit/test_ibkr_parser.py -v
 **Week**: 11  
 
 #### Description
+
 Implement AltoIRA PDF statement parser with OCR capabilities and manual review workflow for low-confidence extractions.
 
 #### Implementation Steps
 
-**Step 1: PDF Processing Dependencies Setup**
+#### Step 1: PDF Processing Dependencies Setup
+
 ```bash
 # Install PDF and OCR dependencies
 poetry add PyPDF2 pdfplumber pytesseract Pillow pdf2image
@@ -608,7 +619,8 @@ sudo apt-get install tesseract-ocr tesseract-ocr-eng poppler-utils
 # brew install tesseract poppler
 ```
 
-**Step 2: AltoIRA PDF Parser Implementation**
+## Step 2: AltoIRA PDF Parser Implementation
+
 ```bash
 # Create AltoIRA extractor module
 mkdir -p src/security_master/extractor/altoira
@@ -1138,7 +1150,8 @@ class AltoIRAPDFParser:
 EOF
 ```
 
-**Step 3: Manual Review Workflow Components**
+## Step 3: Manual Review Workflow Components
+
 ```bash
 # Create manual review models
 cat > src/security_master/workflow/manual_review.py << 'EOF'
@@ -1211,7 +1224,8 @@ class ManualReviewQueue:
 EOF
 ```
 
-**Validation Commands:**
+## Validation Commands (2)
+
 ```bash
 # Test AltoIRA parser import
 python -c "
@@ -1233,7 +1247,8 @@ print('OCR dependencies available')
 "
 ```
 
-#### Acceptance Criteria
+### Acceptance Criteria
+
 - [ ] PDF text extraction with OCR fallback
 - [ ] Confidence scoring for extracted data
 - [ ] Manual review workflow for low-confidence extractions
@@ -1251,9 +1266,11 @@ print('OCR dependencies available')
 **Week**: 12  
 
 #### Description
+
 Integrate Kubera JSON API for real-time portfolio data validation and cross-institution reconciliation.
 
 #### Acceptance Criteria
+
 - [ ] Kubera JSON API client with authentication
 - [ ] Sheet/section hierarchy preservation
 - [ ] Real-time data sync for validation purposes
@@ -1271,9 +1288,11 @@ Integrate Kubera JSON API for real-time portfolio data validation and cross-inst
 **Week**: 12  
 
 #### Description
+
 Implement sophisticated cross-institution validation to identify discrepancies and improve data quality.
 
 #### Acceptance Criteria
+
 - [ ] Position reconciliation across institutions
 - [ ] Discrepancy detection and reporting
 - [ ] Data quality scoring improvements through cross-validation
@@ -1291,9 +1310,11 @@ Implement sophisticated cross-institution validation to identify discrepancies a
 **Week**: 13  
 
 #### Description
+
 Optimize batch processing for handling large datasets across multiple institutions efficiently.
 
 #### Acceptance Criteria
+
 - [ ] Parallel processing for multiple institution files
 - [ ] Memory optimization for large datasets
 - [ ] Progress tracking and status reporting
@@ -1311,9 +1332,11 @@ Optimize batch processing for handling large datasets across multiple institutio
 **Week**: 13  
 
 #### Description
+
 Implement comprehensive manual review workflow for exceptions, low-confidence data, and discrepancies.
 
 #### Acceptance Criteria
+
 - [ ] Review queue management system
 - [ ] Prioritization based on data quality scores
 - [ ] User interface for review and correction
@@ -1331,9 +1354,11 @@ Implement comprehensive manual review workflow for exceptions, low-confidence da
 **Week**: 14  
 
 #### Description
+
 Enhance data lineage tracking to support complex multi-institution data flows and regulatory compliance.
 
 #### Acceptance Criteria
+
 - [ ] Complete data lineage from source to final classification
 - [ ] Regulatory compliance reporting capabilities
 - [ ] Change tracking and version control for all data modifications
@@ -1350,9 +1375,11 @@ Enhance data lineage tracking to support complex multi-institution data flows an
 **Week**: 14  
 
 #### Description
+
 Comprehensive testing of all Phase 3 functionality with realistic multi-institution datasets.
 
 #### Acceptance Criteria
+
 - [ ] End-to-end testing with all four institutions
 - [ ] Performance testing with 50,000+ transaction datasets
 - [ ] Data quality validation across institution boundaries
@@ -1365,6 +1392,7 @@ Comprehensive testing of all Phase 3 functionality with realistic multi-institut
 ## Phase 3 Success Criteria
 
 ### Technical Validation
+
 - [ ] All institution parsers handle their respective data formats with >99% accuracy
 - [ ] Cross-institution validation identifies known discrepancies in test datasets  
 - [ ] System processes 50,000+ transactions across all institutions within 15 minutes
@@ -1372,6 +1400,7 @@ Comprehensive testing of all Phase 3 functionality with realistic multi-institut
 - [ ] Data quality scores improve by measurable percentage over Phase 2 baseline
 
 ### Performance Benchmarks
+
 - [ ] IBKR XML processing: 10,000+ transactions per minute
 - [ ] PDF processing: 100+ pages per minute with >95% OCR confidence
 - [ ] Kubera API sync: <30 seconds for complete portfolio refresh
@@ -1379,6 +1408,7 @@ Comprehensive testing of all Phase 3 functionality with realistic multi-institut
 - [ ] Batch processing: All institutions processed concurrently without resource conflicts
 
 ### Business Validation
+
 - [ ] Complete institutional data coverage with minimal manual intervention
 - [ ] Data discrepancy detection enables portfolio accuracy validation
 - [ ] System scalability demonstrated for production transaction volumes

@@ -10,6 +10,7 @@
 Portfolio Performance, while excellent for retail investors, lacks the sophisticated quantitative analytics capabilities expected in institutional portfolio management. Our Security-Master Service has the opportunity to bridge this gap by implementing institutional-grade analytics that leverage our centralized data architecture and external quantitative libraries.
 
 Current Portfolio Performance analytics limitations:
+
 - Basic performance metrics (returns, volatility)
 - Limited risk analysis capabilities  
 - No portfolio optimization features
@@ -19,6 +20,7 @@ Current Portfolio Performance analytics limitations:
 - Limited benchmark comparison capabilities
 
 Target institutional capabilities identified:
+
 - **Risk-Adjusted Metrics**: Sharpe Ratio, Treynor Ratio, Information Ratio, Alpha, Beta, Tracking Error
 - **Portfolio Optimization**: Mean-variance optimization, risk parity, factor-based optimization
 - **Risk Analysis**: Monte Carlo simulation, VaR/CVaR, stress testing, scenario analysis
@@ -31,7 +33,7 @@ We will implement **institutional-grade quantitative portfolio analytics** as a 
 
 ### Analytics Architecture
 
-```
+```text
 src/analytics/
 ├── core/
 │   ├── metrics.py              # Risk-adjusted performance metrics
@@ -55,11 +57,13 @@ src/analytics/
 ### External Library Integration Strategy
 
 **Primary Libraries** (per ADR-008 Tier 2):
+
 - **pyscripter/XLRisk** - Monte Carlo simulation and risk analysis
 - **lequant40/portfolio_allocation_js** - Modern portfolio optimization algorithms  
 - **mayest/Portfolio-Performance** - Excel-based risk metrics and calculations
 
 **Implementation Approach:**
+
 1. **Adapter Pattern**: Isolate external dependencies behind clean interfaces
 2. **Fallback Algorithms**: Implement native Python versions for critical calculations
 3. **Performance Optimization**: Cache expensive calculations, use vectorized operations
@@ -68,6 +72,7 @@ src/analytics/
 ### Core Analytics Capabilities
 
 #### 1. Risk-Adjusted Performance Metrics
+
 ```python
 # Target metrics implementation
 - Sharpe Ratio (risk-free rate adjusted)
@@ -81,6 +86,7 @@ src/analytics/
 ```
 
 #### 2. Portfolio Optimization
+
 ```python
 # Optimization algorithms
 - Mean-Variance Optimization (Markowitz)
@@ -93,6 +99,7 @@ src/analytics/
 ```
 
 #### 3. Risk Analysis & Simulation
+
 ```python
 # Risk modeling capabilities  
 - Monte Carlo Portfolio Simulation (10,000+ paths)
@@ -104,6 +111,7 @@ src/analytics/
 ```
 
 #### 4. Performance Attribution
+
 ```python
 # Attribution analysis
 - Factor Attribution (Fama-French, custom factors)
@@ -117,6 +125,7 @@ src/analytics/
 ### Data Requirements
 
 **Enhanced Database Schema:**
+
 ```sql
 -- Risk metrics storage
 CREATE TABLE portfolio_risk_metrics (
@@ -150,6 +159,7 @@ CREATE TABLE monte_carlo_simulations (
 ### Integration with Security-Master Service
 
 **Analytics Pipeline:**
+
 1. **Data Ingestion**: Portfolio positions from PP XML imports
 2. **Price Enrichment**: Historical price data from OpenFIGI, Yahoo Finance
 3. **Benchmark Data**: Index data for comparison and beta calculations
@@ -160,24 +170,28 @@ CREATE TABLE monte_carlo_simulations (
 ## Implementation Plan
 
 ### Phase 1: Foundation (Sprint 1-3)
+
 - Core metrics calculation engine (Sharpe, Alpha, Beta, etc.)
 - Database schema for analytics storage
 - Basic REST API for metrics retrieval
 - Integration with existing portfolio data
 
 ### Phase 2: External Library Integration (Sprint 4-6)  
+
 - XLRisk adapter for Monte Carlo simulation
 - portfolio_allocation_js adapter for optimization
 - Excel metrics adapter for advanced calculations
 - Comprehensive error handling and fallbacks
 
 ### Phase 3: Advanced Analytics (Sprint 7-9)
+
 - Portfolio optimization algorithms
 - Performance attribution analysis  
 - Factor model implementation
 - Stress testing and scenario analysis
 
 ### Phase 4: Institutional Features (Sprint 10-12)
+
 - Risk reporting suite
 - Optimization recommendations
 - Benchmark analysis and tracking
@@ -209,18 +223,21 @@ CREATE TABLE monte_carlo_simulations (
 ## Consequences
 
 ### Positive
+
 - **Differentiation**: Unique institutional-grade capabilities in retail-focused ecosystem
 - **Market Position**: Bridge between retail (PP) and institutional portfolio management
 - **Revenue Potential**: Premium analytics features for advanced users
 - **Data Value**: Rich analytics increase platform stickiness
 
 ### Negative
+
 - **Complexity**: Significant increase in codebase and maintenance complexity
 - **Performance**: Heavy computational requirements for advanced analytics
 - **Dependencies**: Reliance on external quantitative libraries
 - **User Experience**: Risk of overwhelming retail users with complex features
 
 ### Risk Mitigation
+
 - **Progressive Disclosure**: Basic metrics by default, advanced features opt-in
 - **Performance Optimization**: Caching, async computation, result pre-calculation
 - **Documentation**: Comprehensive help for understanding analytics concepts
@@ -229,6 +246,7 @@ CREATE TABLE monte_carlo_simulations (
 ## Compliance
 
 This ADR builds upon:
+
 - **ADR-008**: External Repository Integration Strategy (library integration approach)
 - **ADR-001**: Transaction-Centric Architecture (data foundation for analytics)
 - **ADR-003**: Securities Master Data Sourcing (price data for calculations)

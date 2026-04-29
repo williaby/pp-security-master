@@ -19,9 +19,11 @@ purpose: "Integrate external libraries and enhance classification capabilities."
 ## Phase Overview
 
 ### Objective
+
 Integrate external libraries (pp-portfolio-classifier, ppxml2db) and external APIs (OpenFIGI) to provide comprehensive security classification capabilities with proper fallback mechanisms.
 
 ### Success Criteria
+
 - [ ] External libraries integrated and passing security scans
 - [ ] Fund classification accuracy >90% on test dataset
 - [ ] OpenFIGI API integration respecting rate limits with <1% failure rate
@@ -29,6 +31,7 @@ Integrate external libraries (pp-portfolio-classifier, ppxml2db) and external AP
 - [ ] Classification pipeline processes 1,000+ securities with <10% manual review required
 
 ### Key Deliverables
+
 - pp-portfolio-classifier fork, security scan, and subtree integration
 - ppxml2db integration for Portfolio Performance XML handling
 - OpenFIGI API client with rate limiting and caching
@@ -47,11 +50,13 @@ Integrate external libraries (pp-portfolio-classifier, ppxml2db) and external AP
 **Week**: 7  
 
 #### Description
+
 Fork, security scan, and integrate pp-portfolio-classifier and ppxml2db as git subtrees following ADR-008 Tier 1 strategy.
 
 #### Implementation Steps
 
-**Step 1: Fork External Repositories**
+#### Step 1: Fork External Repositories
+
 ```bash
 # Fork pp-portfolio-classifier to organization
 gh repo fork fizban99/pp-portfolio-classifier --org your-org --clone
@@ -76,7 +81,8 @@ gh api repos/your-org/ppxml2db/branches/main/protection \
   --field required_pull_request_reviews='{"required_approving_review_count":1}'
 ```
 
-**Step 2: Security Scanning Setup**
+## Step 2: Security Scanning Setup
+
 ```bash
 # Create security scanning workflow for pp-portfolio-classifier
 mkdir -p pp-portfolio-classifier/.github/workflows
@@ -118,7 +124,8 @@ git commit -m "Add automated security scanning workflow"
 git push origin main
 ```
 
-**Step 3: Git Subtree Integration**
+## Step 3: Git Subtree Integration
+
 ```bash
 # Return to main project
 cd /home/byron/dev/pp-security-master
@@ -159,7 +166,8 @@ EOF
 chmod +x scripts/sync_external_repos.sh
 ```
 
-**Step 4: Integration Testing Setup**
+## Step 4: Integration Testing Setup
+
 ```bash
 # Create external library integration tests
 cat > tests/integration/test_external_libraries.py << 'EOF'
@@ -259,7 +267,8 @@ class PPClassifierAdapter:
 EOF
 ```
 
-**Validation Commands:**
+## Validation Commands (1)
+
 ```bash
 # Verify subtree integration
 ls -la src/external/
@@ -282,7 +291,8 @@ poetry run pip-audit
 poetry run pytest tests/integration/test_external_libraries.py -v
 ```
 
-#### Acceptance Criteria
+### Acceptance Criteria
+
 - [ ] pp-portfolio-classifier forked with security scanning
 - [ ] ppxml2db forked with security scanning  
 - [ ] Both repositories integrated as git subtrees under `src/external/`
@@ -300,11 +310,13 @@ poetry run pytest tests/integration/test_external_libraries.py -v
 **Week**: 7  
 
 #### Description
+
 Implement OpenFIGI API client with rate limiting, caching, and error handling for equity and bond classification.
 
 #### Implementation Steps
 
-**Step 1: OpenFIGI Client Implementation**
+#### Step 1: OpenFIGI Client Implementation
+
 ```bash
 # Create OpenFIGI client module
 mkdir -p src/security_master/external_apis
@@ -580,7 +592,8 @@ class OpenFIGIClient:
 EOF
 ```
 
-**Step 2: Configuration Setup**
+## Step 2: Configuration Setup
+
 ```bash
 # Add OpenFIGI configuration to .env.example
 echo "
@@ -592,7 +605,8 @@ OPENFIGI_API_KEY=your_api_key_here
 poetry add aiohttp aiofiles
 ```
 
-**Step 3: Client Testing**
+## Step 3: Client Testing
+
 ```bash
 # Create OpenFIGI client tests
 cat > tests/unit/test_openfigi_client.py << 'EOF'
@@ -658,7 +672,8 @@ async def test_openfigi_client_error_handling():
 EOF
 ```
 
-**Validation Commands:**
+## Validation Commands (2)
+
 ```bash
 # Test OpenFIGI client import
 python -c "
@@ -673,7 +688,8 @@ poetry run pytest tests/unit/test_openfigi_client.py -v
 # This would be done in integration tests
 ```
 
-#### Acceptance Criteria
+### Acceptance Criteria
+
 - [ ] API client with proper authentication and rate limiting (25 requests/minute)
 - [ ] Response caching with configurable TTL
 - [ ] Retry logic with exponential backoff
@@ -691,9 +707,11 @@ poetry run pytest tests/unit/test_openfigi_client.py -v
 **Week**: 8  
 
 #### Description
+
 Implement fund and ETF classification using integrated pp-portfolio-classifier with confidence scoring.
 
 #### Acceptance Criteria
+
 - [ ] Fund classification using pp-portfolio-classifier integration
 - [ ] Classification confidence scoring (0.0-1.0)
 - [ ] Fallback classification strategies for unmatched funds
@@ -711,9 +729,11 @@ Implement fund and ETF classification using integrated pp-portfolio-classifier w
 **Week**: 8  
 
 #### Description
+
 Integrate OpenFIGI API for equity classification with GICS and other taxonomy data.
 
 #### Acceptance Criteria
+
 - [ ] Equity classification via OpenFIGI API
 - [ ] GICS sector and industry classification
 - [ ] Market data integration (market cap, exchange)
@@ -731,9 +751,11 @@ Integrate OpenFIGI API for equity classification with GICS and other taxonomy da
 **Week**: 9  
 
 #### Description
+
 Enhance classification with confidence scoring, quality metrics, and manual review workflow triggers.
 
 #### Acceptance Criteria
+
 - [ ] Classification confidence scoring algorithm
 - [ ] Quality metrics dashboard for classification accuracy
 - [ ] Manual review workflow for low-confidence classifications
@@ -750,9 +772,11 @@ Enhance classification with confidence scoring, quality metrics, and manual revi
 **Week**: 10  
 
 #### Description
+
 Implement comprehensive resilience patterns and monitoring for all external service integrations.
 
 #### Acceptance Criteria
+
 - [ ] Circuit breaker patterns for external API calls
 - [ ] Health check endpoints for all external services
 - [ ] Service degradation handling with graceful fallbacks
@@ -765,6 +789,7 @@ Implement comprehensive resilience patterns and monitoring for all external serv
 ## Phase 2 Success Criteria
 
 ### Technical Validation
+
 - [ ] All external libraries passing security scans with no high-severity issues
 - [ ] Fund classification accuracy >90% validated on 500+ fund test dataset
 - [ ] OpenFIGI API rate limits respected with <1% failure rate over 24-hour period
@@ -772,6 +797,7 @@ Implement comprehensive resilience patterns and monitoring for all external serv
 - [ ] System maintains >99% availability despite external service issues
 
 ### Performance Metrics
+
 - [ ] Fund classification: <2 seconds average response time
 - [ ] OpenFIGI API calls: <1 second average response time  
 - [ ] Batch classification: 1,000+ securities processed within 10 minutes
@@ -779,6 +805,7 @@ Implement comprehensive resilience patterns and monitoring for all external serv
 - [ ] Memory usage: <1GB during peak classification operations
 
 ### Business Validation
+
 - [ ] Classification pipeline reduces manual review requirements by >80%
 - [ ] Classification accuracy improvements measurable against Phase 1 baseline
 - [ ] External service cost within budget projections (<$50/month)

@@ -30,6 +30,7 @@ Nox (task runner), Make (CLI shortcuts)
 ## Task 6: Remove Black, Wire Ruff Format
 
 **Files:**
+
 - Modify: `pyproject.toml:75,81,92-112,166,192-196`
 - Modify: `noxfile.py:190,227`
 - Modify: `Makefile:45,52`
@@ -209,28 +210,28 @@ In `Makefile`, change the `lint` target (line 45) from:
 
 ```makefile
 lint: ## Run linting checks
-	$(POETRY) run black --check .
+ $(POETRY) run black --check .
 ```
 
 to:
 
 ```makefile
 lint: ## Run linting checks
-	$(POETRY) run ruff format --check .
+ $(POETRY) run ruff format --check .
 ```
 
 Then change the `format` target (line 52) from:
 
 ```makefile
 format: ## Format code
-	$(POETRY) run black .
+ $(POETRY) run black .
 ```
 
 to:
 
 ```makefile
 format: ## Format code
-	$(POETRY) run ruff format .
+ $(POETRY) run ruff format .
 ```
 
 - [ ] **Step 10: Sync dependencies to drop black**
@@ -283,6 +284,7 @@ change expected for already-formatted files."
 ## Task 8: Remove safety, Confirm pip-audit
 
 **Files:**
+
 - Modify: `pyproject.toml:81`
 - Modify: `noxfile.py:212-213`
 - Modify: `Makefile:56`
@@ -335,16 +337,16 @@ In `Makefile`, change the `security` target (line 56) from:
 
 ```makefile
 security: ## Run security checks
-	$(POETRY) run safety check
-	$(POETRY) run bandit -r src
+ $(POETRY) run safety check
+ $(POETRY) run bandit -r src
 ```
 
 to:
 
 ```makefile
 security: ## Run security checks
-	$(POETRY) run pip-audit
-	$(POETRY) run bandit -r src
+ $(POETRY) run pip-audit
+ $(POETRY) run bandit -r src
 ```
 
 - [ ] **Step 4: Sync dependencies to drop safety**

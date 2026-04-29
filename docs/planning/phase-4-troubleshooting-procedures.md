@@ -1,4 +1,5 @@
 # Phase 4 Troubleshooting Procedures
+
 ## Analytics and Portfolio Performance Integration
 
 Comprehensive troubleshooting guide for Phase 4 implementation issues, including diagnostics, solutions, and prevention strategies.
@@ -8,12 +9,15 @@ Comprehensive troubleshooting guide for Phase 4 implementation issues, including
 ### Database Issues
 
 #### Issue: Benchmark Security Tables Not Created
+
 **Symptoms:**
+
 - `relation "benchmark_securities" does not exist` error
 - Missing benchmark functionality in CLI
 - Analytics queries failing
 
 **Diagnosis:**
+
 ```bash
 # Check if tables exist
 poetry run python -c "
@@ -28,6 +32,7 @@ with conn.cursor() as cur:
 ```
 
 **Solutions:**
+
 ```bash
 # Re-run benchmark schema creation
 poetry run python -c "
@@ -46,17 +51,21 @@ bash scripts/phase4/setup_analytics_pp_integration.sh
 ```
 
 **Prevention:**
+
 - Always validate database schema after migration
 - Use transaction blocks for schema changes
 - Maintain schema version tracking
 
 #### Issue: Analytics Views Missing or Broken
+
 **Symptoms:**
+
 - `relation "vw_portfolio_analytics" does not exist`
 - Analytics queries returning empty results
 - Performance degradation in analytics queries
 
 **Diagnosis:**
+
 ```bash
 # Check analytics views
 poetry run python -c "
@@ -78,6 +87,7 @@ with conn.cursor() as cur:
 ```
 
 **Solutions:**
+
 ```bash
 # Recreate analytics views
 poetry run python -c "
@@ -103,17 +113,21 @@ with conn.cursor() as cur:
 ```
 
 **Prevention:**
+
 - Regular view performance monitoring
 - Dependency tracking for view recreation
 - Backup view definitions before changes
 
 #### Issue: Database Connection Pool Exhaustion
+
 **Symptoms:**
+
 - `connection pool exhausted` errors
 - Analytics operations timing out
 - High database connection count
 
 **Diagnosis:**
+
 ```bash
 # Check active connections
 poetry run python -c "
@@ -134,6 +148,7 @@ grep -n "pool" src/security_master/storage/connection.py
 ```
 
 **Solutions:**
+
 ```bash
 # Increase connection pool size (temporary)
 export DATABASE_POOL_SIZE=20
@@ -157,6 +172,7 @@ with conn.cursor() as cur:
 ```
 
 **Prevention:**
+
 - Use context managers for database connections
 - Implement connection pooling with libraries like pgbouncer
 - Monitor connection usage regularly
@@ -165,12 +181,15 @@ with conn.cursor() as cur:
 ### Benchmark Generation Issues
 
 #### Issue: Benchmark Price Calculation Errors
+
 **Symptoms:**
+
 - Benchmark prices showing as 0 or NULL
 - `validate_benchmark_price_consistency()` failing
 - Incorrect benchmark performance metrics
 
 **Diagnosis:**
+
 ```bash
 # Check benchmark price history
 poetry run python -c "
@@ -208,6 +227,7 @@ with conn.cursor() as cur:
 ```
 
 **Solutions:**
+
 ```bash
 # Recalculate benchmark prices
 poetry run python -c "
@@ -255,18 +275,22 @@ with conn.cursor() as cur:
 ```
 
 **Prevention:**
+
 - Always validate weights sum to 1.0 before benchmark creation
 - Implement robust error handling in price calculations
 - Use database constraints to prevent invalid configurations
 - Regular validation of benchmark price consistency
 
 #### Issue: Rebalancing Not Executing
+
 **Symptoms:**
+
 - Benchmark compositions not updating on schedule
 - Portfolio weights drifting from target allocation
 - Missing entries in `benchmark_rebalance_schedule`
 
 **Diagnosis:**
+
 ```bash
 # Check rebalancing schedule
 poetry run python -c "
@@ -294,6 +318,7 @@ with conn.cursor() as cur:
 ```
 
 **Solutions:**
+
 ```bash
 # Manual rebalancing execution
 poetry run python -c "
@@ -341,6 +366,7 @@ chmod +x scripts/automated_rebalancing.sh
 ```
 
 **Prevention:**
+
 - Set up scheduled cron jobs for rebalancing
 - Implement monitoring for missed rebalances
 - Add alerting for rebalancing failures
@@ -349,12 +375,15 @@ chmod +x scripts/automated_rebalancing.sh
 ### Portfolio Performance Integration Issues
 
 #### Issue: XML Export Validation Failures
+
 **Symptoms:**
+
 - Portfolio Performance rejects XML imports
 - XML validation errors during export
 - Missing required elements in generated XML
 
 **Diagnosis:**
+
 ```bash
 # Validate XML structure
 poetry run python -c "
@@ -397,6 +426,7 @@ with open(xml_file, 'r', encoding='utf-8') as f:
 ```
 
 **Solutions:**
+
 ```bash
 # Fix XML encoding issues
 poetry run python -c "
@@ -445,18 +475,22 @@ print('✅ XML written with proper declaration')
 ```
 
 **Prevention:**
+
 - Implement comprehensive XML schema validation
 - Use character encoding validation in export pipeline
 - Test exports with actual Portfolio Performance imports
 - Maintain sample valid XML files for reference
 
 #### Issue: Synthetic Benchmark Securities Not Appearing in Portfolio Performance
+
 **Symptoms:**
+
 - Exported benchmarks missing from PP securities list
 - Benchmark securities show as invalid or unknown
 - Performance comparison not working in PP
 
 **Diagnosis:**
+
 ```bash
 # Check synthetic benchmark export
 poetry run python -c "
@@ -489,6 +523,7 @@ with conn.cursor() as cur:
 ```
 
 **Solutions:**
+
 ```bash
 # Ensure proper ISIN format for synthetic securities
 poetry run python -c "
@@ -541,6 +576,7 @@ with conn.cursor() as cur:
 ```
 
 **Prevention:**
+
 - Standardize ISIN format for all synthetic securities
 - Ensure complete price history before export
 - Test actual import process in Portfolio Performance
@@ -549,12 +585,15 @@ with conn.cursor() as cur:
 ### Analytics Performance Issues
 
 #### Issue: Slow Analytics Queries
+
 **Symptoms:**
+
 - Portfolio metrics calculations timing out
 - Analytics views taking > 30 seconds to execute
 - High CPU usage on database server during analytics
 
 **Diagnosis:**
+
 ```bash
 # Check query performance
 poetry run python -c "
@@ -595,6 +634,7 @@ with conn.cursor() as cur:
 ```
 
 **Solutions:**
+
 ```bash
 # Add missing indexes
 poetry run python -c "
@@ -657,6 +697,7 @@ with conn.cursor() as cur:
 ```
 
 **Prevention:**
+
 - Regular query performance monitoring
 - Index usage analysis and optimization
 - Implement query result caching
@@ -664,12 +705,15 @@ with conn.cursor() as cur:
 - Set up database performance alerts
 
 #### Issue: Memory Issues with Large Datasets
+
 **Symptoms:**
+
 - Out of memory errors during benchmark generation
 - Python processes consuming excessive RAM
 - Analytics operations failing on large portfolios
 
 **Diagnosis:**
+
 ```bash
 # Monitor memory usage during operations
 poetry run python -c "
@@ -695,6 +739,7 @@ print(f'Memory after GC: {memory_after_gc:.1f} MB')
 ```
 
 **Solutions:**
+
 ```bash
 # Implement batch processing
 poetry run python -c "
@@ -755,6 +800,7 @@ EOF
 ```
 
 **Prevention:**
+
 - Use streaming/batch processing for large datasets
 - Implement proper connection pooling
 - Monitor memory usage in production
@@ -764,12 +810,15 @@ EOF
 ### Monitoring and Alerting Issues
 
 #### Issue: Missing Phase 4 Monitoring
+
 **Symptoms:**
+
 - No visibility into benchmark generation health
 - Analytics performance issues go unnoticed
 - Failed exports not detected promptly
 
 **Solutions:**
+
 ```bash
 # Create comprehensive monitoring script
 cat > scripts/phase4_health_check.py << 'EOF'
@@ -968,6 +1017,7 @@ echo "✅ Comprehensive monitoring setup complete"
 ```
 
 **Prevention:**
+
 - Set up proactive monitoring from day one
 - Implement graduated alerting (info, warning, critical)
 - Create monitoring dashboards for visual tracking
@@ -977,20 +1027,25 @@ echo "✅ Comprehensive monitoring setup complete"
 ## Escalation Procedures
 
 ### Level 1: Self-Service Resolution
+
 **User Actions:**
+
 - Check this troubleshooting guide
 - Run diagnostic commands provided
 - Attempt suggested solutions
 - Review system logs for additional context
 
 ### Level 2: System Administrator
+
 **Contact When:**
+
 - Database connectivity issues persist
 - Performance degradation affects multiple users
 - Backup/recovery operations needed
 - Configuration changes required
 
 **Administrator Actions:**
+
 - Review database performance metrics
 - Check system resource utilization
 - Analyze application logs for patterns
@@ -998,13 +1053,16 @@ echo "✅ Comprehensive monitoring setup complete"
 - Escalate to Level 3 if needed
 
 ### Level 3: Development Team
+
 **Contact When:**
+
 - Code-level issues identified
 - Analytics calculations producing incorrect results
 - New bugs discovered in Phase 4 functionality
 - Schema changes or migrations required
 
 **Developer Actions:**
+
 - Review code and identify root cause
 - Implement bug fixes or enhancements
 - Deploy patches to production
@@ -1013,6 +1071,7 @@ echo "✅ Comprehensive monitoring setup complete"
 ## Emergency Procedures
 
 ### System-Wide Analytics Failure
+
 1. **Immediate Response:**
    - Switch to read-only mode for analytics
    - Disable automated benchmark generation
@@ -1030,6 +1089,7 @@ echo "✅ Comprehensive monitoring setup complete"
    - Post-incident review and documentation
 
 ### Data Corruption in Benchmark Securities
+
 1. **Immediate Response:**
    - Stop all benchmark-related operations
    - Isolate affected benchmark securities

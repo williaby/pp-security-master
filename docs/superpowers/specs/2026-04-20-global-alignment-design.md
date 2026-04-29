@@ -14,6 +14,7 @@ catalogues the ~35 gaps found in an April 2026 audit and specifies exactly what 
 change in each of six dependency-ordered phases.
 
 The audit compared the project against:
+
 - Global `~/.claude/CLAUDE.md` (v1.4.0, 2026-04-19)
 - `~/.claude/.claude/rules/python.md` (toolchain, type checking, linting)
 - `~/.claude/.claude/rules/git-workflow.md` (SHA pinning, pre-commit, branch rules)
@@ -128,7 +129,7 @@ The global standard requires `LICENSE`, `SECURITY.md`, `CONTRIBUTING.md`,
 
 The git workflow rule requires `.worktrees/` in `.gitignore`. It is absent.
 
-```
+```text
 .worktrees/
 ```
 
@@ -168,6 +169,7 @@ extends to `<3.15` to align with the global standard's 3.10-3.14 support range.
 Ruff's formatter replaces it. Ruff is already present at `0.12.3`.
 
 Changes required:
+
 - Add `[tool.ruff.format]` block to `pyproject.toml`
 - Replace every `black` invocation in `noxfile.py` and `Makefile` with `ruff format`
 - Update `CLAUDE.md` Essential Commands to reference `ruff format .`
@@ -178,6 +180,7 @@ Changes required:
 are removed. BasedPyright replaces MyPy (3-5x faster, strict mode).
 
 Changes required:
+
 - Add `basedpyright` to dev dependencies
 - Add `[tool.basedpyright]` block to `pyproject.toml`:
 
@@ -200,6 +203,7 @@ strictSetInference = true
 `safety` is removed. `pip-audit` replaces it per global security standard.
 
 Changes required:
+
 - Remove `safety` from dev dependencies
 - Add `pip-audit` to dev dependencies
 - Replace `poetry run safety check` in `noxfile.py` security session and `Makefile`
@@ -253,6 +257,7 @@ are currently missing:
 `G`, `ANN`, `TCH`, `FBT`, `TRY`, `ERA`, `FURB`, `LOG`, `ASYNC`
 
 Also set:
+
 ```toml
 [tool.ruff]
 target-version = "py312"
@@ -335,6 +340,7 @@ with the full 40-character hash plus a version comment. Do not commit with
 placeholder text in place.
 
 Additional wiring:
+
 - Add `pre-commit` to dev dependencies in `pyproject.toml`
 - Add `nox -s pre_commit` session: `session.run("pre-commit", "run", "--all-files")`
 - Add `make pre-commit` target in `Makefile`
@@ -350,6 +356,7 @@ The current `ci.yml` is 340 lines of inline setup duplicated across every job.
 Replace with thin caller workflows that delegate to `williaby/.github`:
 
 **`.github/workflows/ci.yml`** -- replaces the current inline file:
+
 ```yaml
 jobs:
   ci:
@@ -361,14 +368,17 @@ jobs:
 ```
 
 **`.github/workflows/security.yml`** -- new file, replaces `security-scan` job:
+
 ```yaml
 jobs:
   security:
     uses: williaby/.github/.github/workflows/python-security-analysis.yml@main
 ```
+
 Note: this workflow is now blocking (no `continue-on-error`).
 
 **`.github/workflows/sonarcloud.yml`** -- new file, adds SonarCloud integration:
+
 ```yaml
 jobs:
   sonarcloud:
@@ -378,6 +388,7 @@ jobs:
 ```
 
 **`.github/workflows/coverage.yml`** -- new file, replaces Codecov uploads with Qlty:
+
 ```yaml
 jobs:
   coverage:
@@ -459,11 +470,13 @@ Beyond the Phase 1 additions, the project `CLAUDE.md` needs:
 - `## Response-Aware Development (RAD)` section with `#CRITICAL`, `#ASSUME`,
   `#EDGE`, `#VERIFY` marker guidance (copy structure from global CLAUDE.md)
 - `## Model Selection` table:
+
   | Task type | Model | When |
   | --- | --- | --- |
   | Architecture, planning, ADRs | Opus 4.7 | Multi-step decisions |
   | Standard development | Sonnet 4.6 | Most coding and editing |
   | Read-only exploration | Haiku 4.5 | File scanning, quick lookups |
+
 - Fix Essential Commands: replace `black`, `mypy`, `safety check` with `ruff format`,
   `basedpyright`, `pip-audit`
 - Remove any em-dashes found in the file
@@ -471,7 +484,7 @@ Beyond the Phase 1 additions, the project `CLAUDE.md` needs:
 ### Em-dash and AI pattern scan
 
 Scan all `.md` files in `docs/`, `schema_exports/`, `.github/`, and the project
-root for em-dash characters (`—`) and replace with commas, colons, semicolons,
+root for em-dash characters (U+2014) and replace with commas, colons, semicolons,
 or restructured sentences.
 
 In the same pass, scan formal documents for AI pattern blacklist terms from

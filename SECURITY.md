@@ -12,7 +12,7 @@ Instead, use GitHub's built-in Security advisories feature:
 
 All reports will be kept confidential. We commit to acknowledging receipt and
 next steps via the Security tab. For urgent matters, you may also contact
-byronawilliams@gmail.com.
+<byronawilliams@gmail.com>.
 
 ## Supported Versions
 
@@ -51,4 +51,4 @@ publish details in our Security Advisories page. If you wish to receive credit
 for responsibly disclosing a vulnerability, please let us know; otherwise
 credit will be anonymous.
 
-_Last updated: 2026-04-20_
+Last updated: 2026-04-20

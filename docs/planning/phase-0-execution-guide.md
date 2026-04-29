@@ -11,6 +11,7 @@ This document provides step-by-step instructions for executing Phase 0 tasks. Ea
 ## Quick Start Checklist
 
 Before starting, ensure you have:
+
 - [x] PostgreSQL 17 running on Unraid (already completed)
 - [x] .env.example verified to connect to database (already completed)
 - [ ] Development machine with terminal access
@@ -26,6 +27,7 @@ Before starting, ensure you have:
 **Time Estimate**: 2 hours
 
 #### Step 1: Install Python 3.11 with pyenv
+
 ```bash
 # Check if pyenv is already installed
 which pyenv
@@ -52,13 +54,15 @@ pyenv install 3.11.8
 pyenv global 3.11.8
 ```
 
-**Validation:**
+## Validation (1)
+
 ```bash
 python --version
 # Expected: Python 3.11.8
 ```
 
-#### Step 2: Install Poetry
+### Step 2: Install Poetry
+
 ```bash
 # Install Poetry
 curl -sSL https://install.python-poetry.org | python3 -
@@ -72,7 +76,8 @@ poetry config virtualenvs.in-project true
 poetry config virtualenvs.prefer-active-python true
 ```
 
-**Validation:**
+## Validation (2)
+
 ```bash
 poetry --version
 # Expected: Poetry (version 1.6.0) or similar
@@ -81,7 +86,8 @@ poetry config --list | grep "virtualenvs.in-project"
 # Expected: virtualenvs.in-project = true
 ```
 
-#### Step 3: Navigate to Project and Set Up Environment
+### Step 3: Navigate to Project and Set Up Environment
+
 ```bash
 # Navigate to project directory
 cd /path/to/pp-security-master
@@ -102,7 +108,8 @@ poetry install
 poetry shell
 ```
 
-**Validation:**
+## Validation (3)
+
 ```bash
 # Check virtual environment
 poetry env info --path
@@ -113,7 +120,8 @@ which python
 # Expected: /path/to/pp-security-master/.venv/bin/python
 ```
 
-#### Step 4: VSCode Configuration
+### Step 4: VSCode Configuration
+
 ```bash
 # Create VSCode workspace directory
 mkdir -p .vscode
@@ -163,7 +171,8 @@ cat > .vscode/extensions.json << 'EOF'
 EOF
 ```
 
-**Validation:**
+## Validation (4)
+
 ```bash
 # Verify VSCode files exist
 ls -la .vscode/
@@ -173,7 +182,8 @@ ls -la .vscode/
 code . # Should open project with Python interpreter detected
 ```
 
-#### Step 5: Environment Variables
+### Step 5: Environment Variables
+
 ```bash
 # Create .env.example (this contains working values for Unraid PostgreSQL)
 cat > .env.example << 'EOF'
@@ -215,7 +225,8 @@ cp .env.example .env
 echo "⚠️  IMPORTANT: Edit .env file and replace 'your_secure_password_here' with your actual PostgreSQL password"
 ```
 
-**Validation:**
+## Validation (5)
+
 ```bash
 # Verify files exist
 ls -la .env*
@@ -233,7 +244,7 @@ print('DB Database:', os.getenv('PP_DB_DATABASE'))
 # Expected: Shows environment variables loaded
 ```
 
-**✅ Day 1 Complete - Development environment operational**
+## ✅ Day 1 Complete - Development environment operational
 
 ---
 
@@ -242,6 +253,7 @@ print('DB Database:', os.getenv('PP_DB_DATABASE'))
 **Time Estimate**: 2 hours
 
 #### Step 1: Create Directory Structure
+
 ```bash
 # Ensure you're in project root
 pwd
@@ -271,7 +283,8 @@ touch tests/__init__.py
 touch pytest_plugins/__init__.py
 ```
 
-**Validation:**
+## Validation (6)
+
 ```bash
 # Verify directory structure
 find . -type d -name "__pycache__" -prune -o -type d -print | sort
@@ -282,7 +295,8 @@ find src -name "__init__.py" | sort
 # Expected: Multiple __init__.py files in each Python package
 ```
 
-#### Step 2: Create Configuration Files
+### Step 2: Create Configuration Files
+
 ```bash
 # Create .gitignore
 cat > .gitignore << 'EOF'
@@ -375,7 +389,8 @@ indent_style = tab
 EOF
 ```
 
-**Validation:**
+## Validation (7)
+
 ```bash
 # Check configuration files
 ls -la .gitignore .editorconfig
@@ -387,7 +402,7 @@ git status  # Should not show test.pyc file
 rm test.pyc
 ```
 
-**✅ Day 2 Complete - Repository structure established**
+## ✅ Day 2 Complete - Repository structure established
 
 ---
 
@@ -396,6 +411,7 @@ rm test.pyc
 **Time Estimate**: 3 hours
 
 #### Step 1: Test Database Connection
+
 ```bash
 # First verify the database connection works
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT version();"
@@ -407,6 +423,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT current_database()
 ```
 
 #### Step 2: Create Security Master Table
+
 ```bash
 # Create SQL file for schema
 cat > sql/001_create_security_master.sql << 'EOF'
@@ -503,7 +520,8 @@ EOF
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/001_create_security_master.sql
 ```
 
-**Validation:**
+## Validation (8)
+
 ```bash
 # Verify table was created
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "\d securities_master"
@@ -525,7 +543,7 @@ VALUES ('US0378331005', 'Duplicate Apple', 'Common Stock', 'USD', 'equity');"
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "DELETE FROM securities_master WHERE isin = 'US0378331005';"
 ```
 
-**✅ Day 3 Complete - Security master table operational**
+## ✅ Day 3 Complete - Security master table operational
 
 ---
 
@@ -536,6 +554,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "DELETE FROM securities_ma
 **Time Estimate**: 2 hours
 
 #### Step 1: Install and Initialize Alembic
+
 ```bash
 # Add Alembic to dependencies
 poetry add alembic
@@ -547,6 +566,7 @@ poetry run alembic init sql/versions
 ```
 
 #### Step 2: Configure Alembic
+
 ```bash
 # Edit alembic.ini to point to our database
 sed -i 's|sqlalchemy.url = driver://user:pass@localhost/dbname|sqlalchemy.url = |' alembic.ini
@@ -617,6 +637,7 @@ EOF
 ```
 
 #### Step 3: Create Initial Migration
+
 ```bash
 # Create first migration for existing schema
 poetry run alembic revision --autogenerate -m "Initial schema with securities_master table"
@@ -625,7 +646,8 @@ poetry run alembic revision --autogenerate -m "Initial schema with securities_ma
 poetry run alembic upgrade head
 ```
 
-**Validation:**
+## Validation (9)
+
 ```bash
 # Check migration history
 poetry run alembic history
@@ -641,7 +663,7 @@ poetry run alembic upgrade head
 # Expected: Both commands succeed
 ```
 
-**✅ Day 4 Complete - Alembic migrations operational**
+## ✅ Day 4 Complete - Alembic migrations operational
 
 ---
 
@@ -650,6 +672,7 @@ poetry run alembic upgrade head
 **Time Estimate**: 3 hours
 
 #### Step 1: Create Configuration Module
+
 ```bash
 # Add pydantic for settings
 poetry add pydantic[dotenv]
@@ -748,6 +771,7 @@ EOF
 ```
 
 #### Step 2: Test Configuration Loading
+
 ```bash
 # Create test script
 cat > scripts/test_config.py << 'EOF'
@@ -783,7 +807,8 @@ chmod +x scripts/test_config.py
 poetry run python scripts/test_config.py
 ```
 
-**Validation:**
+## Validation (10)
+
 ```bash
 # Test configuration loading
 poetry run python scripts/test_config.py
@@ -794,7 +819,7 @@ PP_ENVIRONMENT=invalid poetry run python scripts/test_config.py
 # Expected: Should show validation error
 ```
 
-**✅ Day 5 Complete - Configuration system operational**
+## ✅ Day 5 Complete - Configuration system operational
 
 ---
 
@@ -803,6 +828,7 @@ PP_ENVIRONMENT=invalid poetry run python scripts/test_config.py
 **Time Estimate**: 3 hours
 
 #### Step 1: Create Database Module
+
 ```bash
 # Add SQLAlchemy
 poetry add sqlalchemy[asyncio]
@@ -903,6 +929,7 @@ EOF
 ```
 
 #### Step 2: Create Models
+
 ```bash
 # Create models module
 cat > src/security_master/database/models.py << 'EOF'
@@ -995,6 +1022,7 @@ EOF
 ```
 
 #### Step 3: Test Database Connection
+
 ```bash
 # Create database test script
 cat > scripts/test_database.py << 'EOF'
@@ -1060,25 +1088,28 @@ chmod +x scripts/test_database.py
 poetry run python scripts/test_database.py
 ```
 
-**Validation:**
+## Validation (11)
+
 ```bash
 # Test database operations
 poetry run python scripts/test_database.py
 # Expected: All tests pass, shows database version and test operations
 ```
 
-**✅ Day 6 Complete - Database ORM layer operational**
+## ✅ Day 6 Complete - Database ORM layer operational
 
 ---
 
 ### Days 7-10: Complete Remaining Issues
 
 Follow the same pattern for the remaining issues:
+
 - P0-008: Development Tooling (Day 7)
-- P0-009: Data Validation Framework (Day 8) 
+- P0-009: Data Validation Framework (Day 8)
 - P0-010: Integration Testing (Days 9-10)
 
 Each issue should follow this format:
+
 1. **Step-by-step commands**
 2. **Expected outputs**
 3. **Validation checks**
@@ -1089,6 +1120,7 @@ Each issue should follow this format:
 ## Phase 0 Completion Validation
 
 ### Final Validation Script
+
 ```bash
 # Create master validation script
 cat > scripts/validate_phase_0.sh << 'EOF'
@@ -1137,6 +1169,7 @@ chmod +x scripts/validate_phase_0.sh
 ### Common Issues
 
 #### Python/Poetry Issues
+
 ```bash
 # If pyenv doesn't work
 export PATH="$HOME/.pyenv/bin:$PATH"
@@ -1152,6 +1185,7 @@ poetry install --verbose
 ```
 
 #### Database Connection Issues
+
 ```bash
 # Test connection manually
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT 1;"
@@ -1164,6 +1198,7 @@ ping unraid.lan
 ```
 
 #### Permission Issues
+
 ```bash
 # Fix Python script permissions
 chmod +x scripts/*.py
@@ -1179,6 +1214,7 @@ chmod +x scripts/*.sh
 Upon successful completion of Phase 0:
 
 1. **Commit all changes**:
+
    ```bash
    git add .
    git commit -m "feat: Complete Phase 0 foundation setup"
@@ -1194,4 +1230,4 @@ Upon successful completion of Phase 0:
    - Assign Phase 1 issues to team members
    - Set up Phase 1 development branches
 
-**🎉 Phase 0 Complete - Ready for Phase 1 Development!**
+### 🎉 Phase 0 Complete - Ready for Phase 1 Development

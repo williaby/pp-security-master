@@ -112,7 +112,11 @@ class CircuitBreaker:
         self.logger = logging.getLogger(f"{__name__}.CircuitBreaker.{name}")
 
     def can_execute(self) -> bool:
-        """Check if request can be executed."""
+        """Check if request can be executed.
+
+        Returns:
+            The result.
+        """
         now = datetime.now()
 
         # Clean old failure timestamps
@@ -191,7 +195,13 @@ class ServiceMonitor:
         health_check: Callable[[], Awaitable[HealthCheckResult]],
         fallback_handler: Callable | None = None,
     ):
-        """Register a service for monitoring."""
+        """Register a service for monitoring.
+
+        Args:
+            name: The name value.
+            health_check: The health check value.
+            fallback_handler: The fallback handler value.
+        """
         self.services[name] = ServiceMetrics(name=name)
         self.circuit_breakers[name] = CircuitBreaker(name, self.config.circuit_breaker)
         self.health_checks[name] = health_check
@@ -205,7 +215,11 @@ class ServiceMonitor:
         self,
         handler: Callable[[str, ServiceMetrics], Awaitable[None]],
     ):
-        """Add alert handler for service issues."""
+        """Add alert handler for service issues.
+
+        Args:
+            handler: The handler value.
+        """
         self.alert_handlers.append(handler)
 
     async def execute_with_resilience(
@@ -214,7 +228,19 @@ class ServiceMonitor:
         operation: Callable[[], Awaitable[Any]],
         fallback_value: Any = None,
     ) -> Any:
-        """Execute operation with circuit breaker and fallback."""
+        """Execute operation with circuit breaker and fallback.
+
+        Args:
+            fallback_value: The fallback value value.
+            operation: The operation value.
+            service_name: The service name value.
+
+        Returns:
+            The result.
+
+        Raises:
+            ValueError: If an error occurs.
+        """
         if service_name not in self.services:
             raise ValueError(f"Service {service_name} not registered")
 
@@ -269,7 +295,15 @@ class ServiceMonitor:
         return await self._execute_fallback(service_name, fallback_value)
 
     async def _execute_fallback(self, service_name: str, fallback_value: Any) -> Any:
-        """Execute fallback handler or return fallback value."""
+        """Execute fallback handler or return fallback value.
+
+        Args:
+            service_name: The service name value.
+            fallback_value: The fallback value value.
+
+        Returns:
+            The result.
+        """
         if service_name in self.fallback_handlers:
             try:
                 return await self.fallback_handlers[service_name]()
@@ -279,7 +313,12 @@ class ServiceMonitor:
         return fallback_value
 
     def _record_success(self, service_name: str, response_time_ms: float):
-        """Record successful request metrics."""
+        """Record successful request metrics.
+
+        Args:
+            service_name: The service name value.
+            response_time_ms: The response time ms value.
+        """
         metrics = self.services[service_name]
         metrics.total_requests += 1
         metrics.successful_requests += 1
@@ -296,7 +335,12 @@ class ServiceMonitor:
             metrics.current_status = ServiceStatus.UNHEALTHY
 
     def _record_failure(self, service_name: str, error: str):
-        """Record failed request metrics."""
+        """Record failed request metrics.
+
+        Args:
+            service_name: The service name value.
+            error: The error value.
+        """
         metrics = self.services[service_name]
         metrics.total_requests += 1
         metrics.failed_requests += 1
@@ -371,7 +415,12 @@ class ServiceMonitor:
         service_name: str,
         health_check: Callable[[], Awaitable[HealthCheckResult]],
     ):
-        """Run health check for a single service."""
+        """Run health check for a single service.
+
+        Args:
+            service_name: The service name value.
+            health_check: The health check value.
+        """
         try:
             start_time = time.time()
             result = await asyncio.wait_for(
@@ -411,15 +460,30 @@ class ServiceMonitor:
                         self.logger.error(f"Alert handler error: {e}")
 
     def get_service_status(self, service_name: str) -> ServiceMetrics | None:
-        """Get current status of a service."""
+        """Get current status of a service.
+
+        Args:
+            service_name: The service name value.
+
+        Returns:
+            The result.
+        """
         return self.services.get(service_name)
 
     def get_all_service_status(self) -> dict[str, ServiceMetrics]:
-        """Get status of all services."""
+        """Get status of all services.
+
+        Returns:
+            The result.
+        """
         return self.services.copy()
 
     def get_system_health(self) -> dict[str, Any]:
-        """Get overall system health summary."""
+        """Get overall system health summary.
+
+        Returns:
+            The result.
+        """
         if not self.services:
             return {
                 "overall_status": ServiceStatus.UNKNOWN,
@@ -471,7 +535,11 @@ class ServiceMonitor:
 
 # Example health check implementations
 async def openfigi_health_check() -> HealthCheckResult:
-    """Health check for OpenFIGI API."""
+    """Health check for OpenFIGI API.
+
+    Returns:
+        The result.
+    """
     try:
         start_time = time.time()
 
@@ -509,7 +577,11 @@ async def openfigi_health_check() -> HealthCheckResult:
 
 
 async def pp_classifier_health_check() -> HealthCheckResult:
-    """Health check for pp-portfolio-classifier."""
+    """Health check for pp-portfolio-classifier.
+
+    Returns:
+        The result.
+    """
     try:
         start_time = time.time()
 
@@ -545,7 +617,11 @@ async def pp_classifier_health_check() -> HealthCheckResult:
 
 
 async def database_health_check() -> HealthCheckResult:
-    """Health check for database connection."""
+    """Health check for database connection.
+
+    Returns:
+        The result.
+    """
     try:
         start_time = time.time()
 
@@ -575,7 +651,12 @@ async def database_health_check() -> HealthCheckResult:
 
 # Example alert handlers
 async def log_alert_handler(service_name: str, metrics: ServiceMetrics):
-    """Log-based alert handler."""
+    """Log-based alert handler.
+
+    Args:
+        service_name: The service name value.
+        metrics: The metrics value.
+    """
     logger = logging.getLogger("ServiceAlert")
     logger.error(
         f"Service {service_name} unhealthy: "
@@ -586,7 +667,12 @@ async def log_alert_handler(service_name: str, metrics: ServiceMetrics):
 
 
 async def webhook_alert_handler(service_name: str, metrics: ServiceMetrics):
-    """Webhook-based alert handler."""
+    """Webhook-based alert handler.
+
+    Args:
+        service_name: The service name value.
+        metrics: The metrics value.
+    """
     # This would send alerts to external monitoring systems
     alert_data = {
         "service": service_name,

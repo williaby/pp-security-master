@@ -108,15 +108,18 @@ for full options analysis and consequences.
 `pp-security-master/` root, preserving full git history.
 
 **Deliverables**:
+
 - All project files at the correct root path
 - Git history preserved through the move
 - `.vscode/settings.json` paths corrected
 
 **Acceptance criteria**:
+
 - All tests pass from the new root
 - `git log` shows uninterrupted history
 
 **Quality gates**:
+
 - `poetry run pytest` exits 0
 - `git log --oneline` confirms history continuity
 
@@ -134,6 +137,7 @@ for full options analysis and consequences.
 meets the global standard for any public or reviewed project.
 
 **Deliverables**:
+
 - `SECURITY.md` from org template
 - `CONTRIBUTING.md` from org template
 - `CHANGELOG.md` in Keep a Changelog format
@@ -144,11 +148,13 @@ meets the global standard for any public or reviewed project.
 - `CLAUDE.md` updated with package overrides and global rule references
 
 **Acceptance criteria**:
+
 - All five OpenSSF required files present: `LICENSE`, `SECURITY.md`, `CONTRIBUTING.md`,
   `CHANGELOG.md`, `README.md`
 - `poetry check` exits `All set!`
 
 **Quality gates**:
+
 - `poetry run pytest` exits 0
 - `poetry check` passes
 - OpenSSF file checklist verified
@@ -178,6 +184,7 @@ Merge order is strictly enforced: 2a merges before 2b PR opens; 2b merges before
 Each branch rebases on updated `main` before its PR is raised.
 
 **Deliverables**:
+
 - `feature/phase-2a`: Black removed, `ruff format` configured in `pyproject.toml`, `noxfile.py`,
   and `Makefile`; safety removed from the same files
 - `feature/phase-2b`: MyPy and stubs removed; `[tool.basedpyright]` strict config added;
@@ -205,6 +212,7 @@ Tools that must appear after Phase 2: basedpyright, ruff format, pip-audit, darg
 interrogate, qlty.
 
 **Quality gates** (per branch, evaluated before PR is raised):
+
 - Branch 2a: `poetry run ruff format --check .` and `poetry run nox -s security` both green
 - Branch 2b: `poetry run basedpyright` exits 0; existing test suite green; no type suppressions
   except under the ADR-001 escalation policy
@@ -228,6 +236,7 @@ interrogate, qlty.
 this phase begins; Phase 2 does not create it.
 
 **Deliverables**:
+
 - `.pre-commit-config.yaml` with eleven hooks:
   1. `ruff` (lint with autofix, exit-non-zero-on-fix)
   2. `ruff-format` (format check)
@@ -245,10 +254,12 @@ this phase begins; Phase 2 does not create it.
 - `CLAUDE.md` updated with pre-commit commands
 
 **Acceptance criteria**:
+
 - `poetry run pre-commit run --all-files` exits 0 from a clean checkout
 - `poetry run nox -s pre_commit` exits 0
 
 **Quality gates**:
+
 - All eleven hooks pass on `--all-files` run
 - No secrets detected in `.secrets.baseline` false-positive review
 - 80% line / 70% branch coverage maintained
@@ -270,6 +281,7 @@ hardening, replace the 340-line `ci.yml` with a thin caller to the org reusable 
 add security, SonarCloud, and coverage workflows.
 
 **Deliverables**:
+
 - Commit SHAs resolved for all actions in use
 - `codeql.yml`: SHAs pinned, `harden-runner` added
 - `scorecard.yml`: SHAs pinned
@@ -282,11 +294,13 @@ add security, SonarCloud, and coverage workflows.
 - `.github/copilot-instructions.md` created
 
 **Acceptance criteria**:
+
 - No mutable version tags in any `.github/workflows/*.yml` file
 - `python3 -c "import yaml; yaml.safe_load(open(...))"` passes for all workflow files
 - CI passes on push to main after the rewrite
 
 **Quality gates**:
+
 - SHA pinning verified for every action reference (no `@v3`, `@main`, etc.)
 - `harden-runner` present in all modified workflow files
 - All workflow YAML is syntactically valid
@@ -310,6 +324,7 @@ corrected tool commands, remove all em-dashes from documentation, and relocate `
 and `GEMINI.md` to the project root.
 
 **Deliverables**:
+
 - `.claude/settings.json` with tool permission allowlist
 - `CLAUDE.md` updated with RAD markers, model selection table, corrected tool commands
 - All em-dashes removed from `docs/`, `.github/`, `schema_exports/`, and root `*.md` files
@@ -317,11 +332,13 @@ and `GEMINI.md` to the project root.
 - `GEMINI.md` moved from `docs/project/` to project root
 
 **Acceptance criteria**:
-- `grep -rn "—" docs/ .github/ schema_exports/ *.md` returns no matches
+
+- no-em-dash pre-commit hook passes with zero violations
 - `ls -la AGENTS.md GEMINI.md` shows both files at root
 - `python3 -c "import json; json.load(open('.claude/settings.json'))"` exits 0
 
 **Quality gates**:
+
 - Em-dash scan returns zero matches
 - `.claude/settings.json` parses as valid JSON
 - `CLAUDE.md` contains RAD markers and updated tool references
@@ -360,7 +377,7 @@ checkout of `main`:
 - `qlty check` exits 0
 - `poetry run pre-commit run --all-files` exits 0
 - No mutable version tags in `.github/workflows/*.yml`
-- `grep -rn "—" docs/ .github/ schema_exports/ *.md` returns no matches
+- no-em-dash pre-commit hook passes with zero violations
 - `poetry run nox` all sessions green (coverage at 80% line / 70% branch minimum)
 
 ---

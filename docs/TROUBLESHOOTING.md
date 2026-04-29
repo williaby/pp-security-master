@@ -5,6 +5,7 @@ This guide provides solutions for common database connection issues encountered 
 ## Quick Validation Commands
 
 ### Test Network Connectivity
+
 ```bash
 # Test if PostgreSQL server is reachable on the network
 timeout 5 nc -zv 192.168.1.16 5436
@@ -12,12 +13,14 @@ timeout 5 nc -zv 192.168.1.16 5436
 ```
 
 ### Test Database Connection
+
 ```bash
 # Run the database connectivity test
 poetry run python tests/test_db_connection.py
 ```
 
 ### Environment Variable Verification
+
 ```bash
 # Check required environment variables
 echo "Host: $POSTGRES_HOST, Port: $POSTGRES_PORT, User: $POSTGRES_USER, DB: $POSTGRES_DB"
@@ -28,7 +31,8 @@ echo "Host: $POSTGRES_HOST, Port: $POSTGRES_PORT, User: $POSTGRES_USER, DB: $POS
 ### 1. Authentication Failed (`FATAL: password authentication failed`)
 
 **Symptoms:**
-```
+
+```text
 Failed to connect with parameters: connection to server at "192.168.1.16", port 5436 failed: 
 FATAL:  password authentication failed for user "pp_user"
 ```
@@ -36,6 +40,7 @@ FATAL:  password authentication failed for user "pp_user"
 **Root Cause:** Incorrect database credentials or user doesn't exist.
 
 **Solutions:**
+
 1. **Verify credentials in Unraid PostgreSQL container:**
    - Access Unraid web interface
    - Navigate to Docker containers
@@ -43,6 +48,7 @@ FATAL:  password authentication failed for user "pp_user"
    - Verify `POSTGRES_USER` and `POSTGRES_PASSWORD` settings
 
 2. **Reset PostgreSQL user credentials:**
+
    ```bash
    # Connect to container as postgres superuser
    docker exec -it postgresql17 psql -U postgres
@@ -59,7 +65,8 @@ FATAL:  password authentication failed for user "pp_user"
 ### 2. Connection Timeout or Refused
 
 **Symptoms:**
-```
+
+```text
 Failed to connect: connection to server at "192.168.1.16", port 5436 failed: 
 Connection refused or timeout
 ```
@@ -67,7 +74,9 @@ Connection refused or timeout
 **Root Cause:** Network connectivity issues or PostgreSQL not running.
 
 **Solutions:**
+
 1. **Verify PostgreSQL container is running:**
+
    ```bash
    docker ps | grep postgres
    ```
@@ -77,6 +86,7 @@ Connection refused or timeout
    - Verify Unraid container port mapping matches `.env` configuration
 
 3. **Network connectivity test:**
+
    ```bash
    ping 192.168.1.16
    telnet 192.168.1.16 5436
@@ -85,12 +95,15 @@ Connection refused or timeout
 ### 3. Database Does Not Exist
 
 **Symptoms:**
-```
+
+```text
 FATAL: database "pp_master" does not exist
 ```
 
 **Solutions:**
+
 1. **Create database in PostgreSQL:**
+
    ```bash
    # Connect as postgres superuser
    docker exec -it postgresql17 psql -U postgres
@@ -105,14 +118,17 @@ FATAL: database "pp_master" does not exist
 ### 4. Invalid Connection URL Format
 
 **Symptoms:**
-```
+
+```text
 Failed to connect with URL: invalid dsn: invalid percent-encoded token
 ```
 
 **Root Cause:** Special characters in password not properly URL-encoded.
 
 **Solutions:**
+
 1. **Use individual environment variables instead of DATABASE_URL:**
+
    ```bash
    # In .env file, comment out DATABASE_URL and use:
    POSTGRES_HOST=192.168.1.16
@@ -123,6 +139,7 @@ Failed to connect with URL: invalid dsn: invalid percent-encoded token
    ```
 
 2. **Properly encode DATABASE_URL if using:**
+
    ```python
    import urllib.parse
    password = urllib.parse.quote_plus("password!with@special#chars")
@@ -131,17 +148,21 @@ Failed to connect with URL: invalid dsn: invalid percent-encoded token
 ### 5. Module Import Errors
 
 **Symptoms:**
-```
+
+```text
 ModuleNotFoundError: No module named 'psycopg2'
 ```
 
 **Solutions:**
+
 1. **Install dependencies:**
+
    ```bash
    poetry install
    ```
 
 2. **Verify Poetry environment:**
+
    ```bash
    poetry run pip list | grep psyco
    # Should show: psycopg2-binary
@@ -150,6 +171,7 @@ ModuleNotFoundError: No module named 'psycopg2'
 ## Environment Configuration
 
 ### Required Environment Variables
+
 ```bash
 # Database Connection (Option 1: Individual variables)
 POSTGRES_HOST=192.168.1.16     # Your Unraid server IP
@@ -163,6 +185,7 @@ DATABASE_URL=postgresql://pp_user:password@192.168.1.16:5436/pp_master
 ```
 
 ### .env File Template
+
 ```bash
 # Copy .env.example to .env and update values
 cp .env.example .env
@@ -172,6 +195,7 @@ cp .env.example .env
 ## Database Server Requirements
 
 ### PostgreSQL 17 Container Configuration (Unraid)
+
 - **Image:** `postgres:17` or `postgres:17-alpine`
 - **Environment Variables:**
   - `POSTGRES_DB=pp_master`
@@ -181,6 +205,7 @@ cp .env.example .env
 - **Persistent Storage:** `/mnt/user/appdata/pp_postgres/data:/var/lib/postgresql/data`
 
 ### Network Configuration
+
 - Ensure Unraid server is accessible from development machine
 - Check firewall rules on both client and server
 - Verify Docker network configuration in Unraid
@@ -199,7 +224,9 @@ Before proceeding with development, ensure:
 ## Advanced Debugging
 
 ### Enable PostgreSQL Logging
+
 1. **Modify postgresql.conf in container:**
+
    ```sql
    -- Enable connection logging
    log_connections = on
@@ -208,11 +235,13 @@ Before proceeding with development, ensure:
    ```
 
 2. **View PostgreSQL logs:**
+
    ```bash
    docker logs postgresql17
    ```
 
 ### Database Diagnostic Queries
+
 ```sql
 -- Check active connections
 SELECT * FROM pg_stat_activity WHERE datname = 'pp_master';

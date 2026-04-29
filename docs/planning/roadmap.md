@@ -140,7 +140,7 @@ Create `.pre-commit-config.yaml` and verify the existing nox `pre_commit` sessio
   8. `commitizen` (conventional commit message format, `commit-msg` stage)
   9. `yamllint` (YAML syntax and style, uses `.yamllint.yml`)
   10. `markdownlint` (Markdown formatting with autofix)
-  11. `no-em-dash` (local pygrep hook blocking the `—` character)
+  11. `no-em-dash` (local pygrep hook blocking the em-dash character U+2014)
 - [ ] `.secrets.baseline` generated and reviewed for false positives
 - [ ] Pre-commit hooks installed (`pre-commit install` + `pre-commit install --hook-type commit-msg`)
 - [ ] `poetry run pre-commit run --all-files` exits 0
@@ -210,7 +210,7 @@ commands, remove all em-dashes from documentation, and relocate `AGENTS.md` / `G
 
 ### Success Criteria
 
-- `grep -rn "—" docs/ .github/ schema_exports/ *.md` returns no matches
+- no-em-dash pre-commit hook passes with zero violations
 - `ls -la AGENTS.md GEMINI.md` shows both files at root
 - `python3 -c "import json; json.load(open('.claude/settings.json'))"` exits 0
 

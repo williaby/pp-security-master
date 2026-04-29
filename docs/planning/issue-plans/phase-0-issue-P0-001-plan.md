@@ -11,7 +11,8 @@ purpose: "Validation and verification plan for PostgreSQL 17 database setup and 
 
 ## Scope Boundary Analysis
 
-✅ **INCLUDED in Issue P0-001**: 
+✅ **INCLUDED in Issue P0-001**:
+
 - PostgreSQL 17 container deployment verification on Unraid
 - Database connectivity validation from development environment
 - Persistent storage configuration verification
@@ -19,7 +20,8 @@ purpose: "Validation and verification plan for PostgreSQL 17 database setup and 
 - Backup configuration validation
 - Connection documentation updates
 
-❌ **EXCLUDED from Issue P0-001**: 
+❌ **EXCLUDED from Issue P0-001**:
+
 - Security master table schema creation (covered in P0-004)
 - Application code development (covered in later issues)
 - Data migration or population (not in Phase 0 scope)
@@ -36,7 +38,8 @@ purpose: "Validation and verification plan for PostgreSQL 17 database setup and 
 **Priority**: Critical (blocks all other work)
 **Assignee**: Infrastructure Developer
 
-### Acceptance Criteria from Revised Project Plan:
+### Acceptance Criteria from Revised Project Plan
+
 - [ ] PostgreSQL 17 container deployed via Unraid Community Apps
 - [ ] Database accessible on configured port with authentication
 - [ ] Persistent storage configured on `/mnt/user/appdata/pp_postgres/data`
@@ -44,7 +47,8 @@ purpose: "Validation and verification plan for PostgreSQL 17 database setup and 
 - [ ] Connection validation from development machine successful
 - [ ] Backup configuration enabled with nightly schedule
 
-### Testing Requirements:
+### Testing Requirements
+
 - Manual connection test from development environment
 - Basic SQL operations (CREATE, INSERT, SELECT) functional
 - Container restart persistence validation
@@ -74,13 +78,13 @@ purpose: "Validation and verification plan for PostgreSQL 17 database setup and 
 
 ### Phase 2: Configuration Verification (45 minutes)
 
-3. **Validate Persistent Storage Configuration**
+1. **Validate Persistent Storage Configuration**
    - Verify persistent storage path: `/mnt/user/appdata/pp_postgres/data`
    - Test data persistence by creating test table, restarting container, and verifying data retention
    - Document storage configuration and test results
    - **Maps to**: "Persistent storage configured on `/mnt/user/appdata/pp_postgres/data`"
 
-4. **Verify Port and Authentication Configuration**
+2. **Verify Port and Authentication Configuration**
    - Confirm database accessible on configured port (default 5432)
    - Test authentication with configured credentials
    - Validate environment variable configuration matches .env.example template
@@ -88,13 +92,13 @@ purpose: "Validation and verification plan for PostgreSQL 17 database setup and 
 
 ### Phase 3: Environment and Development Access (45 minutes)
 
-5. **Validate Development Environment Variables**
+1. **Validate Development Environment Variables**
    - Verify .env.example template matches required PostgreSQL connection parameters
    - Test both DATABASE_URL and individual POSTGRES_* variable configurations
    - Ensure development team can connect using standard configuration
    - **Maps to**: "Environment variables properly configured for development access"
 
-6. **Execute Basic SQL Operations Testing**
+2. **Execute Basic SQL Operations Testing**
    - Create test database schema
    - Perform CREATE, INSERT, SELECT operations
    - Verify functional SQL execution capability
@@ -102,19 +106,19 @@ purpose: "Validation and verification plan for PostgreSQL 17 database setup and 
 
 ### Phase 4: Backup and Documentation (60 minutes)
 
-7. **Verify Backup Configuration**
+1. **Verify Backup Configuration**
    - Check Unraid backup configuration for PostgreSQL container
    - Verify nightly backup schedule is enabled and functional
    - Test backup/restore capability with sample data
    - **Maps to**: "Backup configuration enabled with nightly schedule"
 
-8. **Container Restart Persistence Validation**
+2. **Container Restart Persistence Validation**
    - Create test data in database
    - Restart PostgreSQL container via Unraid interface
    - Verify data persistence after restart
    - **Maps to**: Testing requirement "Container restart persistence validation"
 
-9. **Update Connection Documentation**
+3. **Update Connection Documentation**
    - Document final PostgreSQL connection details
    - Update README.md with database setup verification steps
    - Create troubleshooting guide for common connection issues
@@ -123,6 +127,7 @@ purpose: "Validation and verification plan for PostgreSQL 17 database setup and 
 ## Testing Strategy
 
 ### Validation Tests (All must pass)
+
 ```bash
 # Database connectivity test
 poetry run python -m pytest tests/test_db_connection.py -v
@@ -138,6 +143,7 @@ python -c "import os; from dotenv import load_dotenv; load_dotenv(); print('DB U
 ```
 
 ### Container Persistence Test
+
 ```bash
 # 1. Create test data
 psql $DATABASE_URL -c "CREATE TABLE persistence_test (id SERIAL, created_at TIMESTAMP DEFAULT NOW());"
@@ -152,24 +158,28 @@ psql $DATABASE_URL -c "DROP TABLE persistence_test;"
 
 ## Dependencies and Prerequisites
 
-### Required Access:
+### Required Access
+
 - Unraid server administrative access
 - Network connectivity to PostgreSQL port (typically 5432)
 - Development machine with Poetry and Python 3.11+ installed
 
-### Required Files:
+### Required Files
+
 - `.env` file configured with PostgreSQL connection details
 - `tests/test_db_connection.py` (already exists)
 - `.env.example` template (already exists)
 
-### Prerequisites Validation:
+### Prerequisites Validation
+
 - [ ] Unraid Community Apps accessible
 - [ ] Development environment set up (covered in P0-002)
 - [ ] Network connectivity between development machine and Unraid server
 
 ## Success Criteria
 
-### Issue P0-001 is considered complete when:
+### Issue P0-001 is considered complete when
+
 1. ✅ All acceptance criteria have been verified and documented
 2. ✅ Database connectivity test passes consistently
 3. ✅ Persistent storage functionality confirmed through restart test
@@ -178,7 +188,8 @@ psql $DATABASE_URL -c "DROP TABLE persistence_test;"
 6. ✅ Connection documentation updated with current configuration
 7. ✅ Development team can connect and perform basic operations
 
-### Deliverables:
+### Deliverables
+
 - [ ] PostgreSQL 17 container validation report
 - [ ] Updated connection documentation in README.md
 - [ ] Verified .env configuration template
@@ -187,13 +198,15 @@ psql $DATABASE_URL -c "DROP TABLE persistence_test;"
 
 ## Risk Mitigation
 
-### Potential Issues:
+### Potential Issues
+
 1. **PostgreSQL container not properly configured**: Review Unraid logs and reconfigure if needed
 2. **Network connectivity issues**: Validate firewall rules and port configuration
 3. **Authentication failures**: Verify credentials and connection strings
 4. **Persistence failures**: Check Unraid storage configuration and mount points
 
-### Fallback Options:
+### Fallback Options
+
 - If Unraid deployment is problematic, can temporarily use Docker Compose for development
 - If persistent storage issues, can reconfigure with different mount point
 - If authentication issues, can reset PostgreSQL user credentials

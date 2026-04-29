@@ -101,34 +101,34 @@ services:
       - ENVIRONMENT=production
       - DEBUG=false
       - LOG_LEVEL=WARNING
-      
+
       # Database configuration
       - DATABASE_URL=postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@postgresql:5432/${DATABASE_NAME}
       - DATABASE_POOL_SIZE=20
       - DATABASE_MAX_OVERFLOW=30
-      
+
       # Cache configuration
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
       - CACHE_TTL=3600
-      
+
       # Authentication (PromptCraft integration)
       - CLOUDFLARE_AUDIENCE=${CLOUDFLARE_AUDIENCE}
       - JWT_SECRET=${JWT_SECRET}
       - SESSION_TIMEOUT=28800  # 8 hours
-      
+
       # External APIs
       - OPENFIGI_API_KEY=${OPENFIGI_API_KEY}
       - ALPHA_VANTAGE_API_KEY=${ALPHA_VANTAGE_API_KEY}
-      
+
       # Security
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
       - API_KEY_ENCRYPTION_KEY=${API_KEY_ENCRYPTION_KEY}
-      
+
       # Monitoring
       - ENABLE_METRICS=true
       - METRICS_PORT=8001
       - ENABLE_AUDIT_LOGGING=true
-      
+
       # Performance
       - WORKERS=4
       - MAX_REQUESTS=1000
@@ -385,7 +385,7 @@ networks:
         - subnet: 172.21.0.0/24
           gateway: 172.21.0.1
 
-  # Cache network - internal only  
+  # Cache network - internal only
   cache_net:
     driver: bridge
     internal: true

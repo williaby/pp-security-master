@@ -60,7 +60,18 @@ class WellsFargoParser:
         file_path: Path,
         created_by: str = "system",
     ) -> WellsFargoParseResult:
-        """Parse Wells Fargo CSV file with comprehensive validation."""
+        """Parse Wells Fargo CSV file with comprehensive validation.
+
+        Args:
+            created_by: The created by value.
+            file_path: The file path value.
+
+        Returns:
+            The result.
+
+        Raises:
+            Exception: If an error occurs.
+        """
 
         # Create import batch
         batch = self.batch_manager.create_batch(
@@ -120,7 +131,12 @@ class WellsFargoParser:
         return result
 
     def _parse_csv_content(self, file_path: Path, result: WellsFargoParseResult):
-        """Parse CSV file content into transaction objects."""
+        """Parse CSV file content into transaction objects.
+
+        Args:
+            result: The result value.
+            file_path: The file path value.
+        """
 
         with open(file_path, encoding="utf-8") as csvfile:
             # Detect delimiter
@@ -156,7 +172,14 @@ class WellsFargoParser:
                     self.logger.warning(error_msg)
 
     def _clean_row_data(self, row_data: dict[str, str]) -> dict[str, any]:
-        """Clean and normalize CSV row data."""
+        """Clean and normalize CSV row data.
+
+        Args:
+            row_data: The row data value.
+
+        Returns:
+            The result.
+        """
         cleaned = {}
 
         for key, value in row_data.items():
@@ -217,7 +240,11 @@ class WellsFargoParser:
         return cleaned
 
     def _process_transactions(self, result: WellsFargoParseResult):
-        """Process parsed transactions for validation and deduplication."""
+        """Process parsed transactions for validation and deduplication.
+
+        Args:
+            result: The result value.
+        """
 
         # Detect duplicates within the file
         seen_transactions = set()
@@ -240,7 +267,14 @@ class WellsFargoParser:
         self._validate_business_rules(result)
 
     def _create_transaction_signature(self, transaction: WellsFargoTransaction) -> str:
-        """Create a unique signature for transaction deduplication."""
+        """Create a unique signature for transaction deduplication.
+
+        Args:
+            transaction: The transaction value.
+
+        Returns:
+            The result.
+        """
         signature_parts = [
             transaction.account_number,
             str(transaction.transaction_date),
@@ -252,7 +286,11 @@ class WellsFargoParser:
         return "|".join(signature_parts)
 
     def _validate_business_rules(self, result: WellsFargoParseResult):
-        """Apply business rule validations to transactions."""
+        """Apply business rule validations to transactions.
+
+        Args:
+            result: The result value.
+        """
 
         validated_transactions = []
 
@@ -312,7 +350,11 @@ class WellsFargoParser:
         result.valid_transactions = validated_transactions
 
     def get_supported_columns(self) -> list[str]:
-        """Get list of supported Wells Fargo CSV columns."""
+        """Get list of supported Wells Fargo CSV columns.
+
+        Returns:
+            The result.
+        """
         return [
             "Account Number",
             "Account Type",

@@ -11,6 +11,7 @@
 Analysis of the Portfolio Performance XML backup file (`BruceandSueWilliams_sample.xml`) reveals the complete data structure required for full PP instance restoration. The current transaction-centric architecture focuses on import and classification but needs extension to support complete PP backup generation.
 
 **Key Discovery**: The PP XML backup contains everything needed to restore a complete Portfolio Performance instance:
+
 - 53,625 lines of securities with complete price history
 - Account and portfolio hierarchies with cross-references
 - All transaction history with fees, taxes, and cross-entries
@@ -27,6 +28,7 @@ We will extend the Security Master Service to provide **complete Portfolio Perfo
 ### Complete PP XML Structure Analysis
 
 #### **Root Client Structure:**
+
 ```xml
 <client>
   <version>66</version>
@@ -42,22 +44,26 @@ We will extend the Security Master Service to provide **complete Portfolio Perfo
 ```
 
 #### **Securities Section:**
+
 - **Securities Master**: ISIN, symbols, WKN, currency, feed configuration
 - **Price History**: Complete daily price data (`<price t="2024-07-23" v="2624000000"/>`)
 - **Security Attributes**: Notes, feed sources, ticker symbols
 
 #### **Accounts & Portfolios Hierarchy:**
+
 - **Accounts**: Deposit accounts with cash transactions
 - **Portfolios**: Security holdings with reference to accounts
 - **Cross-References**: Complex relationship between account and portfolio transactions
 
 #### **Transaction Types:**
+
 - **Account Transactions**: Cash deposits, withdrawals, fees
 - **Portfolio Transactions**: BUY, SELL, DIVIDEND with share quantities
 - **Cross-Entries**: Linked account/portfolio transaction pairs
 - **Fee/Tax Units**: Granular transaction cost breakdown
 
 #### **User Configuration:**
+
 - **Settings**: Bookmarks, user preferences
 - **Properties**: Display configurations, naming conventions
 - **Dashboards**: Custom dashboard layouts
@@ -195,12 +201,14 @@ class PPXMLExportService:
 ### Phase 3: Bidirectional Synchronization
 
 #### **Import PP XML → Database:**
+
 - Parse complete PP backup files
 - Populate all PP-specific tables
 - Maintain UUIDs and cross-references
 - Import complete price history
 
 #### **Export Database → PP XML:**
+
 - Generate valid PP XML backup files
 - Preserve all UUIDs and relationships
 - Include complete transaction history
@@ -208,7 +216,7 @@ class PPXMLExportService:
 
 ## Rationale
 
-### Benefits:
+### Benefits
 
 1. **Complete Data Sovereignty**: Full control over Portfolio Performance data
 2. **Disaster Recovery**: Generate PP backups from database at any time
@@ -217,7 +225,7 @@ class PPXMLExportService:
 5. **Compliance**: Complete audit trail of all financial transactions
 6. **Integration**: Connect PP data with external systems via database
 
-### Business Impact:
+### Business Impact
 
 - **Zero Data Loss**: Every PP data element preserved and restorable
 - **Business Continuity**: Database becomes authoritative source for PP restoration
@@ -226,18 +234,21 @@ class PPXMLExportService:
 
 ## Consequences
 
-### Positive:
+### Positive
+
 - **Complete PP Backup Capability**: Generate full restoration files from database
 - **Enhanced Data Quality**: Cross-validation between institution imports and PP data
 - **Advanced Reporting**: SQL access to complete portfolio history
 - **Future-Proof**: Independent of PP version changes
 
-### Negative:
+### Negative
+
 - **Increased Complexity**: Additional tables and relationships to maintain
 - **Storage Requirements**: Complete price history storage
 - **Processing Overhead**: XML generation for large portfolios
 
-### Technical Considerations:
+### Technical Considerations
+
 - **PP Version Compatibility**: Support multiple PP XML schema versions
 - **UUID Management**: Preserve PP's internal UUID references
 - **Price Data Volume**: Efficient storage and retrieval of daily price history
@@ -246,16 +257,19 @@ class PPXMLExportService:
 ## Implementation Timeline
 
 ### Phase 1: Schema Extension (2 weeks)
+
 - Design and implement PP-specific tables
 - Create migration scripts from current schema
 - Implement PP XML parser for complete import
 
 ### Phase 2: XML Export Engine (3 weeks)  
+
 - Build PP XML generation service
 - Implement transaction cross-reference logic
 - Add price history export functionality
 
 ### Phase 3: Integration & Testing (2 weeks)
+
 - End-to-end backup/restore testing
 - PP version compatibility validation
 - Performance optimization for large datasets

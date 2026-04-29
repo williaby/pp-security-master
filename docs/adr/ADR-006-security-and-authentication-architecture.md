@@ -9,6 +9,7 @@
 ## Context
 
 The Security Master Service handles sensitive financial data including:
+
 - Complete portfolio holdings and valuations
 - Institution transaction data (Wells Fargo, Interactive Brokers, AltoIRA)
 - API keys for external services (OpenFIGI, Alpha Vantage)
@@ -26,18 +27,21 @@ The system operates in a home lab environment (Unraid) but requires enterprise-g
 ## Security Threat Model
 
 ### High-Risk Threats
+
 1. **Data Breach**: Unauthorized access to complete financial portfolio data
 2. **API Key Compromise**: Theft of external API credentials leading to cost/quota abuse
 3. **Transaction Manipulation**: Unauthorized modification of financial transaction data
 4. **Lateral Movement**: Compromise leading to access to other Unraid services
 
 ### Medium-Risk Threats
+
 1. **Session Hijacking**: Stolen authentication tokens for unauthorized access
 2. **Privilege Escalation**: Normal user gaining administrative access
 3. **Data Export**: Unauthorized bulk export of financial data
 4. **Service Disruption**: Denial of service attacks against the classification service
 
 ### Accepted Risks
+
 1. **Physical Access**: Home lab environment assumes physical security
 2. **Insider Threats**: Single-user system with trusted physical access
 3. **Social Engineering**: Limited external attack surface reduces risk
@@ -49,6 +53,7 @@ We will implement a **layered security architecture** using Cloudflare Zero Trus
 ### Authentication Architecture
 
 #### **Cloudflare Zero Trust Integration**
+
 ```yaml
 # Cloudflare Zero Trust Configuration
 authentication:
@@ -70,6 +75,7 @@ access_policies:
 ```
 
 #### **JWT Token Management**
+
 ```python
 class SecurityMasterAuth:
     """Authentication and authorization for Security Master Service"""
@@ -99,6 +105,7 @@ class SecurityMasterAuth:
 ### Authorization Framework
 
 #### **Role-Based Access Control (RBAC)**
+
 ```python
 class SecurityRole(Enum):
     ADMIN = "admin"          # Full access to all data and operations
@@ -138,18 +145,21 @@ ROLE_PERMISSIONS = {
 ### Data Protection Strategy
 
 #### **Encryption at Rest**
+
 - **Database Encryption**: PostgreSQL Transparent Data Encryption (TDE) for all tables
 - **File Encryption**: GPG encryption for `.env` files and API key storage
 - **Backup Encryption**: Encrypted backups using Unraid CA Backup with encryption
 - **Key Management**: Hardware security module (HSM) or Unraid encrypted storage
 
 #### **Encryption in Transit**
+
 - **HTTPS Only**: TLS 1.3 for all web traffic via Cloudflare
 - **Database Connections**: SSL/TLS for all PostgreSQL connections
 - **API Calls**: HTTPS for all external API communications
 - **Internal Communication**: mTLS for service-to-service communication
 
 #### **API Key Management**
+
 ```python
 class APIKeyManager:
     """Secure management of external API keys"""
@@ -178,6 +188,7 @@ class APIKeyManager:
 ### Network Security Architecture
 
 #### **Network Segmentation**
+
 ```yaml
 # Unraid Network Configuration
 networks:
@@ -204,6 +215,7 @@ services:
 ```
 
 #### **Firewall Rules**
+
 - **Inbound**: Only HTTPS (443) via Cloudflare tunnel
 - **Database**: PostgreSQL access only from application containers
 - **Outbound**: Restricted to required external APIs (OpenFIGI, Alpha Vantage)
@@ -212,6 +224,7 @@ services:
 ### Audit Logging Framework
 
 #### **Comprehensive Audit Trail**
+
 ```python
 class SecurityAuditLogger:
     """Comprehensive audit logging for all security events"""
@@ -256,18 +269,21 @@ class SecurityAuditLogger:
 ## Implementation Strategy
 
 ### Phase 1: Foundation Security (MVP)
+
 - **Basic Authentication**: Simple JWT tokens for CLI access
 - **Database Security**: PostgreSQL user accounts with limited permissions
 - **API Key Storage**: Encrypted `.env` files with GPG
 - **Basic Logging**: Database audit trail for all modifications
 
 ### Phase 2: Enterprise Security (Release 2.0)
+
 - **Cloudflare Zero Trust**: Full web UI authentication via Cloudflare
 - **RBAC Implementation**: Role-based access control with granular permissions
 - **Advanced Encryption**: TDE for database, mTLS for service communication
 - **Security Monitoring**: Real-time security event detection and alerting
 
 ### Phase 3: Advanced Security (Release 3.0)
+
 - **Multi-Factor Authentication**: Hardware token support via Cloudflare
 - **Behavioral Analysis**: Anomaly detection for unusual access patterns
 - **Key Rotation**: Automated API key rotation with zero downtime
@@ -276,6 +292,7 @@ class SecurityAuditLogger:
 ## Security Configuration
 
 ### Environment Security
+
 ```bash
 # .env.example (encrypted with GPG in production)
 # Database credentials
@@ -297,6 +314,7 @@ REQUIRE_MFA="true"
 ```
 
 ### Database Security Hardening
+
 ```sql
 -- Create limited database users
 CREATE ROLE pp_app_readonly WITH LOGIN PASSWORD 'strong_password';
@@ -324,12 +342,14 @@ CREATE POLICY user_data_access ON securities_master
 ## Security Monitoring and Alerting
 
 ### Real-Time Security Monitoring
+
 - **Failed Authentication**: >3 failed attempts in 15 minutes
 - **Unusual Data Access**: Access patterns outside normal hours
 - **Large Data Export**: Bulk export operations
 - **API Key Usage Anomalies**: Unusual external API usage patterns
 
 ### Security Metrics and KPIs
+
 - **Authentication Success Rate**: >99.5% for legitimate users
 - **Mean Time to Detection**: <5 minutes for security incidents
 - **False Positive Rate**: <2% for security alerts
@@ -338,12 +358,14 @@ CREATE POLICY user_data_access ON securities_master
 ## Risk Mitigation
 
 ### Data Protection Risks
+
 - **Database Compromise**: Multiple layers of encryption and access controls
 - **API Key Theft**: Encrypted storage, rotation, and usage monitoring
 - **Session Hijacking**: Short session timeouts and secure token handling
 - **Privilege Escalation**: Principle of least privilege and audit logging
 
 ### Operational Security Risks
+
 - **Service Disruption**: Rate limiting and DDoS protection via Cloudflare
 - **Insider Threats**: Comprehensive audit logging and access monitoring
 - **Configuration Drift**: Infrastructure as code and automated security scanning
@@ -352,18 +374,21 @@ CREATE POLICY user_data_access ON securities_master
 ## Consequences
 
 ### Positive
+
 - **Enterprise-Grade Security**: Comprehensive protection for sensitive financial data
 - **Compliance Ready**: Audit trail and controls support regulatory requirements
 - **Scalable Authentication**: Cloudflare Zero Trust scales with organizational growth
 - **Defense in Depth**: Multiple security layers protect against various attack vectors
 
 ### Negative
+
 - **Implementation Complexity**: Security features add development and operational complexity
 - **Performance Impact**: Encryption and authentication add computational overhead
 - **User Experience**: Security controls may impact user workflow efficiency
 - **Operational Overhead**: Security monitoring and key management require ongoing attention
 
 ### Risk Mitigation
+
 - **Phased Implementation**: Gradual security enhancement reduces complexity
 - **Performance Optimization**: Efficient algorithms and caching minimize overhead
 - **User Training**: Clear documentation and training improve user experience
@@ -377,7 +402,7 @@ CREATE POLICY user_data_access ON securities_master
 
 ## References
 
-- Cloudflare Zero Trust Documentation: https://developers.cloudflare.com/cloudflare-one/
+- Cloudflare Zero Trust Documentation: <https://developers.cloudflare.com/cloudflare-one/>
 - OWASP Web Application Security Testing Guide
 - PostgreSQL Security Best Practices
 - JWT Security Best Current Practices (RFC 8725)

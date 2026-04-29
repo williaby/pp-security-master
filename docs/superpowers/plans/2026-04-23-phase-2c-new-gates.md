@@ -70,6 +70,7 @@ Expected: exit 0, no violations. This confirms the starting point before any con
 ## Task 2: Add darglint + interrogate to pyproject.toml
 
 **Files:**
+
 - Modify: `pyproject.toml`
 
 - [ ] **Step 1: Add darglint and interrogate to dev dependencies**
@@ -182,6 +183,7 @@ Note both coverage percentages. scripts/ should already be at 100%. src/ will be
 ## Task 4: Expand thin docstrings in src/ (darglint fix)
 
 **Files:**
+
 - Modify: `src/security_master/storage/database.py` (definitely flagged)
 - Modify: any other `src/**/*.py` files listed in `/tmp/darglint-baseline.txt`
 
@@ -312,12 +314,13 @@ Expected: no output. Do not proceed to Task 5 until this exits with zero output.
 
 ---
 
-## Task 5: Add __repr__ docstrings to models.py (interrogate fix)
+## Task 5: Add **repr** docstrings to models.py (interrogate fix)
 
 **Files:**
+
 - Modify: `src/security_master/storage/models.py`
 
-- [ ] **Step 1: Add one-line docstrings to all five __repr__ methods**
+- [ ] **Step 1: Add one-line docstrings to all five **repr** methods**
 
 Locate each `__repr__` method (lines 117, 154, 201, 341, 420 approximately) and add a one-line docstring. darglint will skip these because of `ignore_regex = "^_"`, so a single line is all interrogate needs:
 
@@ -383,6 +386,7 @@ Expected: `RESULT: PASSED` (scripts/ is already 100% documented).
 ## Task 6: Wire darglint and interrogate into nox and Makefile, commit Task 9
 
 **Files:**
+
 - Modify: `noxfile.py` (lines 185-198)
 - Modify: `Makefile`
 
@@ -417,25 +421,25 @@ In `Makefile`, the lint target currently reads:
 
 ```makefile
 lint: ## Run linting checks
-	$(POETRY) run ruff format --check .
-	$(POETRY) run ruff check .
-	$(POETRY) run basedpyright
-	markdownlint **/*.md
-	yamllint .
+ $(POETRY) run ruff format --check .
+ $(POETRY) run ruff check .
+ $(POETRY) run basedpyright
+ markdownlint **/*.md
+ yamllint .
 ```
 
 Change to:
 
 ```makefile
 lint: ## Run linting checks
-	$(POETRY) run ruff format --check .
-	$(POETRY) run ruff check .
-	$(POETRY) run basedpyright
-	markdownlint **/*.md
-	yamllint .
-	$(POETRY) run darglint src/
-	$(POETRY) run interrogate src/ --fail-under 70
-	$(POETRY) run interrogate scripts/ --fail-under 85
+ $(POETRY) run ruff format --check .
+ $(POETRY) run ruff check .
+ $(POETRY) run basedpyright
+ markdownlint **/*.md
+ yamllint .
+ $(POETRY) run darglint src/
+ $(POETRY) run interrogate src/ --fail-under 70
+ $(POETRY) run interrogate scripts/ --fail-under 85
 ```
 
 - [ ] **Step 3: Run the full nox lint session to confirm it passes**
@@ -478,6 +482,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ## Task 7: Create .qlty/qlty.toml and update README.md
 
 **Files:**
+
 - Create: `.qlty/qlty.toml`
 - Modify: `README.md`
 
@@ -560,6 +565,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ## Task 8: Expand Ruff rule set (pyproject.toml config only)
 
 **Files:**
+
 - Modify: `pyproject.toml`
 - Modify: `scripts/workflow_prepare_pr.py` (pre-existing violation cleanup)
 
@@ -570,10 +576,13 @@ These violations exist under the current config. Fix them before expanding rules
 **PLC0207 at line 138 -- add maxsplit=1:**
 
 Find:
+
 ```python
 issue.split("-")[0][1:]
 ```
+
 Change to:
+
 ```python
 issue.split("-", 1)[0][1:]
 ```
@@ -581,10 +590,13 @@ issue.split("-", 1)[0][1:]
 **RUF059 at line 187 -- rename unused unpacked variable to `_`:**
 
 Find:
+
 ```python
 user_host, path_part = remote_url.split("@", 1)
 ```
+
 Change to:
+
 ```python
 _, path_part = remote_url.split("@", 1)
 ```
@@ -681,6 +693,7 @@ Expected: `Valid TOML`.
 ## Task 9: Auto-fix what ruff can
 
 **Files:**
+
 - Modify: any files with auto-fixable violations reported by `ruff check --fix`
 
 - [ ] **Step 1: Run ruff with --fix and capture what changed**
@@ -691,6 +704,7 @@ cat /tmp/ruff-autofix.txt
 ```
 
 `--fix` applies safe, mechanical transformations. Common auto-fixes from the new rules:
+
 - `FURB` -- rewrites `dict(x=1)` to `{"x": 1}`, `list(range(...))` to `[*range(...)]`, etc.
 - `PERF` -- rewrites certain inefficient loop patterns
 - `FA` -- adds `from __future__ import annotations` where needed for deferred evaluation
@@ -715,6 +729,7 @@ Proceed to Task 10 to fix each category.
 ## Task 10: Manually fix remaining Ruff violations
 
 **Files:**
+
 - Modify: any `src/**/*.py` files listed in `/tmp/ruff-remaining.txt`
 
 Work through violations rule code by rule code. After fixing each category, run the scoped check to confirm that category is clean before moving to the next.
@@ -1020,7 +1035,7 @@ Open a PR targeting `main`. Title:
 
 Body:
 
-```
+```sql
 ## Summary
 
 - Adds darglint >=1.8.1 (strictness=long; Args/Returns/Raises enforcement)
