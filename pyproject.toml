@@ -83,6 +83,9 @@ ipdb = ">=0.13.13"
 toml = "^0.10.2"
 pip-audit = "^2.9.0"
 isort = "^6.0.1"
+darglint = ">=1.8.1"
+interrogate = ">=1.7.0"
+commitizen = ">=3.0.0"
 
 
 [tool.ruff]
@@ -292,3 +295,9 @@ skips = ["B101", "B601", "S603"]
 
 [tool.bandit.assert_used]
 skips = ["*/test_*.py", "*_test.py"]
+
+[tool.commitizen]
+version_scheme = "semver"
+version_provider = "pep621"
+tag_format = "v$version"
+update_changelog_on_bump = false
