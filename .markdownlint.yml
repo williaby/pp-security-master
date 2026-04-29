@@ -1,0 +1,18 @@
+# Markdownlint configuration for pp-security-master
+# Rule reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+default: true
+
+# MD013: Line length -- disabled; long lines are acceptable in tables and code blocks
+MD013: false
+
+# MD033: Inline HTML -- disabled; some docs use HTML for badges
+MD033: false
+
+# MD041: First line should be a top-level heading -- disabled for non-doc files
+MD041: false
+
+# MD060: Table column style -- use "consistent" rather than "aligned";
+# "aligned" is impractical for tables with long CVE IDs and prose notes
+MD060:
+  style: consistent
