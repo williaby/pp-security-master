@@ -14,7 +14,7 @@ def tests(session):
     """Run the full test suite (all layers).
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     args = session.posargs or [
         "--cov",
@@ -36,7 +36,7 @@ def unit(session):
     """Run unit tests only (fast development cycle).
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -57,7 +57,7 @@ def component(session):
     """Run component tests (with mocks).
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -77,7 +77,7 @@ def db_tests(session):
     """Run database tests (PostgreSQL integration).
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -97,7 +97,7 @@ def classifier_tests(session):
     """Run classification engine tests.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -117,7 +117,7 @@ def extractor_tests(session):
     """Run broker file extraction tests.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -137,7 +137,7 @@ def fast(session):
     """Fast development loop - exclude slow tests.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -158,7 +158,7 @@ def security_tests(session):
     """Run security assertion tests.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -175,7 +175,7 @@ def integration(session):
     """Run integration tests (slower, real services).
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -194,7 +194,7 @@ def e2e(session):
     """Run end-to-end tests (full user journeys).
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -212,7 +212,7 @@ def perf(session):
     """Run performance and load tests.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run(
@@ -231,7 +231,7 @@ def lint(session):
     """Run linters.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     args = session.posargs or SRC_LOCATIONS
     session.run("poetry", "install", "--with", "dev", external=True)
@@ -255,7 +255,7 @@ def type_check(session):
     """Run type checking with basedpyright.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run("basedpyright")
@@ -266,7 +266,7 @@ def security(session):
     """Run security checks.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
 
@@ -293,7 +293,7 @@ def format_code(session):
     """Format code.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     args = session.posargs or SRC_LOCATIONS
     session.run("poetry", "install", "--with", "dev", external=True)
@@ -306,7 +306,7 @@ def pre_commit(session):
     """Run pre-commit on all files.
 
     Args:
-        session: The session value.
+        session: Nox session providing install and run helpers.
     """
     session.run("poetry", "install", "--with", "dev", external=True)
     session.run("pre-commit", "run", "--all-files")

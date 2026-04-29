@@ -35,7 +35,7 @@ class SecurityMasterCoverageReporter:
         """Find coverage XML and JSON files.
 
         Returns:
-            The result.
+            Mapping of format key to file path, or None if the file does not exist.
         """
         coverage_xml = self.project_root / "coverage.xml"
         coverage_json = self.project_root / "coverage.json"
@@ -113,7 +113,7 @@ class SecurityMasterCoverageReporter:
         """Load coverage data from XML and JSON files.
 
         Returns:
-            The result.
+            Nested dict with overall percentage and per-file coverage data, or None if no coverage files exist.
         """
         files = self.find_coverage_files()
 
@@ -137,10 +137,10 @@ class SecurityMasterCoverageReporter:
         """Classify coverage by security-master component.
 
         Args:
-            files_data: The files data value.
+            files_data: Per-file coverage data keyed by file path.
 
         Returns:
-            The result.
+            Coverage breakdown grouped by component name, each with file list and aggregate percentage.
         """
         components = {
             "extractor": {"files": [], "total_coverage": 0},
@@ -189,11 +189,11 @@ class SecurityMasterCoverageReporter:
         """Generate enhanced HTML coverage report.
 
         Args:
-            coverage_data: The coverage data value.
-            components: The components value.
+            coverage_data: Overall and per-file coverage data as returned by load_coverage_data.
+            components: Component breakdown as returned by classify_by_component.
 
         Returns:
-            The result.
+            HTML string containing the full coverage report page.
         """
         overall = coverage_data["overall"]
 
@@ -265,7 +265,7 @@ class SecurityMasterCoverageReporter:
         """Generate coverage reports if data is available.
 
         Returns:
-            The result.
+            True if the report was generated successfully, False if no coverage data was found.
         """
         coverage_data = self.load_coverage_data()
         if not coverage_data:

@@ -34,7 +34,7 @@ def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments for the workflow prepare PR command.
 
     Returns:
-        The result.
+        Parsed namespace containing all CLI flags and positional arguments.
     """
     parser = argparse.ArgumentParser(
         description="Prepare and create pull requests with comprehensive validation",
@@ -135,11 +135,11 @@ def validate_issue_format(phase: str, issue: str) -> bool:
     """Validate issue format matches pp-security-master patterns (PX-XXX).
 
     Args:
-        issue: The issue value.
-        phase: The phase value.
+        phase: Phase number string to cross-check against the issue prefix.
+        issue: Issue identifier expected in PX-XXX format (e.g., P0-001).
 
     Returns:
-        The result.
+        True if the issue matches the expected pattern and is consistent with the phase, False otherwise.
     """
     # Check if issue follows PX-XXX format
     issue_pattern = re.compile(r"^P\d+-\d{3}$")
@@ -158,11 +158,11 @@ def determine_target_branch(phase: str, target: str) -> str:
     """Determine appropriate target branch based on phase and current branch.
 
     Args:
-        phase: The phase value.
-        target: The target value.
+        phase: Phase number string used to select the default target branch.
+        target: Explicit target branch override, or "auto" to detect automatically.
 
     Returns:
-        The result.
+        Resolved branch name to use as the PR target.
     """
     if target != "auto":
         return target
@@ -197,7 +197,7 @@ def get_repository_info() -> dict[str, str]:
     """Get repository information from git remote.
 
     Returns:
-        The result.
+        Dict with owner, repo, full_name, and url keys parsed from the git remote URL.
     """
     try:
         remote_url = subprocess.check_output(
@@ -244,10 +244,10 @@ def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
     """Build parameters for the MCP pr_prepare function.
 
     Args:
-        args: The args value.
+        args: Parsed CLI arguments from parse_arguments.
 
     Returns:
-        The result.
+        Dict of keyword arguments ready to pass to the mcp__zen__pr_prepare tool.
     """
     params = {
         "dry_run": args.dry_run,
@@ -277,10 +277,10 @@ def log_change(phase: str, issue: str, action: str, details: str) -> None:
     """Log the workflow action to the change log.
 
     Args:
-        issue: The issue value.
-        phase: The phase value.
-        action: The action value.
-        details: The details value.
+        phase: Phase number string recorded in the log entry.
+        issue: Issue identifier recorded in the log entry.
+        action: Short label describing the operation performed (e.g., "PR Creation").
+        details: Human-readable summary of options and configuration for this run.
     """
     log_file = Path("docs/planning/claude-file-change-log.md")
     if not log_file.parent.exists():
@@ -302,7 +302,7 @@ def validate_environment() -> bool:
     """Validate that the environment is ready for PR creation.
 
     Returns:
-        The result.
+        True if the environment passes all checks, False if a blocking problem is detected.
     """
     print("🔍 Validating environment...")
     # Check if we're in a git repository
@@ -319,7 +319,7 @@ def main() -> int:
     """Main entry point for the workflow prepare PR command.
 
     Returns:
-        The result.
+        0 on success, 1 if validation or environment checks fail.
     """
     args = parse_arguments()
     print(f"🚀 Starting workflow prepare PR for Phase {args.phase}, Issue {args.issue}")

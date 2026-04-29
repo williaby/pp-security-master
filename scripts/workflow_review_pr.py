@@ -38,7 +38,7 @@ def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments for the workflow review PR command.
 
     Returns:
-        The result.
+        Parsed namespace containing all CLI flags and the PR URL positional argument.
     """
     parser = argparse.ArgumentParser(
         description="Review pull requests with comprehensive analysis and multi-agent validation",
@@ -141,10 +141,10 @@ def validate_pr_url(url: str) -> bool:
     """Validate that the provided URL is a valid GitHub PR URL.
 
     Args:
-        url: The url value.
+        url: URL string to validate against the github.com/owner/repo/pull/N pattern.
 
     Returns:
-        The result.
+        True if the URL points to a valid GitHub pull request, False otherwise.
     """
     try:
         parsed = urlparse(url)
@@ -169,10 +169,10 @@ def extract_pr_info(url: str) -> dict[str, str]:
     """Extract PR information from the URL.
 
     Args:
-        url: The url value.
+        url: Validated GitHub PR URL in the form https://github.com/owner/repo/pull/N.
 
     Returns:
-        The result.
+        Dict with owner, repo, pr_number, and full_name keys extracted from the URL path.
     """
     parsed = urlparse(url)
     parts = parsed.path.strip("/").split("/")
@@ -188,10 +188,10 @@ def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
     """Build parameters for the MCP pr_review function.
 
     Args:
-        args: The args value.
+        args: Parsed CLI arguments from parse_arguments.
 
     Returns:
-        The result.
+        Dict of keyword arguments ready to pass to the mcp__zen__pr_review tool.
     """
     params = {
         "pr_url": args.pr_url,
@@ -218,9 +218,9 @@ def log_change(pr_info: dict[str, str], action: str, details: str) -> None:
     """Log the workflow action to the change log.
 
     Args:
-        pr_info: The pr info value.
-        action: The action value.
-        details: The details value.
+        pr_info: PR metadata dict with full_name and pr_number keys, as returned by extract_pr_info.
+        action: Short label describing the operation performed (e.g., "PR Review Analysis").
+        details: Human-readable summary of review mode and enabled options for this run.
     """
     log_file = Path("docs/planning/claude-file-change-log.md")
     if not log_file.parent.exists():
@@ -244,7 +244,7 @@ def validate_environment() -> bool:
     """Validate that the environment is ready for PR review.
 
     Returns:
-        The result.
+        True if the environment passes all checks, False if a blocking problem is detected.
     """
     print("🔍 Validating environment...")
     # Check if we have GitHub CLI available (for potential PR operations)
@@ -262,7 +262,7 @@ def main() -> int:
     """Main entry point for the workflow review PR command.
 
     Returns:
-        The result.
+        0 on success, 1 if URL validation or environment checks fail.
     """
     args = parse_arguments()
     print(f"🔍 Starting PR review for: {args.pr_url}")

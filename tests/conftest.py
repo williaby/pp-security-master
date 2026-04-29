@@ -19,7 +19,7 @@ def pytest_runtest_setup(item) -> None:
     """Set coverage context based on test path and markers.
 
     Args:
-        item: The item value.
+        item: Pytest test item whose file path determines the coverage context label.
     """
     test_path = str(item.fspath)
 
@@ -59,7 +59,7 @@ def test_db_url() -> str:
     """Provide test database URL.
 
     Returns:
-        The result.
+        PostgreSQL connection string pointing to the local test database.
     """
     return "postgresql://test_user:test_pass@localhost:5432/test_pp_security_master"
 
@@ -69,7 +69,7 @@ def mock_database_connection():
     """Mock database connection for unit tests.
 
     Returns:
-        The result.
+        Mocked database connection context for isolation.
     """
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
@@ -82,7 +82,7 @@ def mock_sqlalchemy_engine():
     """Mock SQLAlchemy engine for unit tests.
 
     Yields:
-        The result.
+        Mocked SQLAlchemy create_engine callable for isolation.
     """
     with patch("sqlalchemy.create_engine") as mock_engine:
         yield mock_engine
@@ -98,7 +98,7 @@ def mock_openfigi_client():
     """Mock OpenFIGI API client for testing.
 
     Returns:
-        The result.
+        Mocked OpenFIGI API client for isolation.
     """
     mock_client = MagicMock()
     mock_client.classify_security.return_value = {
@@ -122,7 +122,7 @@ def mock_http_client():
     """Mock HTTP client for external API testing.
 
     Yields:
-        The result.
+        Mocked httpx.AsyncClient class for isolating external API calls.
     """
     with patch("httpx.AsyncClient") as mock_client:
         yield mock_client
@@ -138,7 +138,7 @@ def sample_security_data() -> dict[str, Any]:
     """Provide sample security data for testing.
 
     Returns:
-        The result.
+        Dict representing an Apple Inc. equity with ISIN, symbol, sector, and currency fields.
     """
     return {
         "isin": "US0378331005",
@@ -158,7 +158,7 @@ def sample_fund_data() -> dict[str, Any]:
     """Provide sample fund/ETF data for testing.
 
     Returns:
-        The result.
+        Dict representing the SPY ETF with ISIN, fund type, expense ratio, and benchmark fields.
     """
     return {
         "isin": "US46090E1038",
@@ -178,7 +178,7 @@ def sample_bond_data() -> dict[str, Any]:
     """Provide sample bond data for testing.
 
     Returns:
-        The result.
+        Dict representing a US Treasury bond with maturity date, coupon rate, and credit rating fields.
     """
     return {
         "isin": "US912828R770",
@@ -197,7 +197,7 @@ def sample_broker_transaction() -> dict[str, Any]:
     """Provide sample broker transaction for testing.
 
     Returns:
-        The result.
+        Dict representing a Wells Fargo BUY transaction for AAPL with quantity, price, and fees.
     """
     return {
         "transaction_id": "TXN-001",
@@ -234,10 +234,10 @@ def invalid_isin_inputs(request):
     """Provide invalid ISIN inputs for edge case testing.
 
     Args:
-        request: The request value.
+        request: Pytest request object providing the current parameter from the params list.
 
     Returns:
-        The result.
+        One invalid ISIN value per parametrize iteration, covering format, length, type, and country code errors.
     """
     return request.param
 
@@ -247,7 +247,7 @@ def invalid_symbol_inputs() -> list[Any]:
     """Provide invalid symbol inputs for testing.
 
     Returns:
-        The result.
+        List of values that should fail symbol validation, including empty strings, None, wrong types, and special characters.
     """
     return [
         "",  # Empty string
@@ -264,7 +264,7 @@ def security_classification_edge_cases() -> list[dict[str, Any]]:
     """Provide edge cases for security classification testing.
 
     Returns:
-        The result.
+        List of dicts, each with an input and the expected error type it should raise during classification.
     """
     return [
         {"input": None, "expected_error": "ValidationError"},
@@ -288,7 +288,7 @@ def temp_directory() -> Generator[Path, None, None]:
     """Provide temporary directory for file testing.
 
     Yields:
-        The result.
+        Path to a freshly created temporary directory that is removed after the test.
     """
     with tempfile.TemporaryDirectory() as temp_dir:
         yield Path(temp_dir)
@@ -299,10 +299,10 @@ def sample_pp_xml_file(temp_directory: Path) -> Path:
     """Create sample Portfolio Performance XML file for testing.
 
     Args:
-        temp_directory: The temp directory value.
+        temp_directory: Pytest fixture providing a fresh temporary directory for the file.
 
     Returns:
-        The result.
+        Path to the written XML file containing a minimal Portfolio Performance portfolio.
     """
     xml_content = """<?xml version="1.0" encoding="UTF-8"?>
 <client version="0.65.0">
@@ -344,10 +344,10 @@ def sample_wells_csv_file(temp_directory: Path) -> Path:
     """Create sample Wells Fargo CSV file for testing.
 
     Args:
-        temp_directory: The temp directory value.
+        temp_directory: Pytest fixture providing a fresh temporary directory for the file.
 
     Returns:
-        The result.
+        Path to the written CSV file containing sample Wells Fargo transaction rows.
     """
     csv_content = """Date,Description,Amount,Symbol,Quantity,Price
 2024-01-15,BUY AAPL,"-1,855.00",AAPL,100,185.50
@@ -364,10 +364,10 @@ def sample_ibkr_xml_file(temp_directory: Path) -> Path:
     """Create sample IBKR Flex Query XML file for testing.
 
     Args:
-        temp_directory: The temp directory value.
+        temp_directory: Pytest fixture providing a fresh temporary directory for the file.
 
     Returns:
-        The result.
+        Path to the written XML file containing a minimal IBKR Flex Query trade record.
     """
     xml_content = """<?xml version="1.0" encoding="UTF-8"?>
 <FlexQueryResponse queryName="Test" type="AF">
@@ -398,7 +398,7 @@ def benchmark_data() -> dict[str, Any]:
     """Provide benchmark data for performance testing.
 
     Returns:
-        The result.
+        Dict containing a 1000-item ISIN list, a classification volume breakdown, and a max processing time threshold.
     """
     return {
         "large_security_list": [f"US{i:010d}" for i in range(1000)],
@@ -417,7 +417,7 @@ def test_config() -> dict[str, Any]:
     """Provide test configuration settings.
 
     Returns:
-        The result.
+        Dict with database, openfigi, logging, and security_master configuration blocks populated with test values.
     """
     return {
         "database": {
@@ -443,7 +443,7 @@ def setup_test_environment():
     """Automatically set up test environment variables.
 
     Yields:
-        The result.
+        Control to the test after injecting test env vars, then restores original values on teardown.
     """
     test_env = {
         "TESTING": "true",
@@ -479,7 +479,7 @@ def mock_logger():
     """Mock logger for testing.
 
     Returns:
-        The result.
+        MagicMock instance replacing a standard Python logger for assertion in tests.
     """
     return MagicMock()
 
@@ -489,7 +489,7 @@ def mock_file_system():
     """Mock file system operations.
 
     Yields:
-        The result.
+        Dict of mocked Path methods (exists, read_text, write_text) for controlling file system behaviour in tests.
     """
     with (
         patch("pathlib.Path.exists") as mock_exists,
@@ -510,7 +510,7 @@ def malicious_inputs() -> list[str]:
     """Provide malicious inputs for security testing.
 
     Returns:
-        The result.
+        List of attack strings covering SQL injection, XSS, path traversal, null bytes, and injection patterns.
     """
     return [
         "'; DROP TABLE securities; --",  # SQL injection
@@ -529,7 +529,7 @@ def valid_but_edge_case_inputs() -> list[dict[str, Any]]:
     """Provide valid but edge case inputs for robustness testing.
 
     Returns:
-        The result.
+        List of dicts exercising boundary values such as minimum price, maximum name length, and extreme dates.
     """
     return [
         {"isin": "US" + "0" * 9, "name": ""},  # Valid ISIN, empty name

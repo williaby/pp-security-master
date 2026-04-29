@@ -24,8 +24,8 @@ def test_sample_fixtures(sample_security_data, sample_fund_data):
     """Test that our fixtures are working correctly.
 
     Args:
-        sample_security_data: The sample security data value.
-        sample_fund_data: The sample fund data value.
+        sample_security_data: Pytest fixture providing a sample Apple equity dict.
+        sample_fund_data: Pytest fixture providing a sample SPY ETF dict.
     """
     # Test security data fixture
     assert sample_security_data["isin"] == "US0378331005"
@@ -42,7 +42,7 @@ def test_temp_directory_fixture(temp_directory):
     """Test that temporary directory fixture works.
 
     Args:
-        temp_directory: The temp directory value.
+        temp_directory: Pytest fixture providing a fresh temporary directory path.
     """
     assert temp_directory.exists()
     assert temp_directory.is_dir()
@@ -59,7 +59,7 @@ def test_invalid_inputs_fixture(invalid_isin_inputs):
     """Test that invalid input fixtures provide expected data.
 
     Args:
-        invalid_isin_inputs: The invalid isin inputs value.
+        invalid_isin_inputs: Parametrized pytest fixture yielding one invalid ISIN value per iteration.
     """
     # This will run once for each parameter in the fixture
     # All these inputs are designed to be invalid in some way
@@ -85,8 +85,8 @@ def test_mock_fixtures(mock_openfigi_client, mock_database_connection):
     """Test that mock fixtures are properly configured.
 
     Args:
-        mock_database_connection: The mock database connection value.
-        mock_openfigi_client: The mock openfigi client value.
+        mock_openfigi_client: Mocked OpenFIGI API client for isolation.
+        mock_database_connection: Mocked database connection context for isolation.
     """
     # Test OpenFIGI client mock
     assert mock_openfigi_client is not None
@@ -121,7 +121,7 @@ def test_security_fixtures(malicious_inputs):
     """Test security-related fixtures.
 
     Args:
-        malicious_inputs: The malicious inputs value.
+        malicious_inputs: Pytest fixture providing a list of attack strings for security validation.
     """
     assert malicious_inputs is not None
     # Should contain various attack patterns
@@ -145,7 +145,7 @@ def test_benchmark_fixture(benchmark_data):
     """Test performance-related fixtures.
 
     Args:
-        benchmark_data: The benchmark data value.
+        benchmark_data: Pytest fixture providing a 1000-item ISIN list and timing threshold for perf tests.
     """
     assert benchmark_data is not None
     assert "large_security_list" in benchmark_data
@@ -161,7 +161,7 @@ def test_benchmark_example(benchmark):
     """Example of using pytest-benchmark.
 
     Args:
-        benchmark: The benchmark value.
+        benchmark: Pytest-benchmark fixture used to time the wrapped callable.
     """
 
     def simple_function():
