@@ -7,7 +7,7 @@ query-filters:
   - include:
       kind: problem
       queries: security-extended
-  
+
 # Paths to analyze (include only source code)
 paths:
   - "src"
@@ -28,7 +28,7 @@ languages:
   python:
     # Specify Python version for analysis
     version: "3.11"
-    
+
     # Additional Python libraries to analyze
     # (CodeQL will auto-detect most dependencies)
     setup-python-dependencies: true
