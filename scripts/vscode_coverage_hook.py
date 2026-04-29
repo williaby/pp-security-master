@@ -84,7 +84,7 @@ class SecurityMasterCoverageReporter:
             data: Coverage data dict to update with parsed results.
         """
         try:
-            with open(json_path) as f:
+            with json_path.open() as f:
                 json_data = json.load(f)
 
             data["overall"]["percentage"] = json_data.get("totals", {}).get(
@@ -102,7 +102,7 @@ class SecurityMasterCoverageReporter:
                         "lines_covered": covered,
                         "lines_total": total,
                     }
-        except (json.JSONDecodeError, ValueError, OSError):
+        except (json.JSONDecodeError, OSError):
             logger.exception("Error parsing coverage JSON")
 
     def load_coverage_data(self) -> dict:
