@@ -53,17 +53,15 @@ poetry run python -m pytest tests/test_db_connection.py -v
 
 ```bash
 # Format and lint
-poetry run black .
+poetry run ruff format --check .
 poetry run ruff check --fix .
-poetry run mypy src
-markdownlint **/*.md
+markdownlint --config .markdownlint.yml **/*.md
 yamllint .
 
 # Run tests with coverage
 poetry run pytest -v --cov=src --cov-report=html --cov-report=term-missing
 
 # Security scanning
-poetry run safety check
 poetry run bandit -r src
 poetry run pip-audit
 
@@ -82,7 +80,7 @@ poetry run nox -s fast           # Fast development cycle
 poetry run nox -s unit           # Unit tests only
 poetry run nox -s lint           # Linting and formatting
 poetry run nox -s security       # Security checks
-poetry run nox -s type_check     # MyPy type checking
+poetry run nox -s type_check     # basedpyright type checking
 
 # Specific component tests
 poetry run nox -s db_tests        # Database tests
