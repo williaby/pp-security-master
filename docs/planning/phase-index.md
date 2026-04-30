@@ -80,7 +80,7 @@ gantt
 **👥 Team**: 1-2 developers  
 **📊 Success**: PostgreSQL operational, development workflow established
 
-#### Key Deliverables**
+#### Key Deliverables
 
 - PostgreSQL 17 on Unraid with external access
 - Security master table with comprehensive taxonomy
@@ -108,7 +108,7 @@ gantt
 **👥 Team**: 2-3 developers  
 **📊 Success**: Wells Fargo CSV → Database → JSON export working end-to-end
 
-#### Key Deliverables**
+#### Key Deliverables
 
 - Institution-specific transaction tables
 - Wells Fargo CSV import pipeline
@@ -135,7 +135,7 @@ gantt
 **👥 Team**: 2-3 developers  
 **📊 Success**: >90% fund classification accuracy with fallback mechanisms
 
-#### Key Deliverables**
+#### Key Deliverables
 
 - pp-portfolio-classifier and ppxml2db integration
 - OpenFIGI API client with rate limiting
@@ -160,7 +160,7 @@ gantt
 **👥 Team**: 2-4 developers  
 **📊 Success**: All four institutions operational with cross-validation
 
-#### Key Deliverables**
+#### Key Deliverables
 
 - Interactive Brokers Flex Query parser
 - AltoIRA PDF parsing with OCR
@@ -187,7 +187,7 @@ gantt
 **👥 Team**: 3-4 developers  
 **📊 Success**: Complete PP XML backup/restore and analytics operational
 
-#### Key Deliverables**
+#### Key Deliverables
 
 - Complete Portfolio Performance XML export/import
 - Risk-adjusted performance metrics
@@ -214,7 +214,7 @@ gantt
 **👥 Team**: 3-5 developers  
 **📊 Success**: System operational with web UI and enterprise deployment
 
-#### Key Deliverables**
+#### Key Deliverables
 
 - Web UI leveraging PromptCraft Gradio patterns and components
 - Cloudflare tunnel and authentication integration (reuse existing infrastructure)
@@ -224,7 +224,7 @@ gantt
 
 **📋 Issues**: 9 issues (~30 hours total - reduced through PromptCraft asset reuse)**
 
-#### PromptCraft Integration Benefits**
+#### PromptCraft Integration Benefits
 
 - **Proven UI patterns**: Reuse multi-journey interface and accessibility components
 - **Established authentication**: Leverage existing Cloudflare Access and JWT validation

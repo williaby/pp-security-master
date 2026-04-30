@@ -1746,8 +1746,6 @@ Example:
 # #EDGE: empty ticker string returns None, not raises -- test this
 ```
 
-```text
-
 - [ ] **Step 2: Add Model Selection section**
 
 Append to `CLAUDE.md`:

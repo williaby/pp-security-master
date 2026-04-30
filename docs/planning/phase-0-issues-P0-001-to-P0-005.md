@@ -551,7 +551,7 @@ find . -type d -name "__pycache__" -prune -o -type d -print | sort
 # ./scripts
 ```
 
-## Expected Structure**
+## Expected Structure
 
 ```text
 pp-security-master/

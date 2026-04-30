@@ -61,6 +61,7 @@ Implement complete Portfolio Performance XML schema based on ADR-002 analysis, s
 
 ```bash
 # Create Portfolio Performance schema extensions
+mkdir -p sql/phase4
 cat > sql/phase4/pp_schema_extensions.sql << 'EOF'
 -- Portfolio Performance Complete Schema Extensions
 -- Based on ADR-002 analysis of PP XML backup structure
@@ -205,8 +206,6 @@ CREATE TRIGGER update_pp_accounts_updated_at BEFORE UPDATE ON pp_accounts FOR EA
 CREATE TRIGGER update_pp_portfolios_updated_at BEFORE UPDATE ON pp_portfolios FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_pp_client_config_updated_at BEFORE UPDATE ON pp_client_config FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 EOF
-
-mkdir -p sql/phase4
 ```
 
 ## Step 2: PP XML Schema Implementation

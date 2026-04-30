@@ -206,11 +206,11 @@ The full lint target should now read:
 
 ```makefile
 lint: ## Run linting checks
- $(POETRY) run ruff format --check .
- $(POETRY) run ruff check .
- $(POETRY) run basedpyright
- markdownlint **/*.md
- yamllint .
+	$(POETRY) run ruff format --check .
+	$(POETRY) run ruff check .
+	$(POETRY) run basedpyright
+	markdownlint **/*.md
+	yamllint .
 ```
 
 - [ ] **Step 9: Verify pyproject.toml is valid TOML**

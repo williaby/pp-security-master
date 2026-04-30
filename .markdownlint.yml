@@ -23,7 +23,11 @@ MD024:
 MD025:
   front_matter_title: ''
 
-# MD060: Table column style -- "any" allows mixed styles per table, which is
-# practical for tables with long CVE IDs and prose notes
-MD060:
-  style: any
+# MD010: Hard tabs -- disabled in code blocks; Makefile recipe lines inside fenced
+# blocks require literal tabs and must not be converted to spaces
+MD010:
+  code_blocks: false
+
+# MD060: Table column style -- disabled; separator rows (`|---|---|`) have no spaces
+# by convention but MD060 treats them as inconsistent with spaced header/data rows
+MD060: false

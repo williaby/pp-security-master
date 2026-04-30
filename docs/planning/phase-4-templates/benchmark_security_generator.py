@@ -258,9 +258,9 @@ class BenchmarkSecurityGenerator:
         """Calculate performance history for portfolio benchmark.
 
         Args:
+            benchmark: The benchmark value.
             start_date: The start date value.
             end_date: The end date value.
-            benchmark: The benchmark value.
         """
 
         # Get portfolio snapshots for the period

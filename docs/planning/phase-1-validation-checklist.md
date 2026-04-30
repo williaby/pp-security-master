@@ -66,7 +66,7 @@ Use this checklist to track progress and validate completion of each Phase 1 com
   - **Validation**: `psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT COUNT(*) FROM mv_transactions_unified;"`
   - **Expected**: Materialized view operational with indexes
 
-#### Day 1 Sign-off**
+#### Day 1 Sign-off
 
 - [ ] All four institution transaction tables operational
 - [ ] Performance indexes and constraints working
@@ -121,7 +121,7 @@ Use this checklist to track progress and validate completion of each Phase 1 com
   - **Validation**: Can rollback batches and delete associated data
   - **Expected**: Clean rollback with audit trail
 
-#### Day 2 Sign-off**
+#### Day 2 Sign-off
 
 - [ ] Import batch tracking fully operational
 - [ ] Data lineage maintained across all operations
@@ -195,7 +195,7 @@ Use this checklist to track progress and validate completion of each Phase 1 com
   - **Validation**: Parse sample CSV file completely
   - **Expected**: All sample transactions processed with quality scores
 
-#### Day 8 Sign-off**
+#### Day 8 Sign-off
 
 - [ ] Wells Fargo parser fully functional
 - [ ] Sample data processing successful
@@ -247,7 +247,7 @@ Use this checklist to track progress and validate completion of each Phase 1 com
   - **Validation**: Exported data validated before output
   - **Expected**: No invalid or corrupt exports
 
-#### Days 9-10 Sign-off**
+#### Days 9-10 Sign-off
 
 - [ ] Enhanced data quality validation operational
 - [ ] JSON export engine functional
@@ -289,7 +289,7 @@ Use this checklist to track progress and validate completion of each Phase 1 com
   - **Validation**: Large imports don't cause memory issues
   - **Expected**: Stable memory usage during processing
 
-#### Days 15-16 Sign-off**
+#### Days 15-16 Sign-off
 
 - [ ] Database performance meets requirements
 - [ ] Large dataset handling validated
@@ -338,7 +338,7 @@ Use this checklist to track progress and validate completion of each Phase 1 com
   - **Validation**: All errors logged with sufficient detail
   - **Expected**: Debugging information available
 
-#### Days 17-18 Sign-off**
+#### Days 17-18 Sign-off
 
 - [ ] End-to-end integration testing complete
 - [ ] Error handling comprehensive
@@ -374,7 +374,7 @@ Use this checklist to track progress and validate completion of each Phase 1 com
   - **Validation**: `./scripts/phase1/validate_phase1_complete.sh`
   - **Expected**: All automated tests pass
 
-#### Days 19-20 Sign-off**
+#### Days 19-20 Sign-off
 
 - [ ] Consolidated views operational
 - [ ] Query interface complete
