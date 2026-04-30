@@ -3,7 +3,7 @@
 import nox
 
 # Python versions to test
-PYTHON_VERSIONS = ["3.11", "3.12"]
+PYTHON_VERSIONS = ["3.11", "3.12", "3.13"]
 
 # Source locations
 SRC_LOCATIONS = ["src", "tests", "noxfile.py"]
@@ -226,7 +226,7 @@ def perf(session):
     )
 
 
-@nox.session(python="3.12")
+@nox.session
 def lint(session):
     """Run linters.
 
@@ -239,7 +239,9 @@ def lint(session):
     session.run("ruff", "check", *args)
 
     # Markdown linting
-    session.run("markdownlint", "**/*.md", external=True)
+    session.run(
+        "markdownlint", "--config", ".markdownlint.yml", "**/*.md", external=True
+    )
 
     # YAML linting
     session.run("yamllint", ".", external=True)
@@ -250,7 +252,7 @@ def lint(session):
     session.run("interrogate", "scripts/", "--fail-under", "85")
 
 
-@nox.session(python="3.12")
+@nox.session
 def type_check(session):
     """Run type checking with basedpyright.
 
@@ -261,7 +263,7 @@ def type_check(session):
     session.run("basedpyright")
 
 
-@nox.session(python="3.12")
+@nox.session
 def security(session):
     """Run security checks.
 
@@ -288,7 +290,7 @@ def security(session):
     )
 
 
-@nox.session(python="3.12")
+@nox.session
 def format_code(session):
     """Format code.
 
@@ -301,7 +303,7 @@ def format_code(session):
     session.run("ruff", "check", "--fix", *args)
 
 
-@nox.session(python="3.12")
+@nox.session
 def pre_commit(session):
     """Run pre-commit on all files.
 

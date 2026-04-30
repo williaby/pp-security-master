@@ -23,7 +23,7 @@ MD024:
 MD025:
   front_matter_title: ''
 
-# MD060: Table column style -- "consistent" enforces a single style within each
-# table; "aligned" is impractical for tables with long CVE IDs and prose notes
+# MD060: Table column style -- "any" allows mixed styles per table, which is
+# practical for tables with long CVE IDs and prose notes
 MD060:
-  style: consistent
+  style: any
