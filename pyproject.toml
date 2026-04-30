@@ -26,9 +26,9 @@ requires-python = ">=3.11,<3.15"
 dynamic = ["dependencies"]
 
 [project.urls]
-homepage = "https://github.com/byron/pp-security-master"
-repository = "https://github.com/byron/pp-security-master"
-documentation = "https://github.com/byron/pp-security-master/wiki"
+homepage = "https://github.com/williaby/pp-security-master"
+repository = "https://github.com/williaby/pp-security-master"
+documentation = "https://github.com/williaby/pp-security-master/wiki"
 
 # Poetry-specific configuration
 [tool.poetry]
@@ -72,7 +72,7 @@ pytest-benchmark = ">=4.0.0"  # Performance testing
 pytest-html = ">=4.1.1"  # HTML test reports
 hypothesis = ">=6.98.9"
 faker = ">=37.0.0"
-ruff = "0.12.3"
+ruff = "0.15.12"
 basedpyright = ">=1.1.400"
 bandit = {extras = ["toml"], version = "1.7.7"}
 detect-secrets = ">=1.5.0"
@@ -80,7 +80,6 @@ pre-commit = ">=4.0.0"
 nox = ">=2025.1.0"
 ipython = ">=9.0.0"
 ipdb = ">=0.13.13"
-toml = "^0.10.2"
 pip-audit = "^2.9.0"
 isort = "^6.0.1"
 darglint = ">=1.8.1"
