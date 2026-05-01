@@ -77,18 +77,10 @@ jobs:
 
       - name: Run enhanced security scans
         run: |
-          # Install security scanners
-          pip install pip-audit
-
           # Run pip-audit with SBOM generation
           echo "::group::Running pip-audit"
-          pip-audit --format=json --output=vulnerability-report.json || echo "Vulnerabilities found"
-          pip-audit --format=cyclonedx-json --output=sbom.json || echo "SBOM generation completed"
-          echo "::endgroup::"
-
-          # Run existing security tools
-          echo "::group::Running Safety"
-          poetry run safety check --output safety-report.json || echo "Safety check completed"
+          poetry run pip-audit --format=json --output=vulnerability-report.json || echo "Vulnerabilities found"
+          poetry run pip-audit --format=cyclonedx-json --output=sbom.json || echo "SBOM generation completed"
           echo "::endgroup::"
 
           echo "::group::Running Bandit"
@@ -103,7 +95,6 @@ jobs:
           path: |
             vulnerability-report.json
             sbom.json
-            safety-report.json
             bandit-report.json
           retention-days: 30
 
@@ -125,9 +116,9 @@ jobs:
 
       - name: Run linting and type checks
         run: |
-          poetry run black --check .
+          poetry run ruff format --check .
           poetry run ruff check .
-          poetry run mypy src
+          poetry run basedpyright
 
       - name: Commit requirements updates if changed
         run: |
