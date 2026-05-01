@@ -142,7 +142,7 @@ pytest -m "security"           # Security assertion tests
 - **Environment Security**: Encrypt `.env` files using GPG before archiving
 - **API Security**: Rate limiting and caching for external API calls
 - **Input Validation**: Validate all broker file inputs before processing
-- **Dependency Security**: Regular `safety check` and `pip-audit` scans
+- **Dependency Security**: Regular `pip-audit` scans
 - **Code Security**: Bandit static analysis for security vulnerabilities
 
 ## Documentation & Architecture
@@ -168,3 +168,29 @@ This project is governed by the following global rules in addition to this file:
 - `~/.claude/.claude/rules/testing.md` -- coverage thresholds, test scope
 - `~/.claude/.claude/rules/writing.md` -- em-dash ban, AI pattern blacklist
 - `~/.claude/.claude/standards/packages.md` -- canonical package choices
+
+## Response-Aware Development (RAD)
+
+Tag assumptions that could cause production failures using these markers in
+code comments. Mandatory for: timing dependencies, external resources,
+data integrity, concurrency, security, financial calculations.
+
+- `#CRITICAL` -- assumption failure causes data loss or security breach
+- `#ASSUME` -- assumption made without verification
+- `#EDGE` -- edge case that needs explicit handling
+- `#VERIFY` -- verification instruction paired with the above markers
+
+Example:
+
+```python
+# #ASSUME: OpenFIGI rate limit is 10 req/s -- #VERIFY before production load
+# #EDGE: empty ticker string returns None, not raises -- test this
+```
+
+## Model Selection
+
+| Task type | Model | When |
+| --- | --- | --- |
+| Architecture, planning, ADRs | Opus 4.7 | Multi-step decisions, deep code review |
+| Standard development | Sonnet 4.6 | Most coding, editing, PR descriptions |
+| Read-only exploration | Haiku 4.5 | File scanning, structure mapping, quick lookups |
