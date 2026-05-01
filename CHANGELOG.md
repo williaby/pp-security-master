@@ -38,3 +38,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Broaden `except` clause in `PPXMLExportService.validate_export` to catch `defusedxml.DefusedXmlException` in addition to `ET.ParseError`; defusedxml security violations do not inherit from `ParseError`
 - Add `try/except defusedxml.DefusedXmlException` around `defused_minidom.parseString()` in `_prettify_xml` to convert XML security violations to `ValueError` instead of propagating unhandled
 - Correct `qlty.toml` format and add path exclusions for qlty 0.612.0 compatibility
+
+### Security
+
+- SHA-pin all GitHub Actions tags across ci.yml, codeql.yml,
+  renovate-auto-merge.yml, and scorecard.yml to immutable commit SHAs
+  (actions/checkout v4.2.2, actions/setup-python v5.4.0,
+  actions/cache v4.2.3, actions/upload-artifact v4.6.2,
+  codecov/codecov-action v4.6.0, github/codeql-action v3.29.0,
+  step-security/harden-runner v2.12.2, snok/install-poetry v1.4.1,
+  fountainhead/action-wait-for-check v1.2.0, ossf/scorecard-action v2.4.3)
