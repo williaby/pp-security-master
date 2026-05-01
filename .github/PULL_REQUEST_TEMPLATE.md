@@ -63,12 +63,14 @@
 ## For Reviewers
 
 ### Security Review
+
 - [ ] No sensitive data exposure
 - [ ] API keys/credentials properly handled
 - [ ] Input validation adequate
 - [ ] Dependencies reviewed for vulnerabilities
 
 ### Portfolio Performance Integration
+
 - [ ] XML/JSON output format validated
 - [ ] Backward compatibility maintained
 - [ ] Import/export functionality verified

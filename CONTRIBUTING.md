@@ -86,4 +86,4 @@ help improve our code, documentation, and community processes.
    poetry run nox -s security
    ```
 
-_Last updated: 2026-04-20_
+Last updated: 2026-04-20

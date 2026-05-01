@@ -27,6 +27,7 @@ The infrastructure operates on Unraid, which provides enterprise storage capabil
 ## Infrastructure Requirements Analysis
 
 ### Performance Requirements
+
 - **Database**: PostgreSQL 17 with 10,000+ securities, 100,000+ transactions
 - **API Response**: <2 seconds for individual security classification
 - **Batch Processing**: 1,000+ securities processed overnight
@@ -34,6 +35,7 @@ The infrastructure operates on Unraid, which provides enterprise storage capabil
 - **Storage**: 100GB+ for financial data, 500GB+ for raw file archives
 
 ### Reliability Requirements
+
 - **Database Uptime**: 99.9% availability (8.76 hours downtime/year)
 - **Backup Strategy**: Automated daily backups with 7-year retention
 - **Disaster Recovery**: <4 hours to restore from backup
@@ -47,6 +49,7 @@ We will implement a **containerized microservices architecture** on Unraid using
 ### Infrastructure Architecture
 
 #### **Unraid Host Configuration**
+
 ```yaml
 # Unraid System Specifications
 system:
@@ -64,6 +67,7 @@ system:
 ```
 
 #### **Container Architecture**
+
 ```yaml
 # docker-compose.yml
 version: '3.8'
@@ -176,6 +180,7 @@ secrets:
 ### PostgreSQL 17 Optimization
 
 #### **Database Configuration**
+
 ```sql
 -- postgresql.conf optimizations for financial data workload
 -- Memory settings
@@ -208,6 +213,7 @@ log_disconnections = on
 ```
 
 #### **Database Schema Optimization**
+
 ```sql
 -- Index strategy for financial data queries
 CREATE INDEX CONCURRENTLY idx_securities_master_isin 
@@ -233,6 +239,7 @@ CREATE TABLE pp_account_transactions_2025 PARTITION OF pp_account_transactions
 ### Storage Strategy
 
 #### **Unraid Storage Configuration**
+
 ```yaml
 storage_pools:
   cache_pool:
@@ -268,6 +275,7 @@ directory_structure:
 ```
 
 #### **Backup and Recovery Strategy**
+
 ```bash
 #!/bin/bash
 # Automated backup script for PostgreSQL and application data
@@ -296,6 +304,7 @@ find /mnt/user/pp-security/backups/ -name "full_*.tar.gz" -mtime +90 -delete
 ### Performance Monitoring and Alerting
 
 #### **System Monitoring Stack**
+
 ```yaml
 monitoring:
   prometheus:
@@ -319,6 +328,7 @@ monitoring:
 ```
 
 #### **Key Performance Metrics**
+
 ```yaml
 alerts:
   database:
@@ -351,6 +361,7 @@ alerts:
 ## Deployment Strategy
 
 ### Environment Management
+
 ```bash
 # Production deployment script
 #!/bin/bash
@@ -374,6 +385,7 @@ docker-compose up -d --force-recreate --renew-anon-volumes
 ```
 
 ### CI/CD Pipeline
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy to Unraid
@@ -410,6 +422,7 @@ jobs:
 ## Security and Network Architecture
 
 ### Network Isolation
+
 ```yaml
 network_architecture:
   external_access:
@@ -431,6 +444,7 @@ network_architecture:
 ```
 
 ### Data Encryption
+
 ```yaml
 encryption_strategy:
   at_rest:
@@ -452,6 +466,7 @@ encryption_strategy:
 ## Scalability and Growth Planning
 
 ### Horizontal Scaling Strategy
+
 ```yaml
 scaling_options:
   database:
@@ -471,6 +486,7 @@ scaling_options:
 ```
 
 ### Resource Planning
+
 ```yaml
 growth_projections:
   year_1:
@@ -495,12 +511,14 @@ growth_projections:
 ## Disaster Recovery and Business Continuity
 
 ### Recovery Time Objectives (RTO)
+
 - **Database Recovery**: <4 hours from backup
 - **Application Recovery**: <1 hour from container restart
 - **Full System Recovery**: <8 hours from bare metal
 - **Data Recovery**: <24 hours from offsite backup
 
 ### Recovery Point Objectives (RPO)
+
 - **Transaction Data**: <1 hour (via WAL shipping)
 - **Classification Data**: <4 hours (via daily backup)
 - **Raw Files**: <24 hours (via array parity)
@@ -509,12 +527,14 @@ growth_projections:
 ## Success Metrics
 
 ### Performance Targets
+
 - **Database Query Performance**: <500ms p95 for common queries
 - **API Response Time**: <2 seconds p95 for classification requests
 - **Batch Processing**: 1,000 securities classified per hour
 - **System Availability**: 99.9% uptime (measured monthly)
 
 ### Operational Targets
+
 - **Deployment Time**: <15 minutes for routine updates
 - **Recovery Time**: <4 hours for database restoration
 - **Backup Success Rate**: 100% for automated backups
@@ -523,18 +543,21 @@ growth_projections:
 ## Consequences
 
 ### Positive
+
 - **Enterprise Performance**: PostgreSQL 17 provides institutional-grade performance
 - **Simplified Management**: Unraid provides user-friendly infrastructure management
 - **Cost Efficiency**: Home lab infrastructure minimizes operational costs
 - **Scalability**: Container architecture supports growth and feature expansion
 
 ### Negative
+
 - **Single Point of Failure**: Home lab lacks enterprise redundancy
 - **Network Dependency**: Relies on home internet for external API access
 - **Hardware Limitations**: Physical server constraints limit maximum scale
 - **Operational Complexity**: Full-stack management requires broad technical skills
 
 ### Risk Mitigation
+
 - **Comprehensive Backups**: Multiple backup strategies mitigate hardware failure
 - **Monitoring and Alerting**: Proactive monitoring minimizes downtime
 - **Documentation**: Detailed procedures enable quick recovery

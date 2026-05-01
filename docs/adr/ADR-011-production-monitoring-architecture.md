@@ -11,24 +11,28 @@
 The Security Master Service processes sensitive financial data with high availability requirements. The system needs comprehensive monitoring and observability to ensure:
 
 **Operational Requirements**:
+
 - 99.9% uptime target for production service
 - Early detection of performance degradation
 - Real-time alerting for system failures
 - Complete audit trail for compliance and debugging
 
 **Business Requirements**:
+
 - Classification accuracy monitoring (>95% target)
 - Data quality validation and alerting
 - User satisfaction tracking
 - Cost monitoring for external API usage
 
 **Technical Requirements**:
+
 - Database performance monitoring
 - Application performance metrics
 - Infrastructure resource monitoring  
 - Security event detection and alerting
 
 Current gaps identified from project planning review:
+
 - No observability framework defined
 - Missing production monitoring strategy
 - No health check endpoints specified
@@ -42,7 +46,7 @@ We will implement a **comprehensive, multi-layered monitoring and observability 
 
 #### **Four Pillars of Observability**
 
-```
+```text
 Metrics     → Quantitative measurements (response times, error rates, throughput)
 Logging     → Structured event records with context and correlation
 Tracing     → Request flow tracking across system components  
@@ -203,6 +207,7 @@ class SecurityMasterLogger:
 #### **Log Categories & Levels**
 
 **Application Logs**:
+
 ```python
 # Classification engine logs
 logger.info("classification_started", security_id="US0378331005")
@@ -218,6 +223,7 @@ logger.error("external_api_error", service="OpenFIGI", error="rate_limit_exceede
 ```
 
 **Security Logs**:
+
 ```python
 # Authentication events
 logger.info("user_login", user_id="byron@domain.com", source_ip="192.168.1.100")
@@ -498,6 +504,7 @@ class AlertManager:
 #### **Alert Definitions**
 
 **System Health Alerts**:
+
 ```python
 # Critical system alerts
 ALERT_DATABASE_DOWN = {
@@ -516,6 +523,7 @@ ALERT_HIGH_ERROR_RATE = {
 ```
 
 **Performance Alerts**:
+
 ```python
 # Performance degradation alerts
 ALERT_SLOW_CLASSIFICATION = {
@@ -534,6 +542,7 @@ ALERT_HIGH_MEMORY_USAGE = {
 ```
 
 **Business Logic Alerts**:
+
 ```python
 # Business metric alerts
 ALERT_LOW_CLASSIFICATION_ACCURACY = {
@@ -554,24 +563,28 @@ ALERT_DATA_QUALITY_ISSUES = {
 ## Implementation Strategy
 
 ### Phase 1: Foundation Monitoring (Week 1-2)
+
 - Set up basic metrics collection with Prometheus
 - Implement structured logging framework
 - Create basic health check endpoints
 - Configure simple alerting for critical failures
 
 ### Phase 2: Advanced Observability (Week 3-4)
+
 - Implement distributed tracing with OpenTelemetry  
 - Set up comprehensive dashboards with Grafana
 - Add business metrics and data quality monitoring
 - Configure multi-channel alerting system
 
 ### Phase 3: Production Readiness (Week 5-6)
+
 - Performance monitoring and benchmarking
 - Security event monitoring and alerting
 - Automated incident response workflows
 - Monitoring documentation and runbooks
 
 ### Phase 4: Continuous Improvement (Ongoing)
+
 - Monitoring optimization based on operational experience
 - New metric development for emerging requirements
 - Alert tuning to reduce false positives
@@ -582,6 +595,7 @@ ALERT_DATA_QUALITY_ISSUES = {
 ### Core Monitoring Tools
 
 **Metrics Collection & Storage**:
+
 ```yaml
 # Prometheus configuration for metrics collection
 prometheus:
@@ -602,6 +616,7 @@ prometheus:
 ```
 
 **Visualization & Dashboards**:
+
 ```yaml
 # Grafana dashboard configuration
 grafana:
@@ -620,6 +635,7 @@ grafana:
 ```
 
 **Log Management**:
+
 ```yaml
 # ELK Stack configuration for log management
 elasticsearch:
@@ -648,6 +664,7 @@ kibana:
 ### Monitoring Infrastructure
 
 **Container-based Deployment**:
+
 ```yaml
 # Docker Compose monitoring stack
 version: '3.8'
@@ -676,6 +693,7 @@ services:
 ## Monitoring Dashboards
 
 ### Executive Dashboard
+
 - System uptime and availability
 - Classification accuracy trends  
 - User activity and satisfaction metrics
@@ -683,6 +701,7 @@ services:
 - Security incident summary
 
 ### Operations Dashboard
+
 - Application performance metrics (response times, throughput)
 - Database performance and health
 - Infrastructure resource utilization
@@ -690,6 +709,7 @@ services:
 - Deployment and release metrics
 
 ### Development Dashboard
+
 - Application error rates and debugging information
 - Performance bottleneck identification
 - Code quality metrics and technical debt
@@ -697,6 +717,7 @@ services:
 - Development velocity and delivery metrics
 
 ### Business Intelligence Dashboard
+
 - Portfolio classification accuracy by asset type
 - Data quality trends and improvement metrics
 - User adoption and feature usage analytics
@@ -738,24 +759,28 @@ class IncidentResponseAutomation:
 ## Success Criteria
 
 ### Monitoring Coverage
+
 - **Application Coverage**: 100% of critical workflows instrumented
 - **Infrastructure Coverage**: All system components monitored
 - **Business Metrics**: Key performance indicators tracked
 - **Security Events**: All authentication and authorization events logged
 
 ### Performance Monitoring
+
 - **Response Time Monitoring**: 95% of requests tracked
 - **Error Rate Monitoring**: All errors categorized and tracked  
 - **Resource Utilization**: CPU, memory, disk, network monitored
 - **External Dependencies**: All API calls and responses tracked
 
 ### Alerting Effectiveness
+
 - **Mean Time to Detection**: <5 minutes for critical issues
 - **False Positive Rate**: <5% for critical alerts
 - **Alert Response Time**: <15 minutes for high-severity alerts
 - **Incident Resolution**: 90% resolved within SLA timeframes
 
 ### Operational Excellence
+
 - **System Uptime**: >99.9% availability
 - **Monitoring Uptime**: >99.99% monitoring system availability
 - **Documentation Coverage**: All monitoring procedures documented
@@ -770,7 +795,7 @@ class IncidentResponseAutomation:
 
 ## References
 
-- OpenTelemetry Documentation: https://opentelemetry.io/docs/
+- OpenTelemetry Documentation: <https://opentelemetry.io/docs/>
 - Prometheus Monitoring Best Practices
 - Grafana Dashboard Design Guidelines
 - Site Reliability Engineering (SRE) Monitoring Principles

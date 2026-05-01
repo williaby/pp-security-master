@@ -19,24 +19,28 @@ This document outlines the comprehensive strategy for migrating existing Portfol
 
 ### 1.1 Migration Types
 
-**Type A: New Installation Migration**
+#### Type A: New Installation Migration
+
 - Fresh Security-Master Service setup
 - Import existing PP XML backup files
 - Establish ongoing synchronization
 
-**Type B: Existing Portfolio Enhancement**
+#### Type B: Existing Portfolio Enhancement
+
 - Add Security-Master Service to existing PP workflow
 - Preserve all existing data and user configurations
 - Enable enhanced classification without disruption
 
-**Type C: Multi-Instance Consolidation**
+#### Type C: Multi-Instance Consolidation
+
 - Merge multiple PP instances into centralized Security-Master
 - Resolve conflicts and duplicate securities
 - Maintain separate account hierarchies
 
 ### 1.2 Data Elements in Scope
 
-**Core Portfolio Performance Data:**
+#### Core Portfolio Performance Data
+
 - Complete securities master (ISINs, symbols, price history)
 - Account and portfolio hierarchies with UUIDs
 - Transaction history (account and portfolio transactions)
@@ -44,7 +48,8 @@ This document outlines the comprehensive strategy for migrating existing Portfol
 - User settings, bookmarks, and dashboard configurations
 - Watchlists and custom classifications
 
-**Enhanced Security-Master Data:**
+#### Enhanced Security-Master Data
+
 - GICS, TRBC, and CFI taxonomy classifications
 - Institution-specific transaction imports
 - Data quality metrics and validation results
@@ -64,7 +69,7 @@ This document outlines the comprehensive strategy for migrating existing Portfol
 
 ### 2.1 Migration Data Flow
 
-```
+```text
 Existing PP XML ──┐
                   ├── Migration Engine ──> PostgreSQL 17 ──> Enhanced PP XML
 Institution Data ─┘                           │
@@ -74,6 +79,7 @@ Institution Data ─┘                           │
 ### 2.2 Migration Components
 
 #### **Migration Engine** (`src/migration/`)
+
 ```python
 class PortfolioMigrationService:
     """Comprehensive PP data migration with validation and rollback."""
@@ -92,12 +98,14 @@ class PortfolioMigrationService:
 ```
 
 #### **Validation Framework** (`src/migration/validation/`)
+
 - XML schema validation against PP standards
 - Transaction integrity checks (balances, cross-references)
 - Price data completeness validation
 - Security identifier consistency verification
 
 #### **Rollback System** (`src/migration/rollback/`)
+
 - Complete database state snapshots before migration
 - Incremental rollback capabilities for partial failures
 - Migration log replay for debugging and recovery
@@ -110,9 +118,10 @@ class PortfolioMigrationService:
 
 **Objectives**: Analyze existing PP data and plan migration strategy
 
-#### **Assessment Procedures**:
+#### **Assessment Procedures**
 
 1. **Portfolio Analysis**
+
    ```bash
    # Run PP XML analysis tool
    poetry run python -m security_master.migration.analyze_pp_xml portfolio_backup.xml
@@ -133,7 +142,8 @@ class PortfolioMigrationService:
    - Performance impact assessment
    - Rollback storage allocation
 
-#### **Deliverables**:
+#### **Deliverables**
+
 - Migration complexity report
 - Resource allocation plan
 - Risk assessment with mitigation strategies
@@ -143,9 +153,10 @@ class PortfolioMigrationService:
 
 **Objectives**: Prepare target environment and backup existing data
 
-#### **Preparation Steps**:
+#### **Preparation Steps**
 
 1. **Database Preparation**
+
    ```sql
    -- Create migration-specific schemas
    CREATE SCHEMA migration_staging;
@@ -162,6 +173,7 @@ class PortfolioMigrationService:
    ```
 
 2. **Backup Creation**
+
    ```bash
    # Create complete database backup before migration
    pg_dump pp_security_master > pre_migration_backup_$(date +%Y%m%d_%H%M%S).sql
@@ -172,6 +184,7 @@ class PortfolioMigrationService:
    ```
 
 3. **Performance Baseline**
+
    ```bash
    # Establish performance baselines
    poetry run python -m security_master.migration.benchmark_performance
@@ -181,9 +194,10 @@ class PortfolioMigrationService:
 
 **Objectives**: Import PP data and transform to Security-Master schema
 
-#### **Import Process**:
+#### **Import Process**
 
 1. **XML Parsing & Validation**
+
    ```python
    class PPXMLImporter:
        def import_pp_backup(self, xml_file: Path) -> ImportResult:
@@ -200,7 +214,8 @@ class PortfolioMigrationService:
    ```
 
 2. **Data Transformation Pipeline**
-   ```
+
+   ```text
    PP Securities → securities_master + enhanced classification
    PP Accounts → pp_accounts + account hierarchy
    PP Portfolios → pp_portfolios + portfolio relationships
@@ -214,7 +229,7 @@ class PortfolioMigrationService:
    - Checkpoint progress at each batch
    - Enable resumption from last successful checkpoint
 
-#### **Validation Checkpoints**:
+#### **Validation Checkpoints**
 
 1. **Schema Validation**: Every imported entity validates against target schema
 2. **Referential Integrity**: Cross-reference validation after each batch
@@ -225,21 +240,24 @@ class PortfolioMigrationService:
 
 **Objectives**: Enhance imported data with Security-Master classifications
 
-#### **Enhancement Process**:
+#### **Enhancement Process**
 
 1. **Security Classification**
+
    ```python
    # Run classification engine on imported securities
    poetry run python -m security_master.cli classify --source migration --batch-size 100
    ```
 
 2. **Institution Data Integration**
+
    ```python
    # Match existing securities with institution transaction data
    poetry run python -m security_master.migration.integrate_institution_data
    ```
 
 3. **Data Quality Analysis**
+
    ```python
    # Generate data quality report
    poetry run python -m security_master.migration.quality_report
@@ -249,9 +267,10 @@ class PortfolioMigrationService:
 
 **Objectives**: Comprehensive validation of migrated data
 
-#### **Validation Procedures**:
+#### **Validation Procedures**
 
 1. **Round-Trip Validation**
+
    ```bash
    # Export migrated data back to PP XML format
    poetry run python -m security_master.export.pp_xml \
@@ -263,6 +282,7 @@ class PortfolioMigrationService:
    ```
 
 2. **Portfolio Consistency Check**
+
    ```python
    class MigrationValidator:
        def validate_portfolio_positions(self) -> ValidationResult:
@@ -279,15 +299,17 @@ class PortfolioMigrationService:
    ```
 
 3. **Performance Testing**
+
    ```bash
    # Test system performance with migrated data
    poetry run python -m security_master.migration.performance_test \
        --test-classification --test-export --test-analytics
    ```
 
-#### **Validation Reports**:
+#### **Validation Reports**
+
 - Data completeness report (100% target)
-- Portfolio position reconciliation 
+- Portfolio position reconciliation
 - Performance benchmark comparison
 - Classification accuracy assessment
 
@@ -295,9 +317,10 @@ class PortfolioMigrationService:
 
 **Objectives**: Finalize migration and establish ongoing synchronization
 
-#### **Completion Steps**:
+#### **Completion Steps**
 
 1. **Migration Finalization**
+
    ```sql
    -- Mark migration as complete
    UPDATE migration_sessions 
@@ -309,6 +332,7 @@ class PortfolioMigrationService:
    ```
 
 2. **Synchronization Setup**
+
    ```python
    # Configure ongoing PP synchronization
    poetry run python -m security_master.config setup_sync \
@@ -327,7 +351,8 @@ class PortfolioMigrationService:
 
 ### 4.1 Rollback Triggers
 
-**Automatic Rollback Conditions**:
+#### Automatic Rollback Conditions**
+
 - Data validation failure > 1% error rate
 - Performance degradation > 50% from baseline
 - Critical system errors during migration
@@ -335,7 +360,8 @@ class PortfolioMigrationService:
 
 ### 4.2 Rollback Process
 
-#### **Complete Database Rollback**:
+#### **Complete Database Rollback**
+
 ```bash
 # Stop Security-Master Service
 systemctl stop pp-security-master
@@ -349,7 +375,8 @@ psql pp_security_master < pre_migration_backup.sql
 systemctl start pp-security-master
 ```
 
-#### **Partial Rollback (Last Migration Only)**:
+#### **Partial Rollback (Last Migration Only)**
+
 ```python
 class MigrationRollback:
     def rollback_last_migration(self, migration_id: str) -> RollbackResult:
@@ -372,19 +399,22 @@ class MigrationRollback:
 
 ### 5.1 Migration Metrics
 
-**Progress Tracking**:
+#### Progress Tracking**
+
 - Securities imported vs. total
 - Transactions processed vs. total  
 - Classification completion percentage
 - Data validation success rate
 
-**Performance Metrics**:
+#### Performance Metrics**
+
 - Import rate (transactions/minute)
 - Memory utilization during import
 - Database storage growth
 - API call volumes and success rates
 
-**Quality Metrics**:
+#### Quality Metrics**
+
 - Data validation error rate
 - Round-trip validation success rate
 - Classification accuracy percentage
@@ -392,13 +422,15 @@ class MigrationRollback:
 
 ### 5.2 Alerting & Notifications
 
-**Critical Alerts**:
+#### Critical Alerts**
+
 - Migration failure or timeout
 - Data validation error rate > 1%
 - Database storage > 90% capacity
 - Performance degradation > 50%
 
-**Status Updates**:
+#### Status Updates**
+
 - Migration progress notifications (25%, 50%, 75%, 100%)
 - Phase completion confirmations
 - Validation checkpoint status
@@ -441,13 +473,15 @@ class MigrationRollback:
 
 ### 7.1 Ongoing Synchronization
 
-**Daily Operations**:
+#### Daily Operations**
+
 - Automated PP export generation
 - Classification updates for new securities
 - Data quality monitoring and alerts
 - Performance metrics collection
 
-**Weekly Operations**:
+#### Weekly Operations**
+
 - Migration health check reports
 - User satisfaction surveys
 - System performance optimization
@@ -455,13 +489,15 @@ class MigrationRollback:
 
 ### 7.2 Support & Maintenance
 
-**User Support**:
+#### User Support**
+
 - Migration FAQ and troubleshooting guide
 - User training materials and videos  
 - Support ticket system for migration issues
 - Expert consultation availability
 
-**System Maintenance**:
+#### System Maintenance**
+
 - Regular migration log analysis
 - Performance tuning based on usage patterns
 - Security audit of migration procedures
@@ -473,19 +509,22 @@ class MigrationRollback:
 
 ### 8.1 Migration KPIs
 
-**Technical Success Metrics**:
+#### Technical Success Metrics**
+
 - Zero data loss: 100% data preservation
 - Migration completion time: <2 hours for 10,000 transactions
 - Round-trip validation: 100% accuracy
 - System availability: >99.5% during migration
 
-**User Experience Metrics**:
+#### User Experience Metrics**
+
 - User satisfaction: >4.5/5 rating
 - Support ticket volume: <5% of migrated users
 - Training completion: >90% of users
 - Feature adoption: >80% using enhanced classifications
 
-**Business Impact Metrics**:
+#### Business Impact Metrics**
+
 - Classification accuracy improvement: >20% increase
 - Manual tagging reduction: >80% decrease  
 - Portfolio analysis time: >50% reduction
@@ -493,13 +532,15 @@ class MigrationRollback:
 
 ### 8.2 Lessons Learned Process
 
-**Documentation Requirements**:
+#### Documentation Requirements**
+
 - Migration execution summary
 - Performance optimization opportunities
 - User feedback compilation
 - Process improvement recommendations
 
-**Continuous Improvement**:
+#### Continuous Improvement**
+
 - Migration procedure refinement
 - Tool and automation enhancements
 - Risk mitigation strategy updates
@@ -510,18 +551,21 @@ class MigrationRollback:
 ## Appendices
 
 ### Appendix A: Migration Scripts Reference
+
 - Pre-migration assessment scripts
 - Data import and validation tools
 - Rollback automation scripts
 - Post-migration monitoring tools
 
 ### Appendix B: Troubleshooting Guide
+
 - Common migration issues and solutions
 - Performance optimization techniques
 - Error message reference and resolution
 - Expert escalation procedures
 
 ### Appendix C: Testing Procedures
+
 - Migration testing checklist
 - Validation test cases
 - Performance test scripts

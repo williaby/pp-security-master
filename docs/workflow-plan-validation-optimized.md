@@ -33,6 +33,7 @@ This command requires completed scope analysis. If not done, run:
    - Check `/docs/adr/` for architectural decisions
 
 2. **Issue Status Intelligence**:
+
    ```bash
    # Enhanced status detection
    ISSUE_STATUS=$(grep -r "P${PHASE}-$(printf "%03d" $ISSUE)" docs/planning/ | \
@@ -46,6 +47,7 @@ This command requires completed scope analysis. If not done, run:
    ```
 
 3. **Project-Optimized Model Selection**:
+
    ```bash
    # PP Security-Master optimized model selection
    case "$MODE" in
@@ -67,6 +69,7 @@ This command requires completed scope analysis. If not done, run:
 ### Step 0: Enhanced Automatic Setup
 
 1. **Project Context Gathering**:
+
    ```bash
    # Gather all relevant project context files
    CONTEXT_FILES=(
@@ -89,6 +92,7 @@ This command requires completed scope analysis. If not done, run:
    ```
 
 2. **Issue Dependency Analysis**:
+
    ```bash
    # Extract dependencies from project documentation
    DEPENDENCIES=$(grep -A 5 -B 5 "P${PHASE}-$(printf "%03d" $ISSUE)" docs/planning/ | \
@@ -106,6 +110,7 @@ This command requires completed scope analysis. If not done, run:
    - **Assess Template Availability**: Use existing templates from `/docs/planning/phase-{X}-templates/`
 
 2. **PP Security-Master Development Philosophy Integration**:
+
    ```markdown
    **Development Philosophy Adherence Check:**
    - [ ] **Reuse First**: Checked existing repositories (ledgerbase, FISProject, .github, PromptCraft)
@@ -117,6 +122,7 @@ This command requires completed scope analysis. If not done, run:
 ### Step 2: Enhanced Scope Validation
 
 1. **Multi-Document Cross-Reference**:
+
    ```bash
    # Cross-reference acceptance criteria across multiple docs
    ACCEPTANCE_CRITERIA_FILES=(
@@ -270,7 +276,7 @@ issue_status: "[COMPLETED|IN_PROGRESS|PLANNED]"
 
 **Enhanced Next Steps After User Approval:**
 
-1. **Phase Execution Integration**: 
+1. **Phase Execution Integration**:
    - Reference step-by-step commands from phase-{X}-execution-guide.md
    - Use validation checklists from phase-{X}-validation-checklist.md
 

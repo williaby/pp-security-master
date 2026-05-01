@@ -23,12 +23,14 @@ Portfolio Performance (PP) is a powerful open-source desktop portfolio tracker. 
 ## Key Features
 
 ### **MVP (8 weeks)**
+
 - **Complete PP Backup Restoration**: Generate/import full Portfolio Performance XML backups
 - **Institution Transaction Import**: Wells Fargo CSV and Interactive Brokers Flex Query parsing
 - **Basic Security Classification**: Manual taxonomy assignment with database storage
 - **CLI Interface**: Command-line tools for all import/export operations
 
 ### **Future Releases** *(See [MVP.md](docs/project/MVP.md) for timeline)*
+
 - **Automated Classification**: OpenFIGI API and pp-portfolio-classifier integration
 - **Kubera Integration**: Cross-institution validation and variance detection
 - **Web UI**: Browser-based classification and account management
@@ -41,11 +43,13 @@ Portfolio Performance (PP) is a powerful open-source desktop portfolio tracker. 
 > **Current Status**: Foundation phase - Core architecture and database models implemented
 
 ### Prerequisites
+
 - **PostgreSQL 17**: Running on Unraid server (see [Database Setup](#database-setup) below)
 - **Python**: 3.11+ with Poetry installed
 - **Network**: Connectivity to PostgreSQL server (default port 5436)
 
 ### Development Setup
+
 1. **Clone Repository**: `git clone [repository-url] && cd pp-security-master`
 2. **Install Dependencies**: `poetry install`
 3. **Install qlty CLI**: `curl https://qlty.sh | bash` (standalone quality runner, not a Python package)
@@ -59,19 +63,23 @@ Portfolio Performance (PP) is a powerful open-source desktop portfolio tracker. 
 ### Database Setup
 
 #### PostgreSQL 17 on Unraid
+
 1. **Install via Unraid Community Apps**:
    - Search for "PostgreSQL" in Community Applications
    - Select PostgreSQL 17 container
    - Configure environment variables:
-     ```
+
+     ```env
      POSTGRES_DB=pp_master
      POSTGRES_USER=pp_user
      POSTGRES_PASSWORD=[secure_password]
      ```
+
    - Map port: `5436:5432` (or preferred external port)
    - Set persistent storage: `/mnt/user/appdata/pp_postgres/data:/var/lib/postgresql/data`
 
 2. **Verify Installation**:
+
    ```bash
    # Test network connectivity
    nc -zv [unraid-server-ip] 5436
@@ -88,7 +96,7 @@ Portfolio Performance (PP) is a powerful open-source desktop portfolio tracker. 
 
 ## Repository Structure
 
-```
+```text
 pp-security-master/
 ├─ README.md                        # This file
 ├─ CLAUDE.md                        # Claude Code configuration

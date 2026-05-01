@@ -10,9 +10,10 @@ purpose: "Detailed implementation guide for Phase 0 development foundation issue
 
 # Phase 0: Issues P0-006 to P0-010
 
-**Development Foundation Issues**
+## Development Foundation Issues
 
-> **Navigation**: 
+> **Navigation**:
+>
 > - [Phase Overview](./phase-0-foundation-overview.md)
 > - [Issues P0-001 to P0-005](./phase-0-issues-P0-001-to-P0-005.md)
 > - **Current**: Issues P0-006 to P0-010 (Development Foundation)
@@ -29,30 +30,35 @@ purpose: "Detailed implementation guide for Phase 0 development foundation issue
 **Week**: 2  
 
 ### Description
+
 Implement a comprehensive configuration management system using Pydantic Settings for type safety and validation. System must support multiple environments, secret management, and development flexibility.
 
 ### Acceptance Criteria
 
-**Configuration Framework**
+#### Configuration Framework
+
 - [ ] Pydantic-based settings configuration with comprehensive validation
 - [ ] Environment-specific configuration loading (development/test/production)
 - [ ] Environment variable override capability with precedence rules
 - [ ] Configuration validation with clear error messages and suggestions
 - [ ] Hot-reload capability for development environment changes
 
-**Database Configuration**
+#### Database Configuration
+
 - [ ] Database connection string management with validation
 - [ ] Connection pool configuration (min/max connections, timeouts)
 - [ ] Multiple database environment support (dev/test/prod databases)
 - [ ] Database connection retry logic and error handling configuration
 
-**Security and Secrets Management**
+#### Security and Secrets Management
+
 - [ ] Secret management integration (environment variables, files, or external systems)
 - [ ] API key configuration for external services (OpenFIGI, etc.)
 - [ ] GPG integration for encrypted configuration files (following CLAUDE.md standards)
 - [ ] Secure storage patterns for sensitive configuration data
 
-**Application Configuration**
+#### Application Configuration
+
 - [ ] Logging configuration with multiple levels and outputs
 - [ ] Cache configuration (Redis settings, TTL defaults)
 - [ ] External service configuration (API endpoints, timeouts, retry policies)
@@ -63,10 +69,12 @@ Implement a comprehensive configuration management system using Pydantic Setting
 **Configuration Classes** (see full implementation in P0-001 to P0-005 document)
 
 ### Dependencies
+
 - Issue P0-001 (PostgreSQL 17 operational for database connection testing)
 - Issue P0-002 (Development environment for Python packages)
 
 ### Definition of Done
+
 - Configuration system loads settings from environment variables
 - Database connection configuration validates and connects successfully
 - Environment-specific configurations load correctly
@@ -84,32 +92,37 @@ Implement a comprehensive configuration management system using Pydantic Setting
 **Week**: 2  
 
 ### Description
+
 Implement SQLAlchemy ORM layer with proper connection management, session handling, and basic model classes. This provides the foundation for all database operations in the application.
 
 ### Acceptance Criteria
 
-**SQLAlchemy Configuration**
+#### SQLAlchemy Configuration
+
 - [ ] SQLAlchemy engine configured with connection pooling and optimization
 - [ ] Database session management with proper lifecycle handling
 - [ ] Connection retry logic and error handling for network issues
 - [ ] Connection health checks and monitoring hooks
 - [ ] Transaction management and rollback capability
 
-**ORM Model Framework**
+#### ORM Model Framework
+
 - [ ] Base model class with common fields (id, created_at, updated_at)
 - [ ] SecurityMaster model class matching database schema
 - [ ] Model validation and constraint enforcement
 - [ ] Relationship definitions for foreign keys
 - [ ] Custom field types for specialized data (ISIN, currency codes)
 
-**CRUD Operations Framework**
+#### CRUD Operations Framework
+
 - [ ] Generic CRUD operations base class
 - [ ] SecurityMaster-specific CRUD operations
 - [ ] Bulk operations for efficient data processing
 - [ ] Query optimization and eager loading strategies
 - [ ] Error handling for database constraint violations
 
-**Database Health and Monitoring**
+#### Database Health and Monitoring
+
 - [ ] Database connection health checks
 - [ ] Connection pool monitoring and alerting
 - [ ] Query performance logging and analysis
@@ -117,11 +130,13 @@ Implement SQLAlchemy ORM layer with proper connection management, session handli
 - [ ] Connection leak detection and prevention
 
 ### Dependencies
+
 - Issue P0-001 (PostgreSQL operational)
 - Issue P0-004 (Security master table schema)
 - Issue P0-006 (Configuration system)
 
 ### Definition of Done
+
 - SQLAlchemy engine connects to database successfully with proper pooling
 - SecurityMaster model can perform all CRUD operations
 - Database sessions managed properly with transaction support
@@ -139,32 +154,37 @@ Implement SQLAlchemy ORM layer with proper connection management, session handli
 **Week**: 2  
 
 ### Description
+
 Integrate comprehensive development tooling including linting, formatting, testing, and automation. Leverage PromptCraft assets for advanced development workflow templates and configurations.
 
 ### Acceptance Criteria
 
-**Code Quality Tools**
+#### Code Quality Tools
+
 - [ ] Black code formatting with project-specific configuration
 - [ ] Ruff linting with comprehensive rule set and project customizations
 - [ ] MyPy static type checking with strict configuration
 - [ ] Pre-commit hooks preventing low-quality code commits
 - [ ] isort import organization following project standards
 
-**Testing Framework**
+#### Testing Framework
+
 - [ ] Pytest configuration with comprehensive test discovery
 - [ ] Test coverage reporting with HTML and terminal output
 - [ ] Performance benchmarking with pytest-benchmark
 - [ ] Database testing with proper isolation and cleanup
 - [ ] Fixture management and test data generation
 
-**Development Automation**
+#### Development Automation
+
 - [ ] Makefile with all common development tasks
 - [ ] VSCode workspace configuration with all extensions
 - [ ] Development server with hot-reload capability
 - [ ] Documentation generation and validation automation
 - [ ] Security scanning integration (safety, bandit)
 
-**PromptCraft Integration**
+#### PromptCraft Integration
+
 - [ ] PromptCraft development templates and configurations integrated
 - [ ] Advanced workflow automation using PromptCraft assets
 - [ ] Team productivity enhancements from PromptCraft library
@@ -172,7 +192,8 @@ Integrate comprehensive development tooling including linting, formatting, testi
 
 ### Implementation Structure
 
-**Pre-commit Configuration (.pre-commit-config.yaml)**
+#### Pre-commit Configuration (.pre-commit-config.yaml)
+
 ```yaml
 repos:
   - repo: https://github.com/psf/black
@@ -201,6 +222,7 @@ repos:
 ```
 
 **Makefile** (comprehensive development automation)
+
 ```makefile
 # Makefile for Portfolio Performance Security Master
 
@@ -236,11 +258,13 @@ help:
 ```
 
 ### Dependencies
+
 - Issue P0-002 (Development environment)
 - Issue P0-003 (Repository structure)
 - PromptCraft asset library access
 
 ### Definition of Done
+
 - All development tools integrated and operational
 - Pre-commit hooks prevent low-quality commits
 - Complete test suite with >80% coverage
@@ -258,43 +282,50 @@ help:
 **Week**: 2  
 
 ### Description
+
 Implement comprehensive data validation framework using Pydantic for type safety and business rule enforcement. Framework must validate all incoming data before database storage.
 
 ### Acceptance Criteria
 
-**Validation Framework**
+#### Validation Framework
+
 - [ ] Pydantic models for all data validation with comprehensive rules
 - [ ] Business rule validation (ISIN format, currency codes, data ranges)
 - [ ] Custom validators for domain-specific data (taxonomy codes, market identifiers)
 - [ ] Validation error handling with clear, actionable error messages
 - [ ] Validation performance optimization for high-throughput scenarios
 
-**Security Master Validation**
+#### Security Master Validation
+
 - [ ] ISIN format validation (12-character alphanumeric with checksum)
 - [ ] Currency code validation (ISO 4217 three-letter codes)
 - [ ] GICS/TRBC taxonomy code validation with proper hierarchies
 - [ ] Data quality score calculation and validation
 - [ ] Market capitalization category validation
 
-**Data Quality Framework**
+#### Data Quality Framework
+
 - [ ] Data completeness scoring based on required vs optional fields
 - [ ] Data accuracy validation using external reference sources
 - [ ] Data freshness tracking with age-based quality degradation
 - [ ] Duplicate detection and handling strategies
 - [ ] Data lineage tracking for audit and troubleshooting
 
-**Integration Points**
+#### Integration Points
+
 - [ ] Integration with ORM layer for pre-save validation
 - [ ] Integration with API endpoints for request validation
 - [ ] Integration with file import processes for bulk validation
 - [ ] Integration with external service responses for data quality assessment
 
 ### Dependencies
+
 - Issue P0-004 (Security master table schema)
 - Issue P0-006 (Configuration system)
 - Issue P0-007 (ORM layer)
 
 ### Definition of Done
+
 - All security master fields validated according to business rules
 - Validation errors provide clear, actionable feedback
 - Data quality scores calculated automatically
@@ -312,32 +343,37 @@ Implement comprehensive data validation framework using Pydantic for type safety
 **Week**: 2  
 
 ### Description
+
 Implement comprehensive integration testing suite that validates all Phase 0 components working together correctly. This serves as the final validation before Phase 1 development begins.
 
 ### Acceptance Criteria
 
-**Integration Test Coverage**
+#### Integration Test Coverage
+
 - [ ] End-to-end database operations (create, read, update, delete)
 - [ ] Configuration system loading and validation across all environments
 - [ ] Data validation integration with ORM and database constraints
 - [ ] Error handling and recovery across all integrated components
 - [ ] Performance benchmarks for all critical operations
 
-**Development Workflow Validation**
+#### Development Workflow Validation
+
 - [ ] Complete developer onboarding simulation and timing
 - [ ] All Make targets functional and tested
 - [ ] Pre-commit hook integration and enforcement
 - [ ] Code quality tool integration and reporting
 - [ ] Documentation completeness and accuracy validation
 
-**System Health Monitoring**
+#### System Health Monitoring
+
 - [ ] Database connection health checks and monitoring
 - [ ] Application configuration validation and error reporting
 - [ ] Resource usage monitoring and optimization recommendations
 - [ ] Security vulnerability scanning and reporting
 - [ ] Performance baseline establishment and documentation
 
-**Phase 0 Completion Validation**
+#### Phase 0 Completion Validation
+
 - [ ] All Phase 0 success criteria automatically validated
 - [ ] Phase 1 readiness assessment with detailed reporting
 - [ ] Automated sign-off checklist generation
@@ -353,10 +389,12 @@ Implement comprehensive integration testing suite that validates all Phase 0 com
 **Phase 0 Validation Script** (automated completion checking)
 
 ### Dependencies
+
 - All previous Phase 0 issues (P0-001 through P0-009)
 - Complete system integration
 
 ### Definition of Done
+
 - All integration tests pass consistently
 - Performance benchmarks established and documented
 - Phase 0 completion automatically validated
@@ -368,6 +406,7 @@ Implement comprehensive integration testing suite that validates all Phase 0 com
 ## Phase 0 Issues Summary
 
 ### Completion Status
+
 - **P0-001**: PostgreSQL Setup ✅ **COMPLETED**
 - **P0-002**: Development Environment - In Progress
 - **P0-003**: Repository Structure - In Progress  
@@ -380,6 +419,7 @@ Implement comprehensive integration testing suite that validates all Phase 0 com
 - **P0-010**: Integration Testing - Pending
 
 ### Next Steps
+
 1. Complete issues P0-002 through P0-010 in sequence
 2. Run comprehensive Phase 0 validation
 3. Obtain stakeholder sign-offs
@@ -389,4 +429,4 @@ Continue with [Completion Guide](./phase-0-completion-guide.md) for final valida
 
 ---
 
-*Generated from the original phase-0-foundation.md file for improved LLM processing.*
+#### Generated from the original phase-0-foundation.md file for improved LLM processing

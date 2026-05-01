@@ -28,6 +28,7 @@
 The project lives at `.../pp-security-master/pp-security-master/` but should be at `.../pp-security-master/`. The outer directory contains only the inner one.
 
 **Files:**
+
 - Move: everything in `/home/byron/dev/pp-security-master/pp-security-master/` to `/home/byron/dev/pp-security-master/`
 
 - [x] **Step 1: Verify the outer directory is clean**
@@ -106,6 +107,7 @@ All subsequent paths are relative to `/home/byron/dev/pp-security-master/`.
 The org-level files at `/home/byron/dev/.github/` are the canonical templates. Copy and adapt them for this project.
 
 **Files:**
+
 - Create: `SECURITY.md`
 - Create: `CONTRIBUTING.md`
 
@@ -149,6 +151,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ### Task 3: Create CHANGELOG.md and CODEOWNERS
 
 **Files:**
+
 - Create: `CHANGELOG.md`
 - Create: `.github/CODEOWNERS`
 
@@ -171,7 +174,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Create `.github/CODEOWNERS` with this content:
 
-```
+```text
 # Default owner for all files
 * @williaby
 ```
@@ -202,6 +205,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ### Task 4: Fix .gitignore, pyproject.toml metadata, and create known-vulnerabilities.md
 
 **Files:**
+
 - Modify: `.gitignore`
 - Modify: `pyproject.toml` (lines 8, 24-25)
 - Create: `docs/known-vulnerabilities.md`
@@ -221,10 +225,13 @@ Verify: `tail -3 .gitignore` shows the three new lines.
 - [ ] **Step 2: Fix author email in pyproject.toml**
 
 In `pyproject.toml` at line 8, change:
+
 ```toml
 authors = [{name = "Byron", email = "byron@example.com"}]
 ```
+
 to:
+
 ```toml
 authors = [{name = "Byron Williams", email = "byronawilliams@gmail.com"}]
 ```
@@ -234,19 +241,25 @@ authors = [{name = "Byron Williams", email = "byronawilliams@gmail.com"}]
 In `pyproject.toml`:
 
 At line 24 (under `[project]`), change:
+
 ```toml
 requires-python = ">=3.11,<3.13"
 ```
+
 to:
+
 ```toml
 requires-python = ">=3.11,<3.15"
 ```
 
 At the Poetry dependencies section, change:
+
 ```toml
 python = ">=3.11,<3.13"
 ```
+
 to:
+
 ```toml
 python = ">=3.11,<3.15"
 ```
@@ -296,6 +309,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ### Task 5: Update CLAUDE.md with Phase 1 additions
 
 **Files:**
+
 - Modify: `CLAUDE.md`
 
 - [ ] **Step 1: Add Package Overrides section to CLAUDE.md**
@@ -324,7 +338,7 @@ This project is governed by the following global rules in addition to this file:
 - [ ] **Step 2: Verify no em-dashes were introduced**
 
 ```bash
-grep "—" CLAUDE.md || echo "No em-dashes found"
+grep $'\xe2\x80\x94' CLAUDE.md || echo "No em-dashes found"
 ```
 
 Expected: `No em-dashes found`.
@@ -352,6 +366,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 Black is replaced by `ruff format`. Ruff is already in dev dependencies at `0.12.3`.
 
 **Files:**
+
 - Modify: `pyproject.toml` (remove black dep, add `[tool.ruff.format]`)
 - Modify: `noxfile.py` (lines 190, 227)
 - Modify: `Makefile` (lines 45, 52)
@@ -367,6 +382,7 @@ Note: this should pass (clean formatting). If it fails, fix formatting with `poe
 - [ ] **Step 2: Remove black from pyproject.toml dev dependencies**
 
 In `pyproject.toml`, remove this line from `[tool.poetry.group.dev.dependencies]`:
+
 ```toml
 black = "24.10.0"
 ```
@@ -386,10 +402,13 @@ line-ending = "auto"
 - [ ] **Step 4: Update noxfile.py lint session (line 190)**
 
 Change line 190 from:
+
 ```python
     session.run("black", "--check", *args)
 ```
+
 to:
+
 ```python
     session.run("ruff", "format", "--check", *args)
 ```
@@ -397,10 +416,13 @@ to:
 - [ ] **Step 5: Update noxfile.py format_code session (line 227)**
 
 Change line 227 from:
+
 ```python
     session.run("black", *args)
 ```
+
 to:
+
 ```python
     session.run("ruff", "format", *args)
 ```
@@ -408,23 +430,29 @@ to:
 - [ ] **Step 6: Update Makefile lint target (line 45)**
 
 Change line 45 from:
+
 ```makefile
-	$(POETRY) run black --check .
+ $(POETRY) run black --check .
 ```
+
 to:
+
 ```makefile
-	$(POETRY) run ruff format --check .
+ $(POETRY) run ruff format --check .
 ```
 
 - [ ] **Step 7: Update Makefile format target (line 52)**
 
 Change line 52 from:
+
 ```makefile
-	$(POETRY) run black .
+ $(POETRY) run black .
 ```
+
 to:
+
 ```makefile
-	$(POETRY) run ruff format .
+ $(POETRY) run ruff format .
 ```
 
 - [ ] **Step 8: Reinstall deps and verify ruff format works**
@@ -455,6 +483,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 BasedPyright runs in strict mode and will surface errors MyPy missed. Expect a wave of new findings. Fix each one -- do not add `# type: ignore`.
 
 **Files:**
+
 - Modify: `pyproject.toml` (remove mypy dep + stubs, remove `[tool.mypy]`, add `[tool.basedpyright]`)
 - Modify: `noxfile.py` (line 204)
 - Modify: `Makefile` (line 47)
@@ -471,6 +500,7 @@ Note: how many errors (likely 0). BasedPyright strict will find more.
 - [ ] **Step 2: Remove MyPy and stubs from pyproject.toml**
 
 Remove these lines from `[tool.poetry.group.dev.dependencies]`:
+
 ```toml
 mypy = "1.13.0"
 types-pyyaml = ">=6.0.12.12"
@@ -480,6 +510,7 @@ types-python-dateutil = ">=2.8.19.20240106"
 - [ ] **Step 3: Remove [tool.mypy] section from pyproject.toml**
 
 Delete the entire block from line 207 to line 234:
+
 ```toml
 [tool.mypy]
 python_version = "3.11"
@@ -491,6 +522,7 @@ python_version = "3.11"
 - [ ] **Step 4: Add basedpyright to dev dependencies**
 
 In `[tool.poetry.group.dev.dependencies]`, add:
+
 ```toml
 basedpyright = ">=1.1.400"
 ```
@@ -512,10 +544,13 @@ strictSetInference = true
 - [ ] **Step 6: Update noxfile.py type_check session (line 204)**
 
 Change line 204 from:
+
 ```python
     session.run("mypy", "src")
 ```
+
 to:
+
 ```python
     session.run("basedpyright")
 ```
@@ -523,12 +558,15 @@ to:
 - [ ] **Step 7: Update Makefile type-check invocation (line 47)**
 
 Change line 47 from:
+
 ```makefile
-	$(POETRY) run mypy src
+ $(POETRY) run mypy src
 ```
+
 to:
+
 ```makefile
-	$(POETRY) run basedpyright
+ $(POETRY) run basedpyright
 ```
 
 - [ ] **Step 8: Reinstall deps**
@@ -573,6 +611,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 `safety` is in dev dependencies and the nox security session. `pip-audit` already runs in the same session at line 219. Remove safety.
 
 **Files:**
+
 - Modify: `pyproject.toml` (remove safety dep)
 - Modify: `noxfile.py` (line 213)
 - Modify: `Makefile` (line 56)
@@ -584,7 +623,8 @@ grep -n "pip-audit\|safety" noxfile.py
 ```
 
 Expected output:
-```
+
+```text
 213:    session.run("safety", "check", "--json")
 219:    session.run("pip-audit")
 ```
@@ -594,6 +634,7 @@ Confirm both lines exist before removing safety.
 - [ ] **Step 2: Remove safety from pyproject.toml**
 
 Remove from `[tool.poetry.group.dev.dependencies]`:
+
 ```toml
 safety = ">=3.0.1"
 ```
@@ -601,6 +642,7 @@ safety = ">=3.0.1"
 - [ ] **Step 3: Remove safety from noxfile.py security session**
 
 Remove lines 212-213 from noxfile.py:
+
 ```python
     # Check for known vulnerabilities
     session.run("safety", "check", "--json")
@@ -611,12 +653,15 @@ The session should now go directly from `session.run("poetry", ...)` to `# Run b
 - [ ] **Step 4: Update Makefile security target (line 56)**
 
 Change line 56 from:
+
 ```makefile
-	$(POETRY) run safety check
+ $(POETRY) run safety check
 ```
+
 to:
+
 ```makefile
-	$(POETRY) run pip-audit
+ $(POETRY) run pip-audit
 ```
 
 - [ ] **Step 5: Reinstall and verify security session runs**
@@ -647,11 +692,13 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 darglint validates that docstring `Args`, `Returns`, and `Raises` sections match the actual function signature. interrogate enforces 85% docstring coverage in `scripts/`.
 
 **Files:**
+
 - Modify: `pyproject.toml` (add deps, add `[tool.interrogate]`, add `[tool.darglint]`)
 
 - [ ] **Step 1: Add dev dependencies to pyproject.toml**
 
 In `[tool.poetry.group.dev.dependencies]`, add:
+
 ```toml
 darglint = ">=1.8.1"
 interrogate = ">=1.7.0"
@@ -734,6 +781,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 qlty is the unified quality runner per `~/.claude/.claude/standards/packages.md`. It is a standalone CLI, not a Python package.
 
 **Files:**
+
 - Create: `.qlty/qlty.toml`
 - Modify: `README.md` (add qlty install step to dev setup)
 
@@ -802,6 +850,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 The current `[tool.ruff.lint]` select list is missing 12 PyStrict-aligned rule codes. The ignore list suppresses `BLE001` (blind exceptions) which conflicts with the global standard. The pylint max-branches setting is 18 (global standard is 12).
 
 **Files:**
+
 - Modify: `pyproject.toml` (lines 128-192)
 
 - [ ] **Step 1: Record current lint state as baseline**
@@ -835,6 +884,7 @@ In `pyproject.toml`, in the `[tool.ruff.lint]` `select` list, add these missing 
 - [ ] **Step 3: Remove BLE001 from the ignore list**
 
 In `pyproject.toml`, remove this line from `[tool.ruff.lint]` `ignore`:
+
 ```toml
     "BLE001",  # blind exception catching (needed for generic error handlers)
 ```
@@ -844,12 +894,15 @@ In `pyproject.toml`, remove this line from `[tool.ruff.lint]` `ignore`:
 - [ ] **Step 4: Fix pylint max-branches**
 
 In `pyproject.toml`, change:
+
 ```toml
 [tool.ruff.lint.pylint]
 max-branches = 18      # Increased from default 12 for industry standards
 max-statements = 75    # Increased from default 50 for industry standards
 ```
+
 to:
+
 ```toml
 [tool.ruff.lint.pylint]
 max-branches = 12
@@ -859,10 +912,13 @@ max-statements = 75
 - [ ] **Step 5: Update target-version**
 
 In `pyproject.toml`, change:
+
 ```toml
 target-version = "py311"
 ```
+
 to:
+
 ```toml
 target-version = "py312"
 ```
@@ -877,6 +933,7 @@ poetry run ruff check .
 The `--fix` flag auto-fixes safe violations. For violations ruff cannot auto-fix:
 
 - `EM101`/`EM102`: Move string literals out of `raise` statements:
+
   ```python
   # Before
   raise ValueError("message")
@@ -886,6 +943,7 @@ The `--fix` flag auto-fixes safe violations. For violations ruff cannot auto-fix
   ```
 
 - `FBT001`/`FBT002`: Replace boolean positional args with keyword-only:
+
   ```python
   # Before
   def process(data, validate=True):
@@ -894,6 +952,7 @@ The `--fix` flag auto-fixes safe violations. For violations ruff cannot auto-fix
   ```
 
 - `TRY003`: Replace `raise Exception("message")` with typed exception:
+
   ```python
   # Before
   raise Exception("Something went wrong")
@@ -927,6 +986,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 The project has a `pre_commit` nox session (line 232) that calls `pre-commit run --all-files` but no config file for it to use. This task creates the config.
 
 **Files:**
+
 - Create: `.pre-commit-config.yaml`
 
 - [ ] **Step 1: Confirm pre-commit is in dev dependencies**
@@ -938,9 +998,11 @@ grep "pre-commit" pyproject.toml
 Expected: `pre-commit` appears in `[tool.poetry.group.dev.dependencies]`.
 
 If it is absent, add it:
+
 ```toml
 pre-commit = ">=3.6.0"
 ```
+
 then run `poetry install --sync`.
 
 - [ ] **Step 2: Create .pre-commit-config.yaml**
@@ -1012,13 +1074,13 @@ repos:
       - id: markdownlint
         args: [--fix]
 
-  # Em-dash guard: blocks the — character in all text files
+  # Em-dash guard: blocks the em-dash character (U+2014) in all text files
   - repo: local
     hooks:
       - id: no-em-dash
         name: No em-dashes
         language: pygrep
-        entry: "—"
+        entry: "\u2014"
         types: [text]
         description: "Blocks em-dash characters per global writing rule"
 ```
@@ -1045,6 +1107,7 @@ poetry run pre-commit run --all-files
 ```
 
 Fix any violations that are not auto-fixed. Common first-run findings:
+
 - Trailing whitespace in markdown
 - Missing newline at end of file
 - yamllint indentation issues in `.github/workflows/`
@@ -1083,7 +1146,8 @@ Expected: installs dev dependencies, runs `pre-commit run --all-files`, exits 0.
 - [ ] **Step 2: Update CLAUDE.md Essential Commands**
 
 In `CLAUDE.md`, find the Essential Commands section. Add under Code Quality:
-```
+
+```bash
 # Run pre-commit on all files
 poetry run pre-commit run --all-files
 # Or via nox
@@ -1184,6 +1248,7 @@ Record all SHAs in a scratch file (do not commit it). They are used in Tasks 15-
 ### Task 15: Pin SHAs in codeql.yml and add harden-runner
 
 **Files:**
+
 - Modify: `.github/workflows/codeql.yml`
 
 - [ ] **Step 1: Add harden-runner as the first step in the analyze job**
@@ -1200,11 +1265,14 @@ In `.github/workflows/codeql.yml`, in the `analyze` job, insert as the first ste
 - [ ] **Step 2: Pin actions/checkout (line 33)**
 
 Change:
+
 ```yaml
     - name: Checkout repository
       uses: actions/checkout@v4
 ```
+
 to:
+
 ```yaml
     - name: Checkout repository
       uses: actions/checkout@<SHA-FROM-TASK-14>  # v4.2.2
@@ -1213,10 +1281,13 @@ to:
 - [ ] **Step 3: Pin codeql-action/init (line 36)**
 
 Change:
+
 ```yaml
       uses: github/codeql-action/init@v3
 ```
+
 to:
+
 ```yaml
       uses: github/codeql-action/init@<SHA-FROM-TASK-14>  # v3.27.0
 ```
@@ -1224,10 +1295,13 @@ to:
 - [ ] **Step 4: Pin codeql-action/autobuild (line 42)**
 
 Change:
+
 ```yaml
       uses: github/codeql-action/autobuild@v3
 ```
+
 to:
+
 ```yaml
       uses: github/codeql-action/autobuild@<SHA-FROM-TASK-14>  # v3.27.0
 ```
@@ -1237,10 +1311,13 @@ Note: `init`, `autobuild`, and `analyze` all come from the same `codeql-action` 
 - [ ] **Step 5: Pin codeql-action/analyze (line 45)**
 
 Change:
+
 ```yaml
       uses: github/codeql-action/analyze@v3
 ```
+
 to:
+
 ```yaml
       uses: github/codeql-action/analyze@<SHA-FROM-TASK-14>  # v3.27.0
 ```
@@ -1270,15 +1347,19 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 `scorecard.yml` already has `harden-runner`. Only SHA pinning is needed.
 
 **Files:**
+
 - Modify: `.github/workflows/scorecard.yml`
 
 - [ ] **Step 1: Pin step-security/harden-runner (line 22)**
 
 Change:
+
 ```yaml
         uses: step-security/harden-runner@v2.12
 ```
+
 to:
+
 ```yaml
         uses: step-security/harden-runner@<SHA-FROM-TASK-14>  # v2.12.0
 ```
@@ -1314,6 +1395,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ### Task 17: Pin SHAs in renovate-auto-merge.yml
 
 **Files:**
+
 - Modify: `.github/workflows/renovate-auto-merge.yml`
 
 - [ ] **Step 1: Pin all six actions**
@@ -1348,6 +1430,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 The current `ci.yml` is 340 lines of duplicated setup. Replace with a thin caller that delegates to `williaby/.github/.github/workflows/python-ci.yml@main`.
 
 **Files:**
+
 - Modify: `.github/workflows/ci.yml` (full rewrite)
 
 - [ ] **Step 1: Read the current ci.yml to note what it does**
@@ -1415,6 +1498,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 These three new workflow files add capabilities that were missing or inline.
 
 **Files:**
+
 - Create: `.github/workflows/security.yml`
 - Create: `.github/workflows/sonarcloud.yml`
 - Create: `.github/workflows/coverage.yml`
@@ -1526,6 +1610,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 This file scopes GitHub Copilot PR review to the categories that automated linters cannot catch.
 
 **Files:**
+
 - Create: `.github/copilot-instructions.md`
 
 - [ ] **Step 1: Create the file**
@@ -1588,6 +1673,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ### Task 21: Create project .claude/settings.json
 
 **Files:**
+
 - Create: `.claude/settings.json`
 
 - [ ] **Step 1: Create the settings file**
@@ -1635,6 +1721,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ### Task 22: Update CLAUDE.md with RAD markers, model selection, and corrected commands
 
 **Files:**
+
 - Modify: `CLAUDE.md`
 
 - [ ] **Step 1: Add RAD section**
@@ -1658,7 +1745,6 @@ Example:
 # #ASSUME: OpenFIGI rate limit is 10 req/s -- #VERIFY before production load
 # #EDGE: empty ticker string returns None, not raises -- test this
 ```
-```
 
 - [ ] **Step 2: Add Model Selection section**
 
@@ -1677,15 +1763,18 @@ Append to `CLAUDE.md`:
 - [ ] **Step 3: Fix Essential Commands section**
 
 In the Code Quality subsection of Essential Commands, replace:
-```
+
+```bash
 poetry run black .
 ...
 poetry run mypy src
 ...
 poetry run safety check
 ```
+
 with:
-```
+
+```bash
 poetry run ruff format .
 poetry run ruff check --fix .
 poetry run basedpyright
@@ -1695,10 +1784,10 @@ poetry run pip-audit
 - [ ] **Step 4: Scan for em-dashes in CLAUDE.md**
 
 ```bash
-grep -n "—" CLAUDE.md || echo "No em-dashes found"
+grep -n $'\xe2\x80\x94' CLAUDE.md || echo "No em-dashes found"
 ```
 
-If any are found, replace each `—` with a comma, colon, semicolon, or restructured sentence.
+If any are found, replace each em-dash with a comma, colon, semicolon, or restructured sentence.
 
 - [ ] **Step 5: Commit**
 
@@ -1717,12 +1806,13 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ### Task 23: Em-dash scan across all project documentation
 
 **Files:**
-- Modify: any `.md` files in `docs/`, `.github/`, `schema_exports/`, and project root that contain `—`
+
+- Modify: any `.md` files in `docs/`, `.github/`, `schema_exports/`, and project root that contain em-dashes (U+2014)
 
 - [ ] **Step 1: Find all em-dashes in the project**
 
 ```bash
-grep -rn "—" docs/ .github/ schema_exports/ *.md 2>/dev/null
+grep -rn $'\xe2\x80\x94' docs/ .github/ schema_exports/ *.md 2>/dev/null
 ```
 
 Record every file and line number.
@@ -1733,14 +1823,14 @@ For each em-dash found, replace with the appropriate punctuation:
 
 | Original pattern | Replacement |
 |-----------------|-------------|
-| `X — which Y — Z` | `X (which Y) Z` or `X, which Y, Z` |
-| `X — Y` (pause/aside) | `X: Y` or `X; Y` |
-| `X — Y` (contrast) | `X, but Y` or `X. Y` |
+| `X (em-dash) which Y (em-dash) Z` | `X (which Y) Z` or `X, which Y, Z` |
+| `X (em-dash) Y` (pause/aside) | `X: Y` or `X; Y` |
+| `X (em-dash) Y` (contrast) | `X, but Y` or `X. Y` |
 
 - [ ] **Step 3: Confirm clean**
 
 ```bash
-grep -rn "—" docs/ .github/ schema_exports/ *.md 2>/dev/null || echo "No em-dashes remain"
+grep -rn $'\xe2\x80\x94' docs/ .github/ schema_exports/ *.md 2>/dev/null || echo "No em-dashes remain"
 ```
 
 Expected: `No em-dashes remain`.
@@ -1764,6 +1854,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 Agent runners expect `AGENTS.md` at the project root. Gemini CLI expects `GEMINI.md` at the project root. Both currently live at `docs/project/`.
 
 **Files:**
+
 - Move: `docs/project/AGENTS.md` → `AGENTS.md`
 - Move: `docs/project/GEMINI.md` → `GEMINI.md`
 

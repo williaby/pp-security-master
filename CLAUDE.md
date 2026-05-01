@@ -8,7 +8,7 @@ This is a Security-Master Service for Portfolio Performance (PP), providing cent
 
 ## Architecture
 
-```
+```text
 src/security_master/
 ├── extractor/        # Broker file parsers (PP XML, IBKR Flex, Wells CSV, AltoIRA PDF)
 ├── classifier/       # Classification engine (fund.py, equity.py, bond.py)  
@@ -29,6 +29,7 @@ Additional directories:
 ## Essential Commands
 
 ### Development Setup
+
 ```bash
 # Install dependencies (assumes Poetry is available)
 poetry install
@@ -39,6 +40,7 @@ cp .env.example .env
 ```
 
 ### Database Operations
+
 ```bash
 # Run Alembic migrations (when implemented)
 poetry run alembic upgrade head
@@ -48,24 +50,29 @@ poetry run python -m pytest tests/test_db_connection.py -v
 ```
 
 ### Code Quality
+
 ```bash
 # Format and lint
-poetry run black .
+poetry run ruff format --check .
 poetry run ruff check --fix .
-poetry run mypy src
-markdownlint **/*.md
+markdownlint --config .markdownlint.yml **/*.md
 yamllint .
 
 # Run tests with coverage
 poetry run pytest -v --cov=src --cov-report=html --cov-report=term-missing
 
 # Security scanning
-poetry run safety check
 poetry run bandit -r src
 poetry run pip-audit
+
+# Run pre-commit on all files
+poetry run pre-commit run --all-files
+# Or via nox (also installs hooks)
+poetry run nox -s pre_commit
 ```
 
 ### Task Automation
+
 ```bash
 # Use Nox for automated testing and linting
 poetry run nox                    # Run all tests
@@ -73,7 +80,7 @@ poetry run nox -s fast           # Fast development cycle
 poetry run nox -s unit           # Unit tests only
 poetry run nox -s lint           # Linting and formatting
 poetry run nox -s security       # Security checks
-poetry run nox -s type_check     # MyPy type checking
+poetry run nox -s type_check     # basedpyright type checking
 
 # Specific component tests
 poetry run nox -s db_tests        # Database tests
@@ -102,6 +109,7 @@ make help                         # View available Make targets
 ## Testing Strategy
 
 ### Test Pyramid Architecture
+
 - **Unit tests**: Pure functions/classes (no I/O, no network) - fast development cycle
 - **Component tests**: Single bounded context with DB/container mocks
 - **Contract tests**: API contract verifications
@@ -111,12 +119,15 @@ make help                         # View available Make targets
 - **Security tests**: Runtime security assertions
 
 ### Coverage Requirements
+
 - **Unit/Component**: >80% coverage target
 - **Classification Accuracy**: >95% on listed securities
 - **Fast tests**: Exclude slow markers for development cycle
 
 ### Pytest Markers
+
 Use markers for selective test execution:
+
 ```bash
 pytest -m "unit"                # Unit tests only
 pytest -m "not slow"           # Fast development cycle

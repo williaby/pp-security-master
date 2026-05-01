@@ -1,4 +1,5 @@
 # Phase 5 Troubleshooting Guide
+
 ## Enterprise Production Deployment Issues & Solutions
 
 Comprehensive troubleshooting guide for Phase 5 enterprise features including web UI, authentication, Docker deployment, monitoring, and production operations.
@@ -8,6 +9,7 @@ Comprehensive troubleshooting guide for Phase 5 enterprise features including we
 ## Quick Diagnosis Commands
 
 ### System Health Check
+
 ```bash
 # Overall system status
 docker-compose -f docker/docker-compose.production.yml ps
@@ -24,6 +26,7 @@ curl -H "Cf-Access-Jwt-Assertion: ${TEST_JWT}" https://pp-security.your-domain.c
 ```
 
 ### Log Analysis
+
 ```bash
 # Service logs with timestamps
 docker logs pp_security_api_prod --since 1h --timestamps
@@ -45,12 +48,15 @@ docker logs pp_security_dashboards_prod --since 30m
 ## Web UI & Gradio Interface Issues
 
 ### Issue: Gradio App Won't Start
+
 **Symptoms:**
+
 - `ImportError: No module named 'gradio'`
 - `AttributeError: module 'gradio' has no attribute 'Blocks'`
 - Application crashes on startup
 
 **Diagnosis:**
+
 ```bash
 # Check Gradio installation
 poetry show gradio
@@ -62,6 +68,7 @@ python -c "from src.security_master.ui.components import accessibility_enhanceme
 ```
 
 **Solutions:**
+
 ```bash
 # Install/upgrade Gradio
 poetry add gradio@^4.0.0
@@ -76,12 +83,15 @@ poetry run python -m src.security_master.ui.gradio_interface --validate
 ```
 
 ### Issue: UI Components Not Loading
+
 **Symptoms:**
+
 - Missing tabs or interface elements
 - `ModuleNotFoundError` for PromptCraft components
 - Blank or partially loaded interface
 
 **Diagnosis:**
+
 ```bash
 # Check component structure
 find src/security_master/ui -name "*.py" | head -10
@@ -96,6 +106,7 @@ print('Components loaded successfully')
 ```
 
 **Solutions:**
+
 ```bash
 # Regenerate UI components
 ./scripts/phase5/setup_enterprise_production.sh --component ui-regenerate
@@ -108,12 +119,15 @@ find src/security_master/ui -name "*.py" -exec sed -i 's/from src\.ui\./from src
 ```
 
 ### Issue: Mobile/Responsive Layout Problems
+
 **Symptoms:**
+
 - Interface not responsive on mobile devices
 - Elements overlapping or cut off
 - Poor accessibility on small screens
 
 **Diagnosis:**
+
 ```bash
 # Check CSS customization
 grep -r "mobile" src/security_master/ui/
@@ -128,6 +142,7 @@ print('CSS:', app._get_custom_css()[:200])
 ```
 
 **Solutions:**
+
 ```bash
 # Apply PromptCraft responsive fixes
 cp /home/byron/dev/PromptCraft/src/ui/static/responsive.css src/security_master/ui/static/
@@ -138,12 +153,15 @@ poetry run python scripts/ui/update_responsive_css.py
 ```
 
 ### Issue: Tab Navigation Not Working
+
 **Symptoms:**
+
 - Clicking tabs doesn't switch content
 - JavaScript errors in browser console
 - Tabs appear but content doesn't change
 
 **Diagnosis:**
+
 ```bash
 # Check tab implementation
 grep -A 10 -B 5 "gr.Tabs" src/security_master/ui/gradio_interface.py
@@ -161,6 +179,7 @@ print('Tab test successful')
 ```
 
 **Solutions:**
+
 ```bash
 # Reset Gradio tab configuration
 sed -i 's/gr.Tabs(/gr.Tabs(selected=0, /g' src/security_master/ui/gradio_interface.py
@@ -177,12 +196,15 @@ DEBUG_TABS=true poetry run python -m src.security_master.ui.gradio_interface
 ## Authentication & Cloudflare Access Issues
 
 ### Issue: JWT Token Validation Failing
+
 **Symptoms:**
+
 - `401 Unauthorized` responses
 - `Invalid JWT signature` errors
 - Users can't access authenticated endpoints
 
 **Diagnosis:**
+
 ```bash
 # Check JWT configuration
 echo "JWT_SECRET: ${JWT_SECRET:0:10}..." 
@@ -196,6 +218,7 @@ curl -I https://pp-security.your-domain.com/
 ```
 
 **Solutions:**
+
 ```bash
 # Update JWT secret
 gpg --decrypt .env.gpg | grep JWT_SECRET
@@ -211,12 +234,15 @@ curl -H "Cf-Access-Jwt-Assertion: ${TEST_JWT}" https://pp-security.your-domain.c
 ```
 
 ### Issue: Role-Based Access Control Not Working
+
 **Symptoms:**
+
 - Users seeing unauthorized interface elements
 - Permission checks failing
 - Admin functions available to non-admin users
 
 **Diagnosis:**
+
 ```bash
 # Check user role assignment
 psql ${DATABASE_URL} -c "SELECT username, role, permissions FROM security_master_users LIMIT 5;"
@@ -233,6 +259,7 @@ grep -r "require_role" src/security_master/
 ```
 
 **Solutions:**
+
 ```bash
 # Reset user roles
 psql ${DATABASE_URL} -c "
@@ -249,12 +276,15 @@ cp /home/byron/dev/PromptCraft/src/auth/rbac_enhanced.py src/security_master/aut
 ```
 
 ### Issue: Session Management Problems
+
 **Symptoms:**
+
 - Users logged out unexpectedly
 - Session timeout not working correctly
 - Multiple session conflicts
 
 **Diagnosis:**
+
 ```bash
 # Check session configuration
 redis-cli -h redis -a ${REDIS_PASSWORD} keys "session:*" | wc -l
@@ -266,6 +296,7 @@ docker exec pp_security_cache_prod redis-cli --raw info keyspace
 ```
 
 **Solutions:**
+
 ```bash
 # Clear problematic sessions
 redis-cli -h redis -a ${REDIS_PASSWORD} flushdb
@@ -283,12 +314,15 @@ cp /home/byron/dev/PromptCraft/src/auth/session_manager.py src/security_master/a
 ## Docker Deployment & Container Issues
 
 ### Issue: Container Build Failures
+
 **Symptoms:**
+
 - `docker build` fails with dependency errors
 - `poetry install` timing out in container
 - Missing system dependencies in container
 
 **Diagnosis:**
+
 ```bash
 # Check Dockerfile syntax
 docker build --no-cache -f docker/api.Dockerfile . --target development
@@ -304,6 +338,7 @@ du -sh . | head -20
 ```
 
 **Solutions:**
+
 ```bash
 # Fix base image issues
 sed -i 's/python:3.11-slim/python:3.11.6-slim-bookworm/g' docker/api.Dockerfile
@@ -318,12 +353,15 @@ poetry export -f requirements.txt --output docker/requirements.txt --without-has
 ```
 
 ### Issue: Container Health Check Failures
+
 **Symptoms:**
+
 - Services marked as unhealthy
 - Continuous restart loops
 - Health check endpoints returning errors
 
 **Diagnosis:**
+
 ```bash
 # Check health check configuration
 docker inspect pp_security_api_prod | jq '.[0].Config.Healthcheck'
@@ -335,6 +373,7 @@ docker exec pp_security_db_prod pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAM
 ```
 
 **Solutions:**
+
 ```bash
 # Fix API health check
 docker exec pp_security_api_prod curl -v http://localhost:8000/health
@@ -349,12 +388,15 @@ docker-compose -f docker/docker-compose.production.yml up -d
 ```
 
 ### Issue: Network Connectivity Problems
+
 **Symptoms:**
+
 - Services can't communicate with each other
 - External API calls failing
 - Database connection refused
 
 **Diagnosis:**
+
 ```bash
 # Check network configuration
 docker network ls | grep pp_
@@ -367,6 +409,7 @@ docker exec pp_security_worker_prod telnet postgresql 5432
 ```
 
 **Solutions:**
+
 ```bash
 # Recreate networks
 docker-compose -f docker/docker-compose.production.yml down
@@ -382,12 +425,15 @@ docker exec pp_security_api_prod ping -c 3 postgresql
 ```
 
 ### Issue: Volume Mount Problems
+
 **Symptoms:**
+
 - Data not persisting across restarts
 - Permission denied errors in containers
 - Volume mounts not working
 
 **Diagnosis:**
+
 ```bash
 # Check volume configuration
 docker volume ls | grep pp_security
@@ -403,6 +449,7 @@ ls -la /mnt/cache/appdata/pp-security-prod/
 ```
 
 **Solutions:**
+
 ```bash
 # Create missing directories
 sudo mkdir -p /mnt/user/pp-security-prod/{data,logs,backups}
@@ -423,12 +470,15 @@ docker-compose -f docker/docker-compose.production.yml up -d
 ## Database & PostgreSQL Issues
 
 ### Issue: Database Connection Failures
+
 **Symptoms:**
+
 - `psycopg2.OperationalError: could not connect to server`
 - `FATAL: password authentication failed`
 - Connection pool exhaustion errors
 
 **Diagnosis:**
+
 ```bash
 # Test direct database connection
 psql ${DATABASE_URL}
@@ -443,6 +493,7 @@ psql ${DATABASE_URL} -c "SELECT * FROM pg_stat_activity WHERE state = 'active';"
 ```
 
 **Solutions:**
+
 ```bash
 # Reset database credentials
 export DATABASE_PASSWORD="$(openssl rand -base64 32)"
@@ -458,12 +509,15 @@ sed -i 's/DATABASE_MAX_OVERFLOW=30/DATABASE_MAX_OVERFLOW=20/g' docker/docker-com
 ```
 
 ### Issue: Migration Failures
+
 **Symptoms:**
+
 - `alembic.util.exc.CommandError` during migrations
 - Tables not created or updated correctly
 - Data corruption after migration
 
 **Diagnosis:**
+
 ```bash
 # Check current migration status
 poetry run alembic current
@@ -479,6 +533,7 @@ ls -la sql/versions/
 ```
 
 **Solutions:**
+
 ```bash
 # Reset to clean migration state
 poetry run alembic stamp base
@@ -493,12 +548,15 @@ poetry run alembic upgrade head
 ```
 
 ### Issue: Performance Problems
+
 **Symptoms:**
+
 - Slow query responses
 - High CPU usage on database
 - Connection timeouts
 
 **Diagnosis:**
+
 ```bash
 # Check database performance metrics
 psql ${DATABASE_URL} -c "
@@ -520,6 +578,7 @@ docker logs pp_security_db_prod | grep "slow query"
 ```
 
 **Solutions:**
+
 ```bash
 # Apply performance optimizations
 psql ${DATABASE_URL} -c "
@@ -544,12 +603,15 @@ docker-compose -f docker/docker-compose.production.yml restart postgresql
 ## External API Integration Issues
 
 ### Issue: OpenFIGI API Rate Limiting
+
 **Symptoms:**
+
 - `429 Too Many Requests` errors
 - Classification failures for securities
 - Long delays in security lookups
 
 **Diagnosis:**
+
 ```bash
 # Check API key configuration
 echo "OPENFIGI_API_KEY: ${OPENFIGI_API_KEY:0:10}..."
@@ -566,6 +628,7 @@ curl -H "X-OPENFIGI-APIKEY: ${OPENFIGI_API_KEY}" \
 ```
 
 **Solutions:**
+
 ```bash
 # Implement exponential backoff
 cp templates/external_apis/openfigi_rate_limiter.py src/security_master/classifier/
@@ -581,12 +644,15 @@ redis-cli -h redis -a ${REDIS_PASSWORD} config set maxmemory-policy allkeys-lru
 ```
 
 ### Issue: Alpha Vantage API Failures
+
 **Symptoms:**
+
 - Market data not updating
 - `Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute`
 - Price history incomplete
 
 **Diagnosis:**
+
 ```bash
 # Test Alpha Vantage API
 curl "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=${ALPHA_VANTAGE_API_KEY}"
@@ -599,6 +665,7 @@ redis-cli -h redis -a ${REDIS_PASSWORD} info stats | grep cache
 ```
 
 **Solutions:**
+
 ```bash
 # Implement API call batching
 cp templates/external_apis/alpha_vantage_batch_processor.py src/security_master/classifier/
@@ -612,12 +679,15 @@ echo "QUANDL_API_KEY=${QUANDL_API_KEY}" >> .env
 ```
 
 ### Issue: pp-portfolio-classifier Integration
+
 **Symptoms:**
+
 - Fund classification failures
 - Import errors for classifier module
 - Inconsistent classification results
 
 **Diagnosis:**
+
 ```bash
 # Check pp-portfolio-classifier availability
 python -c "import pp_portfolio_classifier; print('Available')"
@@ -635,6 +705,7 @@ grep -r "pp.portfolio.classifier" /mnt/user/pp-security-prod/logs/
 ```
 
 **Solutions:**
+
 ```bash
 # Reinstall pp-portfolio-classifier
 poetry remove pp-portfolio-classifier
@@ -656,12 +727,15 @@ print('Integration test:', result)
 ## Monitoring & Alerting Issues
 
 ### Issue: Prometheus Metrics Not Collecting
+
 **Symptoms:**
+
 - Grafana dashboards showing no data
 - Prometheus targets showing as down
 - Missing business metrics
 
 **Diagnosis:**
+
 ```bash
 # Check Prometheus targets
 curl http://localhost:9090/api/v1/targets
@@ -676,6 +750,7 @@ docker exec pp_security_metrics_prod cat /etc/prometheus/prometheus.yml
 ```
 
 **Solutions:**
+
 ```bash
 # Restart Prometheus with config reload
 curl -X POST http://localhost:9090/-/reload
@@ -692,12 +767,15 @@ curl http://localhost:9090/api/v1/query?query=up
 ```
 
 ### Issue: Grafana Dashboards Not Loading
+
 **Symptoms:**
+
 - Empty dashboard panels
 - "No data" messages in Grafana
 - Dashboard import failures
 
 **Diagnosis:**
+
 ```bash
 # Check Grafana data source configuration
 curl -u admin:${GRAFANA_ADMIN_PASSWORD} http://localhost:3000/api/datasources
@@ -710,6 +788,7 @@ docker logs pp_security_dashboards_prod | grep ERROR
 ```
 
 **Solutions:**
+
 ```bash
 # Reimport dashboards
 cp monitoring/grafana/dashboards/*.json docker/monitoring/grafana/dashboards/
@@ -727,12 +806,15 @@ curl -u admin:${GRAFANA_ADMIN_PASSWORD} \
 ```
 
 ### Issue: Alert Rules Not Triggering
+
 **Symptoms:**
+
 - No alerts firing despite conditions met
 - AlertManager not receiving alerts
 - Notification channels not working
 
 **Diagnosis:**
+
 ```bash
 # Check alert rule status
 curl http://localhost:9090/api/v1/rules
@@ -745,6 +827,7 @@ curl "http://localhost:9090/api/v1/query?query=up{job=\"security-master-api\"} =
 ```
 
 **Solutions:**
+
 ```bash
 # Reload alert rules
 curl -X POST http://localhost:9090/-/reload
@@ -764,12 +847,15 @@ curl -X POST http://localhost:9093/api/v1/alerts \
 ## Performance & Scalability Issues
 
 ### Issue: Slow Classification Processing
+
 **Symptoms:**
+
 - Long delays in security classification
 - Worker queue backlog growing
 - Users experiencing timeouts
 
 **Diagnosis:**
+
 ```bash
 # Check worker status
 docker exec pp_security_worker_prod celery inspect active -A src.security_master.worker.celery_app
@@ -784,6 +870,7 @@ docker logs pp_security_worker_prod | grep "Task.*succeeded"
 ```
 
 **Solutions:**
+
 ```bash
 # Scale worker instances
 docker-compose -f docker/docker-compose.production.yml up -d --scale worker=4
@@ -800,12 +887,15 @@ redis-cli -h redis -a ${REDIS_PASSWORD} config set maxmemory-policy allkeys-lru
 ```
 
 ### Issue: Database Query Performance
+
 **Symptoms:**
+
 - Slow portfolio analytics generation
 - Long search response times
 - Database CPU spikes
 
 **Diagnosis:**
+
 ```bash
 # Analyze slow queries
 psql ${DATABASE_URL} -c "
@@ -825,6 +915,7 @@ ORDER BY idx_scan DESC;
 ```
 
 **Solutions:**
+
 ```bash
 # Add missing indexes
 psql ${DATABASE_URL} -c "
@@ -842,12 +933,15 @@ psql ${DATABASE_URL} -c "ANALYZE;"
 ```
 
 ### Issue: Memory Usage Problems
+
 **Symptoms:**
+
 - Out of memory errors in containers
 - System becoming unresponsive
 - Container restarts due to memory limits
 
 **Diagnosis:**
+
 ```bash
 # Check container memory usage
 docker stats --no-stream | grep pp_security
@@ -861,6 +955,7 @@ docker exec pp_security_api_prod ps aux --sort=-%mem | head
 ```
 
 **Solutions:**
+
 ```bash
 # Adjust container memory limits
 sed -i 's/memory: 4G/memory: 6G/g' docker/docker-compose.production.yml
@@ -881,12 +976,15 @@ docker-compose -f docker/docker-compose.production.yml restart
 ## Security & Compliance Issues
 
 ### Issue: Security Scan Failures
+
 **Symptoms:**
+
 - Bandit reporting HIGH/CRITICAL security issues
 - Safety reporting vulnerable dependencies
 - Container security scans failing
 
 **Diagnosis:**
+
 ```bash
 # Run security scans
 poetry run bandit -r src -f json -o bandit-report.json
@@ -898,6 +996,7 @@ docker run --rm -v $(pwd):/workspace aquasec/trivy fs /workspace
 ```
 
 **Solutions:**
+
 ```bash
 # Fix dependency vulnerabilities
 poetry update
@@ -914,12 +1013,15 @@ sed -i 's/python:3.11-slim/python:3.11.6-slim-bookworm/g' docker/api.Dockerfile
 ```
 
 ### Issue: Data Protection Compliance
+
 **Symptoms:**
+
 - Audit logs missing required fields
 - Unencrypted sensitive data in logs
 - Inadequate access controls
 
 **Diagnosis:**
+
 ```bash
 # Check audit log configuration
 grep -r "audit" src/security_master/
@@ -938,6 +1040,7 @@ ORDER BY last_login DESC;
 ```
 
 **Solutions:**
+
 ```bash
 # Enable comprehensive audit logging
 echo "ENABLE_AUDIT_LOGGING=true" >> .env
@@ -952,12 +1055,15 @@ docker-compose -f docker/docker-compose.production.yml restart api
 ```
 
 ### Issue: API Security Problems
+
 **Symptoms:**
+
 - API endpoints accessible without authentication
 - Rate limiting not working
 - Sensitive data exposed in API responses
 
 **Diagnosis:**
+
 ```bash
 # Test unauthenticated access
 curl https://pp-security.your-domain.com/api/securities/
@@ -971,6 +1077,7 @@ curl -H "Cf-Access-Jwt-Assertion: ${TEST_JWT}" https://pp-security.your-domain.c
 ```
 
 **Solutions:**
+
 ```bash
 # Apply authentication to all endpoints
 cp security/middleware/auth_required.py src/security_master/api/
@@ -991,12 +1098,15 @@ docker-compose -f docker/docker-compose.production.yml restart api
 ## Data Quality & Import Issues
 
 ### Issue: Institution Import Failures
+
 **Symptoms:**
+
 - CSV/XML/PDF imports failing with parsing errors
 - Incomplete transaction data extraction
 - Data validation failures
 
 **Diagnosis:**
+
 ```bash
 # Check import logs
 tail -f /mnt/user/pp-security-prod/logs/import.log | grep ERROR
@@ -1015,6 +1125,7 @@ file sample_data/*.csv
 ```
 
 **Solutions:**
+
 ```bash
 # Update parser configurations
 cp templates/extractors/enhanced_parsers.py src/security_master/extractor/
@@ -1030,12 +1141,15 @@ poetry run python scripts/test_import.py --file sample_data/test_import.csv
 ```
 
 ### Issue: Data Quality Scoring Problems
+
 **Symptoms:**
+
 - Incorrect quality scores calculated
 - Quality trends not updating
 - Missing quality metrics
 
 **Diagnosis:**
+
 ```bash
 # Check quality calculation logic
 grep -r "quality_score" src/security_master/
@@ -1055,6 +1169,7 @@ ORDER BY avg_quality DESC;
 ```
 
 **Solutions:**
+
 ```bash
 # Recalculate all quality scores
 poetry run python scripts/recalculate_quality_scores.py
@@ -1070,12 +1185,15 @@ poetry run pytest tests/test_data_quality.py -v
 ```
 
 ### Issue: Cross-Institution Validation Problems
+
 **Symptoms:**
+
 - Duplicate securities not detected
 - Inconsistent classifications across institutions
 - Missing cross-validation warnings
 
 **Diagnosis:**
+
 ```bash
 # Check for duplicate securities
 psql ${DATABASE_URL} -c "
@@ -1097,6 +1215,7 @@ HAVING count(DISTINCT c.classification_type) > 1;
 ```
 
 **Solutions:**
+
 ```bash
 # Run deduplication process
 poetry run python scripts/deduplicate_securities.py
@@ -1116,12 +1235,15 @@ poetry run python scripts/validate_data_consistency.py
 ## Backup & Recovery Issues
 
 ### Issue: Backup Failures
+
 **Symptoms:**
+
 - Scheduled backups not running
 - Backup files corrupted or incomplete
 - Recovery procedures failing
 
 **Diagnosis:**
+
 ```bash
 # Check backup schedule
 crontab -l | grep backup
@@ -1137,6 +1259,7 @@ gpg --list-keys | grep backup
 ```
 
 **Solutions:**
+
 ```bash
 # Fix backup script permissions
 chmod +x scripts/backup/automated_backup.sh
@@ -1153,12 +1276,15 @@ crontab -e
 ```
 
 ### Issue: Recovery Procedures Failing
+
 **Symptoms:**
+
 - Database restore errors
 - Incomplete data after recovery
 - Configuration not restored properly
 
 **Diagnosis:**
+
 ```bash
 # Check backup file integrity
 gunzip -t /mnt/user/pp-security-prod/backups/latest/database_backup.sql.gz
@@ -1171,6 +1297,7 @@ pg_restore --list /mnt/user/pp-security-prod/backups/latest/database_backup.dump
 ```
 
 **Solutions:**
+
 ```bash
 # Perform clean recovery
 ./scripts/backup/disaster_recovery.sh --backup-date=2024-01-15
@@ -1187,12 +1314,15 @@ cp templates/procedures/disaster_recovery_updated.md docs/procedures/
 ## Development & Testing Issues
 
 ### Issue: Test Suite Failures
+
 **Symptoms:**
+
 - pytest failing with import errors
 - Coverage reports incomplete
 - Integration tests timing out
 
 **Diagnosis:**
+
 ```bash
 # Run tests with verbose output
 poetry run pytest -v --tb=short
@@ -1210,6 +1340,7 @@ poetry run pytest tests/test_db_connection.py -v
 ```
 
 **Solutions:**
+
 ```bash
 # Fix import paths
 export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
@@ -1229,12 +1360,15 @@ poetry run pytest --cov=src --cov-report=html
 ```
 
 ### Issue: Development Environment Setup
+
 **Symptoms:**
+
 - Poetry installation failing
 - IDE integration not working
 - Git hooks not executing
 
 **Diagnosis:**
+
 ```bash
 # Check Poetry installation
 poetry --version
@@ -1250,6 +1384,7 @@ ls -la .git/hooks/
 ```
 
 **Solutions:**
+
 ```bash
 # Reinstall Poetry environment
 poetry env remove python
@@ -1271,12 +1406,15 @@ poetry run python -c "print('Development environment ready')"
 ## Deployment Automation Issues
 
 ### Issue: Cloudflare Tunnel Configuration
+
 **Symptoms:**
+
 - Tunnel not connecting properly
 - SSL certificate errors
 - Domain routing failures
 
 **Diagnosis:**
+
 ```bash
 # Check tunnel status
 cloudflared tunnel list
@@ -1291,6 +1429,7 @@ cat ~/.cloudflared/config.yml
 ```
 
 **Solutions:**
+
 ```bash
 # Restart tunnel service
 sudo systemctl restart cloudflared
@@ -1304,12 +1443,15 @@ curl -H "CF-RAY: test" https://pp-security.your-domain.com/health
 ```
 
 ### Issue: Production Deployment Script Failures
+
 **Symptoms:**
+
 - Deployment script exiting with errors
 - Services not starting after deployment
 - Configuration not applied properly
 
 **Diagnosis:**
+
 ```bash
 # Check deployment script logs
 ./scripts/phase5/setup_enterprise_production.sh --dry-run
@@ -1323,6 +1465,7 @@ docker-compose -f docker/docker-compose.production.yml logs --tail=50
 ```
 
 **Solutions:**
+
 ```bash
 # Run deployment with debug output
 DEBUG=true ./scripts/phase5/setup_enterprise_production.sh
@@ -1343,6 +1486,7 @@ cp .env.example .env
 ## Quick Recovery Procedures
 
 ### Emergency System Recovery
+
 ```bash
 #!/bin/bash
 # Emergency recovery procedure
@@ -1383,6 +1527,7 @@ echo "=== Recovery Complete ==="
 ```
 
 ### Service-Specific Recovery
+
 ```bash
 # Database recovery
 docker-compose -f docker/docker-compose.production.yml stop postgresql
@@ -1405,6 +1550,7 @@ curl -f http://localhost:3000/api/health
 ```
 
 ### Configuration Reset
+
 ```bash
 # Reset all configuration to defaults
 cp .env.example .env
@@ -1431,21 +1577,24 @@ rm .env
 ## Support Contact Information
 
 ### Internal Support
-- **Development Team**: security-master-dev@company.com
-- **Infrastructure Team**: infra@company.com  
-- **Security Team**: security@company.com
-- **Database Team**: dba@company.com
+
+- **Development Team**: <security-master-dev@company.com>
+- **Infrastructure Team**: <infra@company.com>  
+- **Security Team**: <security@company.com>
+- **Database Team**: <dba@company.com>
 
 ### External Support
-- **PromptCraft Integration**: https://github.com/pp-security/PromptCraft/issues
-- **Portfolio Performance**: https://forum.portfolio-performance.info/
-- **OpenFIGI API**: https://www.openfigi.com/support
-- **Cloudflare Support**: https://support.cloudflare.com/
+
+- **PromptCraft Integration**: <https://github.com/pp-security/PromptCraft/issues>
+- **Portfolio Performance**: <https://forum.portfolio-performance.info/>
+- **OpenFIGI API**: <https://www.openfigi.com/support>
+- **Cloudflare Support**: <https://support.cloudflare.com/>
 
 ### Documentation
-- **Security-Master Wiki**: https://wiki.company.com/security-master
+
+- **Security-Master Wiki**: <https://wiki.company.com/security-master>
 - **Runbook**: docs/operations/runbook.md
-- **API Documentation**: https://pp-security.your-domain.com/docs
+- **API Documentation**: <https://pp-security.your-domain.com/docs>
 - **Architecture**: docs/adr/
 
 ---

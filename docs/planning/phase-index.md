@@ -10,30 +10,35 @@
 ## Quick Navigation
 
 ### 📋 Planning Documents
+
 - **[Project Plan Review](project_plan_review.md)** - Comprehensive analysis and recommendations
 - **[Revised Project Plan](revised_project_plan.md)** - Complete restructured plan with all phases
 - **[Original Project Plan](../PROJECT_PLAN.md)** - Original 22.5-week linear plan
 
 ### 🏗️ Phase Documentation
 
-**Phase 0: Foundation & Prerequisites (Weeks 1-2)**
+#### Phase 0: Foundation & Prerequisites (Weeks 1-2)
+
 - [Overview & Success Criteria](phase-0-foundation-overview.md)
 - [Issues P0-001 to P0-005](phase-0-issues-P0-001-to-P0-005.md) - Infrastructure setup
 - [Issues P0-006 to P0-010](phase-0-issues-P0-006-to-P0-010.md) - Development foundation
 - [Completion Guide](phase-0-completion-guide.md) - Validation and troubleshooting
 
-**Phase 1-4: Core Development**
+#### Phase 1-4: Core Development
+
 - **[Phase 1: Core Infrastructure](phase-1-core-infrastructure.md)** - Weeks 3-6  
 - **[Phase 2: External Integrations](phase-2-external-integrations.md)** - Weeks 7-10
 - **[Phase 3: Institution Features](phase-3-institution-features.md)** - Weeks 11-14
 - **[Phase 4: Analytics & PP Integration](phase-4-analytics-pp-integration.md)** - Weeks 15-18
 
-**Phase 5: Enterprise & Production (Weeks 19-22)**
+#### Phase 5: Enterprise & Production (Weeks 19-22)
+
 - [Prerequisites & Setup](phase-5-prerequisites-setup.md) - Steps 1-3
 - [Production Deployment](phase-5-production-deployment.md) - Steps 4-7
 - [Testing & Completion](phase-5-testing-completion.md) - Steps 8-10
 
 ### 📚 Architecture References
+
 - **[ADRs Directory](../adr/)** - All Architecture Decision Records
 - **[Original Project Plan](../PROJECT_PLAN.md)** - Complete technical specification
 
@@ -70,17 +75,20 @@ gantt
 ## Phase Summary
 
 ### Phase 0: Foundation & Prerequisites (Weeks 1-2)
+
 **🎯 Goal**: Development environment and basic infrastructure  
 **👥 Team**: 1-2 developers  
 **📊 Success**: PostgreSQL operational, development workflow established
 
-**Key Deliverables**:
+#### Key Deliverables
+
 - PostgreSQL 17 on Unraid with external access
 - Security master table with comprehensive taxonomy
 - Development tooling and quality controls
 - Configuration and validation frameworks
 
 **📋 Issues**: 10 issues (~25 hours total)
+
 - P0-001: PostgreSQL 17 installation and configuration
 - P0-002: Development environment standardization
 - P0-003: Repository structure and standards
@@ -95,11 +103,13 @@ gantt
 ---
 
 ### Phase 1: Core Infrastructure (Weeks 3-6)  
+
 **🎯 Goal**: Complete database schema and Wells Fargo import/export  
 **👥 Team**: 2-3 developers  
 **📊 Success**: Wells Fargo CSV → Database → JSON export working end-to-end
 
-**Key Deliverables**:
+#### Key Deliverables
+
 - Institution-specific transaction tables
 - Wells Fargo CSV import pipeline
 - JSON export engine
@@ -107,6 +117,7 @@ gantt
 - Performance optimization for 10,000+ transactions
 
 **📋 Issues**: 8 issues (~26 hours total)
+
 - P1-001: Institution transaction tables schema
 - P1-002: Data lineage and batch tracking
 - P1-003: Wells Fargo CSV parser
@@ -119,11 +130,13 @@ gantt
 ---
 
 ### Phase 2: External Integrations (Weeks 7-10)
+
 **🎯 Goal**: External libraries and enhanced classification  
 **👥 Team**: 2-3 developers  
 **📊 Success**: >90% fund classification accuracy with fallback mechanisms
 
-**Key Deliverables**:
+#### Key Deliverables
+
 - pp-portfolio-classifier and ppxml2db integration
 - OpenFIGI API client with rate limiting
 - Fund and equity classification pipelines
@@ -131,6 +144,7 @@ gantt
 - External service resilience patterns
 
 **📋 Issues**: 6 issues (~20 hours total)
+
 - P2-001: External repository integration
 - P2-002: OpenFIGI API client
 - P2-003: Fund classification pipeline  
@@ -141,11 +155,13 @@ gantt
 ---
 
 ### Phase 3: Institution Features (Weeks 11-14)
+
 **🎯 Goal**: Multi-institution support with data validation  
 **👥 Team**: 2-4 developers  
 **📊 Success**: All four institutions operational with cross-validation
 
-**Key Deliverables**:
+#### Key Deliverables
+
 - Interactive Brokers Flex Query parser
 - AltoIRA PDF parsing with OCR
 - Kubera API integration
@@ -153,6 +169,7 @@ gantt
 - Advanced batch processing optimization
 
 **📋 Issues**: 8 issues (~28 hours total)
+
 - P3-001: IBKR Flex Query parser
 - P3-002: AltoIRA PDF parser with OCR
 - P3-003: Kubera API integration
@@ -165,11 +182,13 @@ gantt
 ---
 
 ### Phase 4: Analytics & PP Integration (Weeks 15-18)
+
 **🎯 Goal**: Complete PP integration and institutional analytics  
 **👥 Team**: 3-4 developers  
 **📊 Success**: Complete PP XML backup/restore and analytics operational
 
-**Key Deliverables**:
+#### Key Deliverables
+
 - Complete Portfolio Performance XML export/import
 - Risk-adjusted performance metrics
 - Portfolio optimization algorithms
@@ -177,6 +196,7 @@ gantt
 - Performance attribution analysis
 
 **📋 Issues**: 8 issues (~30 hours total)
+
 - P4-001: PP XML schema implementation
 - P4-002: Bidirectional PP sync engine
 - P4-003: Risk-adjusted performance metrics
@@ -189,11 +209,13 @@ gantt
 ---
 
 ### Phase 5: Enterprise & Production (Weeks 19-22)
+
 **🎯 Goal**: Production-ready system with UI and enterprise features  
 **👥 Team**: 3-5 developers  
 **📊 Success**: System operational with web UI and enterprise deployment
 
-**Key Deliverables**:
+#### Key Deliverables
+
 - Web UI leveraging PromptCraft Gradio patterns and components
 - Cloudflare tunnel and authentication integration (reuse existing infrastructure)
 - Production deployment automation (adapt PromptCraft patterns)
@@ -202,7 +224,8 @@ gantt
 
 **📋 Issues**: 9 issues (~30 hours total - reduced through PromptCraft asset reuse)**
 
-**PromptCraft Integration Benefits**:
+#### PromptCraft Integration Benefits
+
 - **Proven UI patterns**: Reuse multi-journey interface and accessibility components
 - **Established authentication**: Leverage existing Cloudflare Access and JWT validation
 - **Deployment patterns**: Adapt proven containerization and configuration management
@@ -221,6 +244,7 @@ gantt
 ## Project Metrics Summary
 
 ### Development Metrics
+
 - **Total Issues**: 56 issues across all phases
 - **Total Estimated Effort**: ~160 developer hours
 - **Average Issue Size**: 2.9 hours (within 2-4 hour target)
@@ -279,26 +303,31 @@ graph TB
 ### Critical Dependencies
 
 #### Phase 0 → Phase 1
+
 - PostgreSQL 17 operational and accessible
 - Development environment standardized across team
 - Security master table schema validated
 
 #### Phase 1 → Phase 2
+
 - Single institution (Wells Fargo) data pipeline working
 - Database performance validated with production-like volumes
 - Export framework operational
 
 #### Phase 2 → Phase 3
+
 - External library integrations secure and functional
 - Classification accuracy benchmarks established
 - API rate limiting and fallback mechanisms operational
 
 #### Phase 3 → Phase 4
+
 - Multi-institution data validation working
 - Data quality metrics showing improvement
 - System scalability demonstrated
 
 #### Phase 4 → Phase 5
+
 - Complete Portfolio Performance integration validated
 - Analytics calculations accurate and performant
 - Data sovereignty achieved
@@ -306,11 +335,13 @@ graph TB
 ### Risk Mitigation by Phase
 
 #### High-Impact Risks
+
 - **Database Performance Issues** (Phase 1-3): Continuous performance testing, query optimization
 - **External Service Dependencies** (Phase 2-4): Circuit breakers, fallback mechanisms, caching
 - **Data Quality Problems** (Phase 3-5): Multi-layer validation, cross-institution verification
 
 #### Medium-Impact Risks
+
 - **Integration Complexity** (All phases): Comprehensive testing, clear interfaces
 - **Scope Creep** (Phase 4-5): Clear phase boundaries, change control process
 
@@ -321,26 +352,31 @@ graph TB
 ### Testing Strategy by Phase
 
 #### Unit Testing (All Phases)
+
 - **Target**: >80% code coverage
 - **Focus**: Individual component functionality
 - **Automation**: Pre-commit hooks and CI/CD pipeline
 
 #### Integration Testing (Phase 1+)
+
 - **Target**: End-to-end workflow validation
 - **Focus**: Cross-component interactions
 - **Automation**: Phase completion gates
 
 #### Performance Testing (Phase 1+)
+
 - **Target**: <2s response times, handle 10,000+ transactions
 - **Focus**: Database operations, large dataset processing
 - **Automation**: Continuous performance monitoring
 
 #### User Acceptance Testing (Phase 5)
+
 - **Target**: >4.5/5 user satisfaction
 - **Focus**: Real user workflows and scenarios
 - **Validation**: End-user feedback and adoption metrics
 
 ### Code Quality Standards
+
 - **Formatting**: Black (88-character line length)
 - **Linting**: Ruff with comprehensive rule set
 - **Type Checking**: MyPy in strict mode
@@ -354,26 +390,31 @@ graph TB
 ### Core Team Roles
 
 #### Technical Lead (All Phases)
+
 - Architecture decisions and technical direction
 - Code review and quality standards
 - Cross-phase coordination and planning
 
 #### Backend Developers (Phase 0-4)
+
 - Database design and optimization
 - API development and integration
 - Data processing and validation
 
 #### Frontend Developer (Phase 5)
+
 - Web UI development and user experience
 - React/TypeScript implementation
 - Mobile-responsive design
 
 #### DevOps Engineer (Phase 5)
+
 - Production deployment automation
 - Monitoring and alerting infrastructure
 - Security hardening and compliance
 
 #### QA Engineer (Phase 1+)
+
 - Test strategy and automation
 - Performance and security testing
 - User acceptance testing coordination
@@ -396,11 +437,13 @@ graph TB
 ### Business Impact Metrics
 
 #### Efficiency Gains
+
 - **Manual Classification Reduction**: Target >80% reduction in manual effort
 - **Data Processing Speed**: 10,000+ transactions processed in <30 seconds
 - **Classification Accuracy**: >95% for listed securities, >90% for complex instruments
 
 #### Quality Improvements
+
 - **Data Consistency**: Cross-institution validation identifies >95% of discrepancies
 - **Error Rates**: <1% system error rate under production load
 - **User Satisfaction**: >4.5/5 rating in user acceptance testing
@@ -408,11 +451,13 @@ graph TB
 ### Technical Health Metrics
 
 #### Performance
+
 - **Response Times**: <2s for database operations, <30s for complete processing
 - **Scalability**: System handles 100,000+ transactions without architectural changes
 - **Reliability**: >99.5% uptime with automated failover
 
 #### Quality
+
 - **Code Coverage**: >80% across all components
 - **Security**: Zero high-severity vulnerabilities
 - **Documentation**: Complete coverage of all user and developer workflows
@@ -434,18 +479,21 @@ Each phase must meet specific completion criteria before proceeding:
 ### Final Success Validation
 
 #### Technical Excellence
+
 - Complete end-to-end system functional from institution import to PP export
 - Performance targets met across all major workflows
 - Security and compliance requirements satisfied
 - Code quality and documentation standards maintained
 
 #### Business Value
+
 - Portfolio Performance transformed from desktop tool to enterprise platform  
 - Manual effort reduced by >80% through automated classification
 - Data quality and consistency improved through systematic validation
 - Institutional-grade analytics provide advanced portfolio insights
 
 #### Operational Excellence
+
 - Production deployment stable and monitored
 - User adoption successful with positive feedback
 - Documentation enables self-service support
@@ -459,4 +507,4 @@ Each phase must meet specific completion criteria before proceeding:
 
 ---
 
-*This index provides complete navigation and overview of the restructured Portfolio Performance Security-Master project. Each phase document contains detailed issue breakdowns with 2-4 hour scoped work items, comprehensive acceptance criteria, and testing requirements.*
+#### This index provides complete navigation and overview of the restructured Portfolio Performance Security-Master project. Each phase document contains detailed issue breakdowns with 2-4 hour scoped work items, comprehensive acceptance criteria, and testing requirements

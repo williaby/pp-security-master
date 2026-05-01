@@ -268,7 +268,17 @@ class FundClassificationPipeline:
         cusip: str | None,
         isin: str | None,
     ) -> ClassificationResult:
-        """Classify using pp-portfolio-classifier."""
+        """Classify using pp-portfolio-classifier.
+
+        Args:
+            cusip: The cusip value.
+            isin: The isin value.
+            name: The name value.
+            symbol: The symbol value.
+
+        Returns:
+            The result.
+        """
         security_id = symbol or cusip or isin or "unknown"
 
         if not self.pp_adapter.is_available():
@@ -342,7 +352,17 @@ class FundClassificationPipeline:
         cusip: str | None,
         isin: str | None,
     ) -> ClassificationResult:
-        """Classify using OpenFIGI API."""
+        """Classify using OpenFIGI API.
+
+        Args:
+            cusip: The cusip value.
+            isin: The isin value.
+            name: The name value.
+            symbol: The symbol value.
+
+        Returns:
+            The result.
+        """
         security_id = symbol or cusip or isin or "unknown"
         start_time = datetime.now()
 
@@ -422,7 +442,14 @@ class FundClassificationPipeline:
         self,
         pp_result: dict[str, Any],
     ) -> SecurityClassification | None:
-        """Convert pp-portfolio-classifier result to SecurityClassification."""
+        """Convert pp-portfolio-classifier result to SecurityClassification.
+
+        Args:
+            pp_result: The pp result value.
+
+        Returns:
+            The result.
+        """
         # This will be implemented based on actual pp-portfolio-classifier output format
         classification_data = pp_result.get("classification", {})
 
@@ -440,7 +467,14 @@ class FundClassificationPipeline:
         self,
         figi_result: dict[str, Any],
     ) -> SecurityClassification | None:
-        """Convert OpenFIGI result to SecurityClassification."""
+        """Convert OpenFIGI result to SecurityClassification.
+
+        Args:
+            figi_result: The figi result value.
+
+        Returns:
+            The result.
+        """
         return SecurityClassification(
             asset_class=figi_result.get("securityType", "Unknown"),
             sector=figi_result.get("sector"),
@@ -460,7 +494,16 @@ class FundClassificationPipeline:
         symbol: str | None,
         name: str | None,
     ) -> float:
-        """Calculate confidence score for OpenFIGI result."""
+        """Calculate confidence score for OpenFIGI result.
+
+        Args:
+            name: The name value.
+            figi_result: The figi result value.
+            symbol: The symbol value.
+
+        Returns:
+            The result.
+        """
         confidence = 0.6  # Base confidence for OpenFIGI
 
         # Boost confidence if symbol matches exactly
@@ -483,7 +526,12 @@ class FundClassificationPipeline:
         return min(confidence, 1.0)
 
     def _update_stats(self, result: ClassificationResult, start_time: datetime):
-        """Update classification statistics."""
+        """Update classification statistics.
+
+        Args:
+            result: The result value.
+            start_time: The start time value.
+        """
         self.classification_stats["total_classified"] += 1
 
         processing_time = int((datetime.now() - start_time).total_seconds() * 1000)
@@ -498,7 +546,11 @@ class FundClassificationPipeline:
         )
 
     def get_performance_stats(self) -> dict[str, Any]:
-        """Get classification performance statistics."""
+        """Get classification performance statistics.
+
+        Returns:
+            The result.
+        """
         total = self.classification_stats["total_classified"]
         if total == 0:
             return self.classification_stats.copy()

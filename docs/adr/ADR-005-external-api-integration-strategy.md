@@ -19,17 +19,20 @@ Each API has different cost models, rate limits, reliability characteristics, an
 ## Key Challenges
 
 ### Rate Limiting and Cost Management
+
 - **OpenFIGI**: Free tier with 250 requests/hour, paid tiers up to 10,000 requests/hour
 - **Alpha Vantage**: Free tier with 25 requests/day, paid tiers up to 1,200 requests/minute
 - **Financial Modeling Prep**: Free tier with 250 requests/day, paid tiers up to 10,000 requests/hour
 
 ### Data Quality and Reliability
+
 - **API Availability**: External dependencies may experience outages
 - **Data Consistency**: Different APIs may provide conflicting classifications
 - **Response Time**: External API calls add latency to classification processes
 - **Error Handling**: Need robust fallback strategies for API failures
 
 ### Classification Accuracy
+
 - **GICS Code Variations**: Different APIs may use different GICS versions
 - **Data Freshness**: API data may be stale for recently listed securities
 - **Coverage Gaps**: Some securities may not be available in external APIs
@@ -80,12 +83,14 @@ class ExternalAPIManager:
 ### Rate Limiting Strategy
 
 #### **Intelligent Request Management**
+
 - **Request Prioritization**: High-value securities (by portfolio weight) get priority
 - **Batch Processing**: Group requests to maximize API efficiency
 - **Time-Based Scheduling**: Spread requests across hours/days to stay within limits
 - **Adaptive Throttling**: Dynamically adjust request rates based on API response times
 
 #### **Cost Optimization**
+
 ```python
 class APIRateLimiter:
     """Cost-aware rate limiting with priority queues"""
@@ -111,11 +116,13 @@ class APIRateLimiter:
 ### Caching Strategy
 
 #### **Multi-Level Caching Architecture**
+
 1. **In-Memory Cache**: Redis for frequently accessed classifications (1-hour TTL)
 2. **Database Cache**: PostgreSQL for long-term storage (90-day TTL)
 3. **File Cache**: Local JSON files for offline fallback (1-year retention)
 
 #### **Cache Invalidation Rules**
+
 - **Time-Based**: Automatic expiration based on data type
   - Price data: 1 hour
   - Basic classification: 30 days  
@@ -126,6 +133,7 @@ class APIRateLimiter:
 ### Error Handling and Resilience
 
 #### **Circuit Breaker Pattern**
+
 ```python
 class APICircuitBreaker:
     """Circuit breaker for API fault tolerance"""
@@ -148,6 +156,7 @@ class APICircuitBreaker:
 ```
 
 #### **Graceful Degradation**
+
 - **API Fallback Chain**: OpenFIGI → Alpha Vantage → Financial Modeling Prep → Manual Queue
 - **Partial Results**: Accept incomplete data with confidence scoring
 - **Offline Mode**: Use cached data when all APIs are unavailable
@@ -156,12 +165,14 @@ class APICircuitBreaker:
 ### Data Quality Validation
 
 #### **Cross-API Validation**
+
 - **Consistency Checking**: Compare GICS codes across multiple APIs
 - **Confidence Scoring**: Weight results based on API reliability and agreement
 - **Outlier Detection**: Flag unusual classifications for manual review
 - **Data Freshness**: Prefer more recent data when APIs disagree
 
 #### **API Response Validation**
+
 ```python
 class APIResponseValidator:
     """Validate and normalize API responses"""
@@ -189,18 +200,21 @@ class APIResponseValidator:
 ## Implementation Strategy
 
 ### Phase 1: Foundation (MVP Timeframe)
+
 - **Basic API Integration**: OpenFIGI only with simple rate limiting
 - **Basic Caching**: Database-only cache with 30-day TTL
 - **Error Handling**: Simple try/catch with manual fallback
 - **Cost Control**: Free tier usage only with daily request limits
 
 ### Phase 2: Enhanced Integration (Release 2.0)
+
 - **Multi-API Support**: Add Alpha Vantage and Financial Modeling Prep
 - **Advanced Caching**: Redis + database + file cache layers
 - **Circuit Breaker**: Full fault tolerance with automatic recovery
 - **Priority Queuing**: Request prioritization based on portfolio weight
 
 ### Phase 3: Advanced Optimization (Release 3.0)
+
 - **Machine Learning**: Predict best API for each security type
 - **Cost Optimization**: Dynamic tier management based on usage patterns
 - **Real-Time Sync**: Event-driven cache invalidation
@@ -209,12 +223,14 @@ class APIResponseValidator:
 ## Configuration Management
 
 ### API Key Management
+
 - **Environment Variables**: Store API keys in `.env` files (encrypted with GPG)
 - **Key Rotation**: Support for multiple keys per API with automatic rotation
 - **Usage Monitoring**: Track API key usage against quotas
 - **Cost Alerts**: Automated alerts when approaching paid tier thresholds
 
 ### Rate Limit Configuration
+
 ```yaml
 # config/api_limits.yaml
 apis:
@@ -240,12 +256,14 @@ apis:
 ## Cost Management Strategy
 
 ### Budget Allocation
+
 - **Monthly Budget**: $200-400 for external API costs
 - **Tier Strategy**: Start with free tiers, upgrade based on classification volume
 - **Cost Monitoring**: Daily usage tracking with automated alerts
 - **ROI Analysis**: Track cost per successful classification
 
 ### Usage Optimization
+
 - **Request Deduplication**: Avoid duplicate requests for same security
 - **Batch Operations**: Group requests when APIs support batch endpoints
 - **Smart Scheduling**: Distribute requests across time windows
@@ -254,18 +272,21 @@ apis:
 ## Success Metrics
 
 ### API Performance Targets
+
 - **Response Time**: <5 seconds average for individual classifications
 - **Success Rate**: >95% successful API responses (excluding rate limits)
 - **Cache Hit Rate**: >80% for repeated security lookups
 - **Cost Efficiency**: <$0.50 per successful equity classification
 
 ### Data Quality Targets  
+
 - **Classification Accuracy**: >92% accuracy for Tier 3 API classifications
 - **Coverage Completeness**: >95% of public securities classified within 48 hours
 - **Data Freshness**: <7 days average age for fundamental data
 - **Consistency Score**: <2% classification discrepancies between APIs
 
 ### Operational Targets
+
 - **Uptime**: 99.5% API integration availability
 - **Error Recovery**: <15 minutes average recovery time from API failures
 - **Manual Fallback**: <5% of securities require manual classification
@@ -274,12 +295,14 @@ apis:
 ## Risk Mitigation
 
 ### API Dependency Risks
+
 - **Vendor Lock-in**: Support multiple APIs to avoid single vendor dependency
 - **Rate Limit Exhaustion**: Intelligent queuing and priority management
 - **API Changes**: Version management and backward compatibility
 - **Cost Overruns**: Automated spending limits and usage alerts
 
 ### Data Quality Risks
+
 - **Stale Data**: Regular refresh cycles and event-driven updates
 - **Inconsistent Classifications**: Cross-validation and confidence scoring
 - **API Errors**: Comprehensive validation and fallback strategies
@@ -288,6 +311,7 @@ apis:
 ## Consequences
 
 ### Positive
+
 - **Comprehensive Coverage**: Access to institutional-grade classification data
 - **Cost Control**: Intelligent usage management keeps costs predictable
 - **Reliability**: Fault-tolerant design ensures high availability
@@ -295,12 +319,14 @@ apis:
 - **Data Quality**: Multi-source validation improves classification accuracy
 
 ### Negative
+
 - **Complexity**: Multiple API integrations increase system complexity
 - **External Dependencies**: Reliance on external services for critical functionality
 - **Cost Management**: Ongoing monitoring required to control API costs
 - **Rate Limiting**: API quotas may constrain classification throughput
 
 ### Risk Mitigation
+
 - **Circuit Breakers**: Prevent cascade failures from API outages
 - **Comprehensive Caching**: Reduce external dependencies through intelligent caching
 - **Cost Alerts**: Automated monitoring prevents unexpected charges
@@ -314,8 +340,8 @@ apis:
 
 ## References
 
-- OpenFIGI API Documentation: https://www.openfigi.com/api
-- Alpha Vantage API Documentation: https://www.alphavantage.co/documentation/
-- Financial Modeling Prep API: https://financialmodelingprep.com/developer/docs
+- OpenFIGI API Documentation: <https://www.openfigi.com/api>
+- Alpha Vantage API Documentation: <https://www.alphavantage.co/documentation/>
+- Financial Modeling Prep API: <https://financialmodelingprep.com/developer/docs>
 - Bloomberg API Rate Limiting Best Practices
 - GICS Sector Classification Standards

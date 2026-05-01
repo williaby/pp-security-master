@@ -10,9 +10,10 @@ purpose: "Detailed implementation guide for Phase 0 infrastructure issues P0-001
 
 # Phase 0: Issues P0-001 to P0-005
 
-**Infrastructure Foundation Issues**
+## Infrastructure Foundation Issues
 
-> **Navigation**: 
+> **Navigation**:
+>
 > - [Phase Overview](./phase-0-foundation-overview.md)
 > - **Current**: Issues P0-001 to P0-005 (Infrastructure Setup)
 > - [Issues P0-006 to P0-010](./phase-0-issues-P0-006-to-P0-010.md)
@@ -29,9 +30,11 @@ purpose: "Detailed implementation guide for Phase 0 infrastructure issues P0-001
 **Week**: 1  
 
 ### Description
+
 ✅ **COMPLETED**: PostgreSQL 17 is already set up on Unraid using Community Apps template and connection verified with .env.example settings.
 
 ### Validation Commands
+
 Since this is already completed, verify the setup with these commands:
 
 ```bash
@@ -49,7 +52,8 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "DROP TABLE test_connectio
 
 ### Acceptance Criteria ✅
 
-**Infrastructure Setup**
+#### Infrastructure Setup
+
 - [x] PostgreSQL 17 container deployed via Unraid Community Apps
 - [x] Container configured with persistent storage on `/mnt/user/appdata/pp_postgres/data`
 - [x] Database accessible on configured port (5432) with proper authentication
@@ -57,13 +61,15 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "DROP TABLE test_connectio
 - [x] Strong password configured and documented securely
 - [x] Timezone set to `America/Los_Angeles` (per original requirements)
 
-**Network and Security**
+#### Network and Security
+
 - [ ] Database accessible from development machines on local network
 - [ ] Firewall rules configured if necessary
 - [ ] SSL/TLS configuration validated (if required)
 - [ ] Connection limits and security settings optimized
 
-**Backup and Monitoring**
+#### Backup and Monitoring
+
 - [ ] Backup configuration enabled with nightly schedule at 02:00
 - [ ] WAL (Write-Ahead Logging) configured for consistency
 - [ ] Container auto-start enabled
@@ -72,7 +78,8 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "DROP TABLE test_connectio
 
 ### Testing Requirements
 
-**Connection Validation**
+#### Connection Validation
+
 ```bash
 # Test database connection from development machine
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT version();"
@@ -82,7 +89,8 @@ docker exec -it pp_postgres psql -U pp_user -d pp_master -c "CREATE TABLE test_p
 # Restart container and verify table exists
 ```
 
-**Performance Validation**
+## Performance Validation
+
 ```bash
 # Basic performance test
 pgbench -i -s 10 -h unraid.lan -p 5432 -U pp_user pp_master
@@ -90,11 +98,13 @@ pgbench -c 5 -T 60 -h unraid.lan -p 5432 -U pp_user pp_master
 ```
 
 ### Dependencies
+
 - Unraid server access with Community Apps plugin
 - Network configuration and access permissions
 - Backup storage allocation on Unraid
 
 ### Deliverables
+
 - Running PostgreSQL 17 container on Unraid
 - Connection documentation with examples
 - Backup configuration and schedule
@@ -102,6 +112,7 @@ pgbench -c 5 -T 60 -h unraid.lan -p 5432 -U pp_user pp_master
 - Container management procedures
 
 ### Definition of Done
+
 - External connection from development machine successful
 - Basic SQL operations (CREATE, INSERT, SELECT, UPDATE, DELETE) functional
 - Container restart maintains data persistence
@@ -119,11 +130,13 @@ pgbench -c 5 -T 60 -h unraid.lan -p 5432 -U pp_user pp_master
 **Week**: 1  
 
 ### Description
+
 Standardize development environment across team members to ensure consistency and reduce onboarding time. Create templates and documentation for rapid environment setup.
 
 ### Step-by-Step Execution
 
-**Step 1: Install Python 3.11+ with pyenv**
+#### Step 1: Install Python 3.11+ with pyenv
+
 ```bash
 # Install pyenv (if not already installed)
 curl https://pyenv.run | bash
@@ -142,7 +155,8 @@ pyenv global 3.11.8
 python --version  # Should show Python 3.11.8
 ```
 
-**Step 2: Install and Configure Poetry**
+## Step 2: Install and Configure Poetry
+
 ```bash
 # Install Poetry
 curl -sSL https://install.python-poetry.org | python3 -
@@ -159,7 +173,8 @@ poetry config virtualenvs.prefer-active-python true
 poetry --version  # Should show Poetry version
 ```
 
-**Step 3: Set up Project Environment**
+## Step 3: Set up Project Environment
+
 ```bash
 # Navigate to project directory
 cd pp-security-master
@@ -179,13 +194,15 @@ which python  # Should show path to virtual environment
 
 ### Acceptance Criteria
 
-**Python Environment**
+#### Python Environment
+
 - [ ] Python 3.11+ installed with pyenv for version management
 - [ ] Poetry dependency management configured and operational  
 - [ ] Virtual environment creation and activation documented
 - [ ] Development dependencies installed successfully
 
-**Validation Commands:**
+#### Validation Commands (1)
+
 ```bash
 # Verify Python version
 python --version | grep "3.11"
@@ -197,13 +214,15 @@ poetry config --list | grep "virtualenvs.in-project = true"
 poetry env info --path  # Should show project/.venv path
 ```
 
-**IDE Configuration**
+## IDE Configuration
+
 - [ ] VSCode configuration templates created with recommended extensions
 - [ ] PyCharm configuration templates created (optional)
 - [ ] Code formatting and linting settings configured
 - [ ] Debugging configuration for database connections
 
-**Step 4: VSCode Configuration**
+## Step 4: VSCode Configuration
+
 ```bash
 # Create VSCode workspace directory
 mkdir -p .vscode
@@ -245,7 +264,8 @@ cat > .vscode/extensions.json << 'EOF'
 EOF
 ```
 
-**Validation Commands:**
+## Validation Commands (1)
+
 ```bash
 # Verify VSCode files exist
 ls .vscode/settings.json .vscode/extensions.json
@@ -254,13 +274,15 @@ ls .vscode/settings.json .vscode/extensions.json
 code . # Should open VSCode with correct Python interpreter
 ```
 
-**Environment Variables and Secrets**
+## Environment Variables and Secrets
+
 - [ ] `.env.example` file created with all required variables
 - [ ] Environment variable documentation with descriptions
 - [ ] Secret management approach documented
 - [ ] Database connection string templates provided
 
-**Step 5: Environment Variables Setup**
+## Step 5: Environment Variables Setup
+
 ```bash
 # Create .env.example with working values (since PostgreSQL is already setup)
 cat > .env.example << 'EOF'
@@ -301,7 +323,8 @@ cp .env.example .env
 echo "⚠️  Edit .env file and add your actual PostgreSQL password"
 ```
 
-**Validation Commands:**
+## Validation Commands (2)
+
 ```bash
 # Verify environment files exist
 ls .env.example .env
@@ -310,7 +333,8 @@ ls .env.example .env
 python -c "import os; from dotenv import load_dotenv; load_dotenv(); print('DB Host:', os.getenv('PP_DB_HOST'))"
 ```
 
-**Development Tools**
+## Development Tools
+
 - [ ] Git configuration templates and hooks setup
 - [ ] Pre-commit hooks configured and tested
 - [ ] Development scripts for common tasks (lint, test, format)
@@ -318,7 +342,8 @@ python -c "import os; from dotenv import load_dotenv; load_dotenv(); print('DB H
 
 ### Testing Requirements
 
-**New Developer Onboarding Test**
+#### New Developer Onboarding Test
+
 ```bash
 # Time this process with new team member
 git clone <repo>
@@ -329,7 +354,8 @@ make setup  # Should complete in <30 minutes
 make test   # Should pass with clean environment
 ```
 
-**Development Workflow Test**
+## Development Workflow Test
+
 ```bash
 # Test complete development cycle
 echo "test code" > test_file.py
@@ -340,10 +366,12 @@ git add . && git commit -m "test commit"
 ```
 
 ### Dependencies
+
 - Repository structure decisions (Issue P0-003)
 - Access to development tools and licenses
 
 ### Deliverables
+
 - Developer setup guide with step-by-step instructions
 - Environment configuration templates (.env.example)
 - IDE configuration files and recommended extensions
@@ -352,6 +380,7 @@ git add . && git commit -m "test commit"
 - Onboarding checklist for new developers
 
 ### Definition of Done
+
 - New developer can set up complete environment in <30 minutes
 - All development tools operational and tested
 - Pre-commit hooks prevent commits with quality issues
@@ -368,11 +397,13 @@ git add . && git commit -m "test commit"
 **Week**: 1  
 
 ### Description
+
 Establish clean repository structure following best practices and CLAUDE.md guidelines. Set up documentation structure, development standards, and contribution guidelines.
 
 ### Step-by-Step Execution
 
-**Step 1: Create Directory Structure**
+#### Step 1: Create Directory Structure
+
 ```bash
 # Create main source directories
 mkdir -p src/security_master/{extractor,classifier,storage,patch,config,database,validation}
@@ -398,7 +429,8 @@ touch tests/__init__.py
 touch pytest_plugins/__init__.py
 ```
 
-**Step 2: Create Essential Configuration Files**
+## Step 2: Create Essential Configuration Files
+
 ```bash
 # Create .gitignore
 cat > .gitignore << 'EOF'
@@ -493,13 +525,15 @@ EOF
 
 ### Acceptance Criteria
 
-**Directory Structure**
+#### Directory Structure
+
 - [ ] Directory structure follows established patterns from CLAUDE.md
 - [ ] Clear separation of source code, tests, documentation, and configuration
 - [ ] Sample data and schema exports properly organized
 - [ ] Scripts directory for utility and automation scripts
 
-**Validation Commands:**
+#### Validation Commands (2)
+
 ```bash
 # Verify directory structure
 find . -type d -name "__pycache__" -prune -o -type d -print | sort
@@ -517,8 +551,9 @@ find . -type d -name "__pycache__" -prune -o -type d -print | sort
 # ./scripts
 ```
 
-**Expected Structure**:
-```
+## Expected Structure
+
+```text
 pp-security-master/
 ├── src/security_master/          # Main application code
 │   ├── extractor/               # Broker file parsers
@@ -540,14 +575,16 @@ pp-security-master/
 └── pytest_plugins/            # Custom pytest plugins
 ```
 
-**Documentation Structure**
+## Documentation Structure
+
 - [ ] README.md updated with current project scope and quick start
 - [ ] CONTRIBUTING.md with development guidelines and standards
 - [ ] Documentation structure under `docs/` properly organized
 - [ ] Architecture Decision Records (ADRs) properly indexed
 - [ ] API documentation structure prepared
 
-**Repository Configuration**
+## Repository Configuration
+
 - [ ] .gitignore optimized for Python development with data file exclusions
 - [ ] .editorconfig for consistent code formatting across editors
 - [ ] LICENSE file and intellectual property considerations
@@ -555,7 +592,8 @@ pp-security-master/
 
 ### Testing Requirements
 
-**Structure Validation**
+#### Structure Validation
+
 ```bash
 # Create script to validate repository structure
 python scripts/validate_repo_structure.py
@@ -566,7 +604,8 @@ python scripts/validate_docs.py
 # Should validate all internal documentation links
 ```
 
-**Development Workflow Validation**
+## Development Workflow Validation
+
 ```bash
 # Test that development workflow works with new structure
 make clean && make setup
@@ -575,9 +614,11 @@ make docs  # Generate and validate documentation
 ```
 
 ### Dependencies
+
 - None (this establishes the foundation)
 
 ### Deliverables
+
 - Clean, organized repository structure
 - Updated README.md with project overview and quick start
 - CONTRIBUTING.md with development guidelines
@@ -586,6 +627,7 @@ make docs  # Generate and validate documentation
 - Repository structure validation scripts
 
 ### Definition of Done
+
 - Repository structure follows established best practices
 - All documentation links functional and up-to-date
 - New contributors can understand project organization quickly
@@ -602,38 +644,44 @@ make docs  # Generate and validate documentation
 **Week**: 1  
 
 ### Description
+
 Design and implement the core security master table schema with comprehensive taxonomy fields, data quality tracking, and performance optimization. This table serves as the authoritative source for all security reference data.
 
 ### Acceptance Criteria
 
-**Core Table Structure**
+#### Core Table Structure
+
 - [ ] Primary table `securities_master` designed with all required fields
 - [ ] Primary key strategy established (auto-incrementing ID + unique constraints)
 - [ ] Foreign key relationships to related tables defined
 - [ ] Check constraints for data validation implemented
 
-**Security Identification Fields**
+#### Security Identification Fields
+
 - [ ] ISIN (International Securities Identification Number) - primary identifier
 - [ ] Symbol/Ticker fields with regional variations (US, European, etc.)
 - [ ] CUSIP (North American securities identifier)
 - [ ] WKN (German securities identifier) for European securities
 - [ ] Internal security ID for internal reference
 
-**Taxonomy Classification Fields**
+#### Taxonomy Classification Fields
+
 - [ ] GICS (Global Industry Classification Standard) - Level 1 through 4
 - [ ] TRBC (Thomson Reuters Business Classification) - Level 1 through 5
 - [ ] CFI (Classification of Financial Instruments) code
 - [ ] Custom BRX-Plus taxonomy fields for extended classification
 - [ ] Asset class enumeration (equity, bond, fund, derivative, etc.)
 
-**Data Quality and Tracking Fields**
+#### Data Quality and Tracking Fields
+
 - [ ] Data quality score (0.00-1.00) with calculation methodology
 - [ ] Data completeness percentage based on filled required fields
 - [ ] Last updated timestamp with timezone awareness
 - [ ] Data source tracking (PP native, OpenFIGI, manual, etc.)
 - [ ] Confidence score for classification accuracy
 
-**Market Data Fields**
+#### Market Data Fields
+
 - [ ] Currency code (ISO 4217) for pricing
 - [ ] Primary market/exchange identifier
 - [ ] Trading status (active, delisted, suspended)
@@ -732,7 +780,8 @@ CREATE TRIGGER update_securities_master_updated_at
 
 ### Testing Requirements
 
-**Schema Validation Tests**
+#### Schema Validation Tests
+
 ```sql
 -- Test data type constraints
 INSERT INTO securities_master (isin, security_name, security_type, currency_code, asset_class)
@@ -746,7 +795,8 @@ VALUES ('INVALID', 'Test Security', 'Common Stock', 'USD', 'equity');  -- Should
 UPDATE securities_master SET data_quality_score = 1.5 WHERE isin = 'US0378331005';  -- Should fail
 ```
 
-**Performance Testing**
+#### Performance Testing
+
 ```sql
 -- Insert test data for performance validation
 INSERT INTO securities_master (isin, security_name, security_type, currency_code, asset_class)
@@ -764,10 +814,12 @@ EXPLAIN ANALYZE SELECT * FROM securities_master WHERE gics_sector_code = '25';
 ```
 
 ### Dependencies
+
 - Issue P0-001 (PostgreSQL 17 operational)
 - Understanding of Portfolio Performance taxonomy requirements
 
 ### Deliverables
+
 - Complete SQL schema file for securities_master table
 - Data dictionary documentation for all fields
 - Performance index strategy documentation
@@ -775,6 +827,7 @@ EXPLAIN ANALYZE SELECT * FROM securities_master WHERE gics_sector_code = '25';
 - Sample data insertion scripts
 
 ### Definition of Done
+
 - Securities master table created with all required fields and constraints
 - Primary key, foreign key, and check constraints operational
 - Indexes created for optimal query performance
@@ -792,34 +845,39 @@ EXPLAIN ANALYZE SELECT * FROM securities_master WHERE gics_sector_code = '25';
 **Week**: 1  
 
 ### Description
+
 Set up Alembic database migration framework for version control of database schema changes. This provides the foundation for managing database changes across environments and team members.
 
 ### Acceptance Criteria
 
-**Alembic Configuration**
+#### Alembic Configuration
+
 - [ ] Alembic initialized with proper database connection configuration
 - [ ] Migration environment configured for multiple target environments (dev/test/prod)
 - [ ] Migration script templates customized for project standards
 - [ ] Version naming conventions established
 
-**Initial Migration**
+#### Initial Migration
+
 - [ ] Initial migration created for securities_master table
 - [ ] Migration includes all constraints, indexes, and triggers
 - [ ] Migration tested with both upgrade and downgrade operations
 - [ ] Migration follows established naming conventions
 
-**Development Workflow Integration**
+#### Development Workflow Integration
+
 - [ ] Migration generation process documented
 - [ ] Migration review checklist established
 - [ ] Integration with development environment automated
 - [ ] Multiple developer migration synchronization tested
 
-**Version Control and Tracking**
+#### Version Control and Tracking
+
 - [ ] Migration version tracking operational
 - [ ] Current database version easily identifiable
 - [ ] Migration history and rollback capability documented
 
-*[Content continues but truncated for length - the file would include the full implementation details for P0-005]*
+#### [Content continues but truncated for length - the file would include the full implementation details for P0-005]
 
 ---
 
@@ -829,4 +887,4 @@ Continue with [Issues P0-006 to P0-010](./phase-0-issues-P0-006-to-P0-010.md) fo
 
 ---
 
-*Generated from the original phase-0-foundation.md file for improved LLM processing.*
+### Generated from the original phase-0-foundation.md file for improved LLM processing

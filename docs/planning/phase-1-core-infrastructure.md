@@ -20,9 +20,11 @@ purpose: "Complete database schema and basic import/export functionality."
 ## Phase Overview
 
 ### Objective
+
 Build complete database schema with institution-specific transaction tables and implement basic import/export pipeline starting with Wells Fargo CSV format. This phase establishes the data foundation for all subsequent functionality.
 
 ### Success Criteria
+
 - [ ] All institution transaction tables operational with proper relationships
 - [ ] Wells Fargo CSV import processes 1,000+ transactions without errors
 - [ ] JSON export generates valid Portfolio Performance-compatible data
@@ -33,18 +35,21 @@ Build complete database schema with institution-specific transaction tables and 
 ### Key Deliverables
 
 #### Database Infrastructure
+
 - Institution-specific transaction tables (Wells Fargo, IBKR, AltoIRA, Kubera)
 - Data lineage and batch tracking system
 - Comprehensive data validation and quality scoring
 - Database performance optimization and indexing
 
 #### Wells Fargo Import Pipeline
+
 - CSV parsing with comprehensive error handling
 - Data transformation and validation pipeline
 - Batch processing with rollback capability
 - Import status tracking and reporting
 
 #### Basic Export Framework
+
 - JSON export from database with configurable formats
 - Data quality validation framework
 - Error handling and logging infrastructure
@@ -55,24 +60,28 @@ Build complete database schema with institution-specific transaction tables and 
 ## Weekly Breakdown
 
 ### Week 3: Database Schema Completion
+
 - Complete all institution transaction table schemas
 - Implement data lineage and batch tracking
 - Database performance optimization and indexing
 - Data quality scoring framework
 
 ### Week 4: Wells Fargo Import Pipeline
+
 - CSV parser with validation and error handling
 - Data transformation pipeline
 - Batch processing infrastructure
 - Import monitoring and status tracking
 
 ### Week 5: Export Framework & Data Quality
+
 - JSON export engine with PP compatibility
 - Advanced data quality validation
 - Cross-institution comparison foundation
 - Comprehensive error handling and logging
 
 ### Week 6: Testing, Performance & Integration
+
 - Complete test suite for all database operations
 - Performance testing and optimization
 - Integration testing with realistic datasets
@@ -91,11 +100,13 @@ Build complete database schema with institution-specific transaction tables and 
 **Week**: 3  
 
 #### Description
+
 Design and implement institution-specific transaction tables for Wells Fargo, Interactive Brokers, AltoIRA, and Kubera. Each table maintains the raw transaction structure from each institution while providing common interfaces for consolidated operations.
 
 #### Step-by-Step Execution
 
-**Step 1: Create SQL Schema Files**
+#### Step 1: Create SQL Schema Files
+
 ```bash
 # Create directory for Phase 1 migrations
 mkdir -p sql/phase1
@@ -157,7 +168,8 @@ CHECK (principal_amount IS NULL OR ABS(principal_amount) >= 0);
 EOF
 ```
 
-**Step 2: Create Interactive Brokers Transaction Table**
+## Step 2: Create Interactive Brokers Transaction Table
+
 ```bash
 cat > sql/phase1/003_create_ibkr_transactions.sql << 'EOF'
 -- Interactive Brokers transaction table for Flex Query XML structure
@@ -216,7 +228,8 @@ CREATE INDEX IF NOT EXISTS idx_transactions_ibkr_type ON transactions_interactiv
 EOF
 ```
 
-**Step 3: Create AltoIRA and Kubera Transaction Tables**
+## Step 3: Create AltoIRA and Kubera Transaction Tables
+
 ```bash
 # Create AltoIRA transaction table (PDF-extracted data)
 cat > sql/phase1/004_create_altoira_transactions.sql << 'EOF'
@@ -318,7 +331,8 @@ CREATE INDEX IF NOT EXISTS idx_transactions_kubera_ext_id ON transactions_kubera
 EOF
 ```
 
-**Step 4: Create Common Transaction Interface View**
+## Step 4: Create Common Transaction Interface View
+
 ```bash
 cat > sql/phase1/006_create_common_transaction_view.sql << 'EOF'
 -- Common transaction interface view for cross-institution queries
@@ -424,7 +438,8 @@ CREATE INDEX IF NOT EXISTS idx_mv_transactions_symbol ON mv_transactions_unified
 EOF
 ```
 
-**Step 5: Execute Schema Creation**
+## Step 5: Execute Schema Creation
+
 ```bash
 # Apply all schema changes
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/phase1/002_create_wells_fargo_transactions.sql
@@ -434,7 +449,8 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/phase1/005_create_kube
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/phase1/006_create_common_transaction_view.sql
 ```
 
-**Validation Commands:**
+## Validation Commands
+
 ```bash
 # Verify all tables created
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "\dt transactions_*"
@@ -453,7 +469,8 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT tc.table_name, tc.
 # Expected: Shows foreign key constraints to securities_master
 ```
 
-#### Acceptance Criteria
+### Acceptance Criteria
+
 - [ ] `transactions_wells_fargo` table with complete Wells Fargo CSV field mapping
 - [ ] `transactions_interactive_brokers` table for IBKR Flex Query XML structure
 - [ ] `transactions_altoira` table for PDF-extracted transaction data
@@ -464,6 +481,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT tc.table_name, tc.
 - [ ] Data validation constraints preventing invalid transactions
 
 #### Implementation
+
 ```sql
 -- Wells Fargo transaction table
 CREATE TABLE transactions_wells_fargo (
@@ -512,9 +530,11 @@ CREATE TABLE transactions_wells_fargo (
 **Week**: 3  
 
 #### Description
+
 Implement comprehensive data lineage and batch tracking system to maintain audit trails for all imported data. This enables rollback capabilities and data quality analysis.
 
 #### Acceptance Criteria
+
 - [ ] `import_batches` table tracking all data import operations
 - [ ] Batch status management (pending, processing, completed, failed, rolled_back)
 - [ ] File fingerprinting (SHA-256) for duplicate detection
@@ -524,6 +544,7 @@ Implement comprehensive data lineage and batch tracking system to maintain audit
 - [ ] Performance optimization for large batch operations
 
 #### Implementation
+
 ```python
 class ImportBatch(BaseModel):
     """Import batch tracking and management."""
@@ -562,9 +583,11 @@ class ImportBatch(BaseModel):
 **Week**: 4  
 
 #### Description
+
 Implement Wells Fargo CSV parser with comprehensive error handling, data validation, and transformation pipeline. This establishes the pattern for all institution parsers.
 
 #### Acceptance Criteria
+
 - [ ] CSV parser handling Wells Fargo export format variations
 - [ ] Data validation and transformation pipeline
 - [ ] Security matching and reference resolution
@@ -575,6 +598,7 @@ Implement Wells Fargo CSV parser with comprehensive error handling, data validat
 - [ ] Integration with data lineage system
 
 #### Implementation
+
 ```python
 class WellsFargoParser:
     """Wells Fargo CSV transaction parser."""
@@ -605,9 +629,11 @@ class WellsFargoParser:
 **Week**: 5  
 
 #### Description
+
 Enhance the Phase 0 data validation framework with advanced business rules, cross-field validation, and institution-specific quality checks.
 
 #### Acceptance Criteria
+
 - [ ] Business rule validation for financial transactions
 - [ ] Cross-field validation (e.g., quantity * price = principal)
 - [ ] Institution-specific validation rules
@@ -630,9 +656,11 @@ Enhance the Phase 0 data validation framework with advanced business rules, cros
 **Week**: 5  
 
 #### Description
+
 Implement JSON export engine that generates Portfolio Performance-compatible data structures from database records. This provides the foundation for complete PP integration.
 
 #### Acceptance Criteria
+
 - [ ] JSON export for securities master data
 - [ ] Transaction export with proper formatting
 - [ ] Configurable export formats and filtering
@@ -642,6 +670,7 @@ Implement JSON export engine that generates Portfolio Performance-compatible dat
 - [ ] Integration with batch processing system
 
 #### Implementation
+
 ```python
 class PortfolioPerformanceExporter:
     """Export data in Portfolio Performance compatible formats."""
@@ -671,9 +700,11 @@ class PortfolioPerformanceExporter:
 **Week**: 6  
 
 #### Description
+
 Optimize database performance through strategic indexing, query optimization, and connection management for production-ready performance.
 
 #### Acceptance Criteria
+
 - [ ] Comprehensive indexing strategy for all tables
 - [ ] Query optimization for common operations
 - [ ] Connection pooling optimization
@@ -695,9 +726,11 @@ Optimize database performance through strategic indexing, query optimization, an
 **Week**: 6  
 
 #### Description
+
 Comprehensive integration testing covering all Phase 1 components with realistic data volumes and error scenarios.
 
 #### Acceptance Criteria
+
 - [ ] End-to-end testing: CSV import → Database → JSON export
 - [ ] Error handling validation for all failure scenarios
 - [ ] Performance testing with production-like data volumes
@@ -718,9 +751,11 @@ Comprehensive integration testing covering all Phase 1 components with realistic
 **Week**: 5  
 
 #### Description
+
 Create consolidated database views that provide unified interfaces across institution-specific tables for reporting and analysis.
 
 #### Acceptance Criteria
+
 - [ ] `v_transactions_consolidated` view with normalized fields
 - [ ] `v_holdings_by_account` view for position calculations  
 - [ ] `v_data_quality_summary` view for monitoring
@@ -734,6 +769,7 @@ Create consolidated database views that provide unified interfaces across instit
 ## Phase 1 Success Criteria Summary
 
 ### Technical Validation
+
 - [ ] All institution transaction tables operational with proper constraints
 - [ ] Wells Fargo CSV import accuracy >99.5% with comprehensive error reporting  
 - [ ] JSON export validates against Portfolio Performance requirements
@@ -742,6 +778,7 @@ Create consolidated database views that provide unified interfaces across instit
 - [ ] Code coverage >80% across all Phase 1 components
 
 ### Performance Benchmarks  
+
 - [ ] CSV parsing: >1000 transactions per minute
 - [ ] Database operations: <10ms for single record CRUD
 - [ ] Batch processing: 50,000+ transactions within 10 minutes
@@ -749,6 +786,7 @@ Create consolidated database views that provide unified interfaces across instit
 - [ ] Memory usage: <500MB for typical batch operations
 
 ### Business Validation
+
 - [ ] Wells Fargo transaction data imported accurately and completely
 - [ ] Data lineage maintained for all imported records
 - [ ] Export data structure compatible with Portfolio Performance import
@@ -760,11 +798,13 @@ Create consolidated database views that provide unified interfaces across instit
 ## Risk Management
 
 ### High-Impact Risks
+
 - **Wells Fargo format changes**: Mitigation through flexible parser design and version detection
 - **Database performance**: Mitigation through comprehensive indexing and query optimization
 - **Data quality issues**: Mitigation through multi-layer validation framework
 
 ### Medium-Impact Risks  
+
 - **Large file processing**: Mitigation through streaming and batch optimization
 - **Integration complexity**: Mitigation through comprehensive testing and rollback capabilities
 
@@ -773,12 +813,14 @@ Create consolidated database views that provide unified interfaces across instit
 ## Phase 1 Completion and Phase 2 Readiness
 
 ### Prerequisites for Phase 2
+
 - ✅ Single institution (Wells Fargo) data pipeline fully operational
 - ✅ Database foundation scalable to multiple institutions
 - ✅ Export framework ready for enhancement
 - ✅ Performance benchmarks established
 
 ### Phase 2 Preparation
+
 - [ ] External library security assessment completed
 - [ ] pp-portfolio-classifier and ppxml2db forks prepared
 - [ ] OpenFIGI API key obtained and tested

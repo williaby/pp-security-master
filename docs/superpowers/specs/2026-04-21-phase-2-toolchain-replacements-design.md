@@ -27,7 +27,7 @@ created until Phase 3 begins.
 Phase 2 uses a risk-tiered split across three sequential branches. Each branch must be merged to
 main before the next begins.
 
-```
+```text
 main
  └── feature/phase-2a-toolchain-swaps      (Tasks 6, 8)
       └── [merge to main]
@@ -38,6 +38,7 @@ main
 ```
 
 **Rationale for the split:**
+
 - Tasks 6 and 8 are zero-risk removals with identical output characteristics. They do not need
   to wait for type work.
 - Task 7 is the only task with unknown scope. BasedPyright strict mode will surface type errors
@@ -58,6 +59,7 @@ main
 (already present; safety is redundant)
 
 **Files touched:**
+
 - `pyproject.toml`
 - `noxfile.py`
 - `Makefile`
@@ -122,6 +124,7 @@ where a diff appears is files that Black never processed, which is an intentiona
 **Adds:** BasedPyright in strict mode
 
 **Files touched:**
+
 - `pyproject.toml`
 - `noxfile.py`
 - `Makefile`
@@ -214,6 +217,7 @@ statements, and Task 11's new EM/TRY rules will catch those patterns.
 signatures; enforce 85% docstring coverage in `scripts/`.
 
 **pyproject.toml changes:**
+
 - Add to dev deps: `darglint = ">=1.8.1"`, `interrogate = ">=1.7.0"`
 - Add `[tool.interrogate]` config:
 
@@ -239,6 +243,7 @@ ignore_regex = "^_"
 ```
 
 **Fix work:**
+
 - Run `poetry run python -m darglint src/` and fix all `DAR` errors by updating docstrings to
   match actual function signatures. No `# noqa: DAR` suppressions.
 - Run `poetry run interrogate scripts/ --fail-under 85 --verbose` and add Google-style docstrings
@@ -257,6 +262,7 @@ def my_function(arg: str) -> bool:
 ```
 
 **Verification gate:**
+
 ```bash
 poetry install --sync
 poetry run python -m darglint src/       # exit 0
@@ -271,6 +277,7 @@ poetry run interrogate scripts/ --fail-under 85  # exit 0
 `pyproject.toml`.
 
 **Files created/modified:**
+
 - Create `.qlty/qlty.toml`:
 
 ```toml
@@ -294,6 +301,7 @@ qlty check
 ```
 
 **Verification gate:**
+
 ```bash
 qlty check   # exit 0, no untracked findings
 ```
@@ -306,6 +314,7 @@ exception types, tighten branch limits, and update the target Python version.
 **pyproject.toml changes:**
 
 Add to the `[tool.ruff.lint]` `select` list:
+
 ```toml
 "EM",    # flake8-errmsg: error message string literals
 "SLF",   # flake8-self: private member access
@@ -323,16 +332,19 @@ Add to the `[tool.ruff.lint]` `select` list:
 ```
 
 Remove from the `[tool.ruff.lint]` `ignore` list:
+
 ```toml
 "BLE001",  # blind exception catching
 ```
 
 Update `[tool.ruff.lint.pylint]`:
+
 ```toml
 max-branches = 12   # was 18; aligns with global standard
 ```
 
 Update `[tool.ruff]`:
+
 ```toml
 target-version = "py312"   # was py311
 ```
@@ -340,6 +352,7 @@ target-version = "py312"   # was py311
 **Fix work -- common manual patterns:**
 
 `EM101`/`EM102` (string literals in raise): move message to a variable:
+
 ```python
 # Before
 raise ValueError("message")
@@ -349,6 +362,7 @@ raise ValueError(msg)
 ```
 
 `FBT001`/`FBT002` (boolean positional arg): make keyword-only:
+
 ```python
 # Before
 def process(data, validate=True):
@@ -357,6 +371,7 @@ def process(data, *, validate: bool = True):
 ```
 
 `TRY003` (untyped raise): use a specific exception type:
+
 ```python
 # Before
 raise Exception("Something went wrong")
@@ -368,6 +383,7 @@ raise RuntimeError("Something went wrong")
 project's base exception class.
 
 **Verification gate:**
+
 ```bash
 poetry run ruff check .          # exit 0, 0 violations
 poetry run nox -s lint           # all lint sessions green

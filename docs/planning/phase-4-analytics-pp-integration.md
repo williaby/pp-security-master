@@ -19,9 +19,11 @@ purpose: "Complete PP integration and institutional-grade analytics implementati
 ## Phase Overview
 
 ### Objective
+
 Implement complete Portfolio Performance XML backup/restore capability (ADR-002) and institutional-grade quantitative analytics framework (ADR-009) providing enterprise-level portfolio analysis.
 
 ### Success Criteria
+
 - [ ] Complete PP XML backup files generated and validated in Portfolio Performance
 - [ ] Round-trip validation (PP XML → Database → PP XML) produces identical results
 - [ ] Institutional analytics calculations validated against known benchmarks
@@ -30,6 +32,7 @@ Implement complete Portfolio Performance XML backup/restore capability (ADR-002)
 - [ ] Data sovereignty achieved with database as authoritative source
 
 ### Key Deliverables
+
 - Complete Portfolio Performance XML export with all required elements
 - Bidirectional PP synchronization (XML ↔ Database)
 - Risk-adjusted performance metrics (Sharpe, Treynor, Alpha, Beta)
@@ -49,13 +52,16 @@ Implement complete Portfolio Performance XML backup/restore capability (ADR-002)
 **Week**: 15  
 
 #### Description
+
 Implement complete Portfolio Performance XML schema based on ADR-002 analysis, supporting all PP data elements for full backup restoration.
 
 #### Implementation Steps
 
-**Step 1: PP XML Schema Database Extensions**
+#### Step 1: PP XML Schema Database Extensions
+
 ```bash
 # Create Portfolio Performance schema extensions
+mkdir -p sql/phase4
 cat > sql/phase4/pp_schema_extensions.sql << 'EOF'
 -- Portfolio Performance Complete Schema Extensions
 -- Based on ADR-002 analysis of PP XML backup structure
@@ -200,11 +206,10 @@ CREATE TRIGGER update_pp_accounts_updated_at BEFORE UPDATE ON pp_accounts FOR EA
 CREATE TRIGGER update_pp_portfolios_updated_at BEFORE UPDATE ON pp_portfolios FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_pp_client_config_updated_at BEFORE UPDATE ON pp_client_config FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 EOF
-
-mkdir -p sql/phase4
 ```
 
-**Step 2: PP XML Schema Implementation**
+## Step 2: PP XML Schema Implementation
+
 ```bash
 # Create PP XML schema module
 mkdir -p src/security_master/portfolio_performance
@@ -569,7 +574,8 @@ class PPXMLGenerator:
 EOF
 ```
 
-**Step 3: Database Integration Service**
+## Step 3: Database Integration Service
+
 ```bash
 cat > src/security_master/portfolio_performance/db_service.py << 'EOF'
 """Database service for PP XML schema operations."""
@@ -634,7 +640,8 @@ class PPDatabaseService:
 EOF
 ```
 
-**Validation Commands:**
+## Validation Commands
+
 ```bash
 # Apply database schema
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/phase4/pp_schema_extensions.sql
@@ -661,7 +668,8 @@ print('PP database service initialization successful')
 "
 ```
 
-#### Acceptance Criteria
+### Acceptance Criteria
+
 - [ ] Complete PP XML schema implementation matching ADR-002 specification
 - [ ] Support for all PP elements: securities, accounts, portfolios, transactions, settings
 - [ ] UUID preservation for all PP internal references
@@ -679,9 +687,11 @@ print('PP database service initialization successful')
 **Week**: 15  
 
 #### Description
+
 Implement bidirectional synchronization engine enabling PP XML import and export with round-trip validation.
 
 #### Acceptance Criteria
+
 - [ ] PP XML import capability with complete data parsing
 - [ ] PP XML export generating valid, restorable backup files
 - [ ] Round-trip validation ensuring identical input/output
@@ -699,9 +709,11 @@ Implement bidirectional synchronization engine enabling PP XML import and export
 **Week**: 16  
 
 #### Description
+
 Implement core risk-adjusted performance metrics following institutional standards for portfolio analysis.
 
 #### Acceptance Criteria
+
 - [ ] Sharpe Ratio calculation with configurable risk-free rate
 - [ ] Treynor Ratio with beta calculation against market benchmarks
 - [ ] Information Ratio with tracking error analysis
@@ -719,9 +731,11 @@ Implement core risk-adjusted performance metrics following institutional standar
 **Week**: 16  
 
 #### Description
+
 Implement modern portfolio theory optimization algorithms for portfolio construction and analysis.
 
 #### Acceptance Criteria
+
 - [ ] Mean-variance optimization (Markowitz)
 - [ ] Risk parity optimization
 - [ ] Minimum variance portfolio construction
@@ -739,9 +753,11 @@ Implement modern portfolio theory optimization algorithms for portfolio construc
 **Week**: 17  
 
 #### Description
+
 Implement Monte Carlo simulation framework for comprehensive risk analysis and scenario modeling.
 
 #### Acceptance Criteria
+
 - [ ] Monte Carlo simulation engine with configurable parameters
 - [ ] Value at Risk (VaR) and Conditional VaR calculations
 - [ ] Scenario analysis with multiple economic conditions
@@ -759,9 +775,11 @@ Implement Monte Carlo simulation framework for comprehensive risk analysis and s
 **Week**: 17  
 
 #### Description
+
 Enhance export capabilities with multiple formats and advanced filtering for institutional reporting needs.
 
 #### Acceptance Criteria
+
 - [ ] Excel export with formatted reports and charts
 - [ ] CSV export with configurable field selection
 - [ ] JSON export with API-friendly formatting
@@ -779,9 +797,11 @@ Enhance export capabilities with multiple formats and advanced filtering for ins
 **Week**: 18  
 
 #### Description
+
 Implement performance attribution analysis for understanding portfolio returns by factor, sector, and security selection.
 
 #### Acceptance Criteria
+
 - [ ] Factor-based attribution analysis
 - [ ] Sector/industry attribution breakdown
 - [ ] Security selection vs. allocation attribution
@@ -799,9 +819,11 @@ Implement performance attribution analysis for understanding portfolio returns b
 **Week**: 18  
 
 #### Description
+
 Comprehensive testing of complete Portfolio Performance integration and institutional analytics functionality.
 
 #### Acceptance Criteria
+
 - [ ] End-to-end PP XML import/export testing with large datasets
 - [ ] Analytics calculations validated against known financial benchmarks
 - [ ] Performance testing with 10,000+ transaction portfolios
@@ -814,6 +836,7 @@ Comprehensive testing of complete Portfolio Performance integration and institut
 ## Phase 4 Success Criteria
 
 ### Technical Validation
+
 - [ ] Portfolio Performance can successfully import generated XML backup files
 - [ ] Round-trip validation shows 100% data fidelity (PP XML → DB → PP XML)
 - [ ] All analytics calculations match established financial calculation standards  
@@ -821,6 +844,7 @@ Comprehensive testing of complete Portfolio Performance integration and institut
 - [ ] Memory usage remains under 2GB during large portfolio processing
 
 ### Analytics Validation  
+
 - [ ] Risk metrics calculations validated against Bloomberg/FactSet benchmarks
 - [ ] Portfolio optimization produces mathematically sound efficient frontiers
 - [ ] Monte Carlo simulations show appropriate statistical distributions
@@ -828,6 +852,7 @@ Comprehensive testing of complete Portfolio Performance integration and institut
 - [ ] All calculations handle edge cases (negative returns, missing data) gracefully
 
 ### Business Validation
+
 - [ ] Generated PP backups restore completely in Portfolio Performance application
 - [ ] Analytics provide actionable insights beyond basic Portfolio Performance capabilities
 - [ ] Data sovereignty demonstrated with database as authoritative source

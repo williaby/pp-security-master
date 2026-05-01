@@ -8,7 +8,11 @@ from dotenv import load_dotenv
 
 
 def get_db_connection_params():
-    """Get database connection parameters from environment."""
+    """Get database connection parameters from environment.
+
+    Returns:
+        Tuple of (host, port, user, db, password) strings from env vars, or all-None tuple if the password appears malformed.
+    """
     # Load .env if present
     env_path = Path(".env")
     if env_path.exists():

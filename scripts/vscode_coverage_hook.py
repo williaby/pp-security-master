@@ -32,7 +32,11 @@ class SecurityMasterCoverageReporter:
         self.reports_dir.mkdir(parents=True, exist_ok=True)
 
     def find_coverage_files(self) -> dict:
-        """Find coverage XML and JSON files."""
+        """Find coverage XML and JSON files.
+
+        Returns:
+            Mapping of format key to file path, or None if the file does not exist.
+        """
         coverage_xml = self.project_root / "coverage.xml"
         coverage_json = self.project_root / "coverage.json"
 
@@ -106,7 +110,11 @@ class SecurityMasterCoverageReporter:
             logger.exception("Error parsing coverage JSON")
 
     def load_coverage_data(self) -> dict:
-        """Load coverage data from XML and JSON files."""
+        """Load coverage data from XML and JSON files.
+
+        Returns:
+            Nested dict with overall percentage and per-file coverage data, or None if no coverage files exist.
+        """
         files = self.find_coverage_files()
 
         if not files["xml"] and not files["json"]:
@@ -126,7 +134,14 @@ class SecurityMasterCoverageReporter:
         return data
 
     def classify_by_component(self, files_data: dict) -> dict:
-        """Classify coverage by security-master component."""
+        """Classify coverage by security-master component.
+
+        Args:
+            files_data: Per-file coverage data keyed by file path.
+
+        Returns:
+            Coverage breakdown grouped by component name, each with file list and aggregate percentage.
+        """
         components = {
             "extractor": {"files": [], "total_coverage": 0},
             "classifier": {"files": [], "total_coverage": 0},
@@ -171,7 +186,15 @@ class SecurityMasterCoverageReporter:
         return components
 
     def generate_html_report(self, coverage_data: dict, components: dict) -> str:
-        """Generate enhanced HTML coverage report."""
+        """Generate enhanced HTML coverage report.
+
+        Args:
+            coverage_data: Overall and per-file coverage data as returned by load_coverage_data.
+            components: Component breakdown as returned by classify_by_component.
+
+        Returns:
+            HTML string containing the full coverage report page.
+        """
         overall = coverage_data["overall"]
 
         html = f"""<!DOCTYPE html>
@@ -239,7 +262,11 @@ class SecurityMasterCoverageReporter:
         return html
 
     def run(self) -> bool:
-        """Generate coverage reports if data is available."""
+        """Generate coverage reports if data is available.
+
+        Returns:
+            True if the report was generated successfully, False if no coverage data was found.
+        """
         coverage_data = self.load_coverage_data()
         if not coverage_data:
             logger.warning("⚠️  No coverage data found - run tests with coverage first")

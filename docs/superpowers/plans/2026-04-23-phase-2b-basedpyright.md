@@ -30,6 +30,7 @@
 ## Task 1: Create branch and swap MyPy for BasedPyright
 
 **Files:**
+
 - Modify: `pyproject.toml` (lines 76-78, 175-176, 191-224)
 - Modify: `noxfile.py` (lines 202, 204)
 - Modify: `Makefile` (line 47)
@@ -192,13 +193,13 @@ def type_check(session):
 In `Makefile`, line 47, change:
 
 ```makefile
-	$(POETRY) run mypy src
+ $(POETRY) run mypy src
 ```
 
 to:
 
 ```makefile
-	$(POETRY) run basedpyright
+ $(POETRY) run basedpyright
 ```
 
 The full lint target should now read:
@@ -313,6 +314,7 @@ If error count is under 50, proceed with one commit per module as planned.
 ## Task 3: Fix type errors in storage/
 
 **Files:**
+
 - Modify: `src/security_master/storage/database.py`
 - Modify: `src/security_master/storage/models.py`
 - Modify: `src/security_master/storage/validators.py`
@@ -443,6 +445,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ## Task 4: Fix type errors in patch/
 
 **Files:**
+
 - Modify: `src/security_master/patch/pp_xml_export.py`
 
 **Root cause (confirmed by pre-run):** `pp_xml_export.py` generates 95+ `reportAttributeAccessIssue` errors because it imports from `defusedxml` for XML *building*, but `defusedxml` has no type stubs. This is also architecturally wrong: `defusedxml` is a secure XML *parser* (prevents XXE attacks); it should not be used as a builder. The correct fix is replacing all `defusedxml` imports with the stdlib `xml.etree.ElementTree`, which has full type stubs.
@@ -565,6 +568,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 ## Task 5: Fix type errors in root-level src/ files
 
 **Files:**
+
 - Modify (if needed): `src/security_master/cli.py`
 - Modify (if needed): `src/security_master/utils.py`
 - Modify (if needed): `src/security_master/__init__.py`
@@ -693,7 +697,8 @@ Open a PR targeting `main`. Use this title and body:
 **Title:** `refactor(toolchain): replace MyPy with BasedPyright in strict mode`
 
 **Body:**
-```
+
+```text
 ## Summary
 
 - Removes MyPy 1.13.0 and type stubs (pyyaml, python-dateutil)

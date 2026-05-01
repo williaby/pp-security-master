@@ -10,7 +10,8 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 
 ## Pre-Completion Requirements
 
-**Before starting Phase 0, verify:**
+### Before starting Phase 0, verify
+
 - [ ] PostgreSQL 17 is operational on Unraid (✅ Already completed)
 - [ ] .env.example connection details verified (✅ Already completed)
 - [ ] Development machine has terminal/command line access
@@ -28,6 +29,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Validation Script**: `./scripts/validate_issue_P0-002.sh`
 
 #### Python Environment Setup
+
 - [ ] Python 3.11+ installed and accessible
   - **Validation**: `python --version` shows Python 3.11.x
   - **Expected Output**: `Python 3.11.8` or similar
@@ -49,6 +51,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected Output**: `/path/to/pp-security-master/.venv`
 
 #### Development Dependencies
+
 - [ ] Core dependencies installed
   - **Validation**: `poetry run python -c "import dotenv, psycopg2, sqlalchemy, pydantic"`
   - **Expected Output**: No import errors
@@ -58,6 +61,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected Output**: Black version information
 
 #### IDE Configuration
+
 - [ ] VSCode settings.json created
   - **File Location**: `.vscode/settings.json`
   - **Validation**: File exists and contains Python interpreter path
@@ -67,6 +71,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Validation**: File exists and recommends essential Python extensions
 
 #### Environment Variables
+
 - [ ] .env.example file created with all required variables
   - **File Location**: `.env.example`
   - **Validation**: Contains `PP_DB_HOST`, `PP_DB_USERNAME`, etc.
@@ -75,7 +80,8 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **File Location**: `.env`
   - **Validation**: Exists and PostgreSQL password is not placeholder
 
-**Day 1 Sign-off**:
+#### Day 1 Sign-off
+
 - [ ] Developer can activate virtual environment: `poetry shell`
 - [ ] All validation commands pass
 - [ ] **Validation Script Passes**: `./scripts/validate_issue_P0-002.sh`
@@ -90,6 +96,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Estimated Time**: 2 hours
 
 #### Directory Structure
+
 - [ ] Main source directories created
   - **Validation**: `ls -la src/security_master/` shows subdirectories
   - **Expected**: extractor, classifier, storage, patch, config, database, validation
@@ -107,23 +114,26 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 
 - [ ] Python package structure created
   - **Validation**: `find src -name "__init__.py"` shows multiple files
-  - **Expected**: __init__.py files in all Python packages
+  - **Expected**: **init**.py files in all Python packages
 
 #### Configuration Files
+
 - [ ] .gitignore created with comprehensive patterns
   - **File Location**: `.gitignore`
-  - **Validation**: Contains patterns for __pycache__, .env, .venv, *.pyc
+  - **Validation**: Contains patterns for **pycache**, .env, .venv, *.pyc
 
 - [ ] .editorconfig created for consistent formatting
   - **File Location**: `.editorconfig`
   - **Validation**: Contains Python configuration with 4-space indentation
 
 #### Repository Validation
+
 - [ ] Git status shows clean working directory (except for new files)
   - **Validation**: `git status` shows expected new files only
   - **Expected**: New directories and configuration files listed
 
-**Day 2 Sign-off**:
+#### Day 2 Sign-off
+
 - [ ] Repository structure matches expected layout
 - [ ] Configuration files created and contain required content
 - [ ] Directory structure validation script would pass (when created)
@@ -138,11 +148,13 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Estimated Time**: 3 hours
 
 #### Database Connection Validation
+
 - [ ] Database connection tested and working
   - **Validation**: `psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT version();"`
   - **Expected Output**: PostgreSQL 17.x version information
 
 #### Schema Creation
+
 - [ ] SQL schema file created
   - **File Location**: `sql/001_create_security_master.sql`
   - **Validation**: File exists and contains CREATE TABLE statement
@@ -160,6 +172,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected**: updated_at field automatically updates on changes
 
 #### Schema Validation
+
 - [ ] Test data insertion and retrieval works
   - **Validation**: Can INSERT, SELECT, UPDATE, DELETE test records
   - **Expected**: All basic CRUD operations function correctly
@@ -168,7 +181,8 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Validation**: Duplicate ISIN insertion fails appropriately
   - **Expected**: Unique constraint violation error
 
-**Day 3 Sign-off**:
+#### Day 3 Sign-off
+
 - [ ] Database schema fully operational
 - [ ] All table constraints working correctly
 - [ ] Test operations complete successfully
@@ -185,6 +199,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Estimated Time**: 2 hours
 
 #### Alembic Installation and Configuration
+
 - [ ] Alembic installed as dependency
   - **Validation**: `poetry show alembic` shows package installed
   - **Expected Output**: Alembic package information
@@ -198,6 +213,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected**: Database connection working through environment variables
 
 #### Migration Operations
+
 - [ ] Initial migration created
   - **Validation**: `poetry run alembic revision --autogenerate -m "test"`
   - **Expected**: Migration file created in sql/versions/
@@ -214,7 +230,8 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Validation**: `poetry run alembic downgrade -1` then `upgrade head`
   - **Expected**: Both operations succeed
 
-**Day 4 Sign-off**:
+#### Day 4 Sign-off
+
 - [ ] Alembic fully configured and operational
 - [ ] Migration operations work correctly
 - [ ] Database versioning system functional
@@ -229,6 +246,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Estimated Time**: 3 hours
 
 #### Configuration Module Creation
+
 - [ ] Settings module created with Pydantic
   - **File Location**: `src/security_master/config/settings.py`
   - **Validation**: File exists and contains ApplicationSettings class
@@ -242,6 +260,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected**: Environment variables override defaults
 
 #### Configuration Testing
+
 - [ ] Configuration validation script created
   - **File Location**: `scripts/test_config.py`
   - **Validation**: Script runs and displays configuration values
@@ -255,11 +274,13 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected**: Validation errors for invalid data
 
 #### Configuration Integration
+
 - [ ] Global settings instance created
   - **Validation**: `get_settings()` function available for dependency injection
   - **Expected**: Singleton pattern with caching
 
-**Day 5 Sign-off**:
+#### Day 5 Sign-off
+
 - [ ] Configuration system loads all required settings
 - [ ] Environment variable integration working
 - [ ] Configuration validation prevents invalid states
@@ -274,6 +295,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Estimated Time**: 3 hours
 
 #### Database Engine Setup
+
 - [ ] Database engine module created
   - **File Location**: `src/security_master/database/engine.py`
   - **Validation**: DatabaseManager class with connection pooling
@@ -287,6 +309,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected**: Returns True when database is accessible
 
 #### ORM Models
+
 - [ ] Base model class created
   - **File Location**: `src/security_master/database/models.py`
   - **Validation**: BaseModel with common fields (id, created_at, updated_at)
@@ -300,6 +323,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected**: Returns score between 0.0 and 1.0
 
 #### Database Testing
+
 - [ ] Database test script created
   - **File Location**: `scripts/test_database.py`
   - **Validation**: Script tests connection and basic operations
@@ -308,7 +332,8 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Validation**: `poetry run python scripts/test_database.py`
   - **Expected Output**: Database operations complete without errors
 
-**Day 6 Sign-off**:
+#### Day 6 Sign-off
+
 - [ ] Database ORM layer fully functional
 - [ ] Connection management working correctly
 - [ ] Model operations tested and validated
@@ -323,6 +348,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Estimated Time**: 5 hours total
 
 #### Development Tooling (P0-008)
+
 - [ ] pyproject.toml configured with all tool settings
   - **Validation**: Contains [tool.black], [tool.ruff], [tool.mypy], [tool.pytest]
   - **Expected**: Complete tool configuration
@@ -340,6 +366,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected**: Tools run without errors
 
 #### Data Validation Framework (P0-009)
+
 - [ ] Validation models created
   - **File Location**: `src/security_master/validation/models.py`
   - **Validation**: SecurityMasterInput Pydantic model with validators
@@ -356,7 +383,8 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Validation**: Test script validates sample data correctly
   - **Expected**: Valid data passes, invalid data fails appropriately
 
-**Days 7-8 Sign-off**:
+#### Days 7-8 Sign-off
+
 - [ ] All development tools integrated and functional
 - [ ] Data validation framework operational
 - [ ] Code quality enforcement working
@@ -371,6 +399,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Estimated Time**: 3 hours
 
 #### Integration Test Suite
+
 - [ ] End-to-end integration test created
   - **Validation**: Test covers config → database → validation → ORM flow
   - **Expected**: Complete workflow functional
@@ -384,6 +413,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected**: Appropriate error messages and recovery
 
 #### Final Validation
+
 - [ ] Master validation script created
   - **File Location**: `scripts/validate_phase_0_complete.sh`
   - **Validation**: Script checks all Phase 0 requirements
@@ -396,7 +426,8 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Validation**: `./scripts/validate_phase_0_complete.sh` succeeds
   - **Expected Output**: "PHASE 0 COMPLETE - ALL REQUIREMENTS MET!"
 
-**Days 9-10 Sign-off**:
+#### Days 9-10 Sign-off
+
 - [ ] Integration testing complete
 - [ ] All validation scripts pass
 - [ ] Phase 0 fully validated and operational
@@ -407,9 +438,10 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 
 ## Phase 0 Success Criteria Validation
 
-**Each criterion must be validated and checked off:**
+### Each criterion must be validated and checked off
 
 ### Technical Success Criteria
+
 - [ ] **PostgreSQL 17 operational with external development access**
   - **Validation**: `psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT 1;"`
   - **Expected**: Connection successful, query returns 1
@@ -435,6 +467,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
   - **Expected**: Setup process documented and repeatable
 
 ### Business Success Criteria
+
 - [ ] **Foundation ready for Phase 1 development**
   - **Validation**: All Phase 0 components operational and tested
   - **Expected**: No blocking issues for Phase 1 start
@@ -452,6 +485,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 ## Final Phase 0 Approval
 
 ### Technical Lead Approval
+
 - [ ] All development tools operational and team trained
 - [ ] Code quality standards established and enforced  
 - [ ] Architecture foundation solid and extensible
@@ -460,6 +494,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Technical Lead Signature**: _________________ **Date**: _________
 
 ### Database Administrator Approval
+
 - [ ] PostgreSQL installation secure and performant
 - [ ] Migration system reliable and tested
 - [ ] Backup and recovery procedures validated
@@ -468,6 +503,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **DBA Signature**: _________________ **Date**: _________
 
 ### Project Manager Approval
+
 - [ ] All Phase 0 deliverables completed on schedule
 - [ ] Team productivity established and sustainable
 - [ ] Phase 1 readiness confirmed and documented
@@ -482,6 +518,7 @@ Use this checklist to track progress and validate completion of each Phase 0 com
 **Phase 0: Foundation & Prerequisites** has been completed successfully on **Date**: _________.
 
 All success criteria have been met:
+
 - ✅ PostgreSQL 17 operational on Unraid
 - ✅ Development environment standardized across team
 - ✅ Repository structure established with best practices
@@ -493,11 +530,11 @@ All success criteria have been met:
 - ✅ Data validation framework preventing invalid data
 - ✅ Integration testing validating cross-component functionality
 
-**🎉 PHASE 0 COMPLETE - READY FOR PHASE 1 DEVELOPMENT**
+### 🎉 PHASE 0 COMPLETE - READY FOR PHASE 1 DEVELOPMENT
 
 **Final Validation**: `./scripts/validate_phase_0_complete.sh` **Result**: ✅ PASS
 
-**Project is ready to proceed to Phase 1: Core Infrastructure Development**
+### Project is ready to proceed to Phase 1: Core Infrastructure Development
 
 ---
 
@@ -506,6 +543,7 @@ All success criteria have been met:
 ### Common Issues and Solutions
 
 #### Python/Poetry Issues
+
 ```bash
 # Reset Poetry configuration
 poetry config virtualenvs.in-project true
@@ -519,6 +557,7 @@ poetry env use python
 ```
 
 #### Database Connection Issues
+
 ```bash
 # Test connection manually
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master
@@ -531,6 +570,7 @@ ping unraid.lan
 ```
 
 #### Development Tool Issues
+
 ```bash
 # Reinstall development dependencies
 poetry remove black ruff mypy pytest --group dev
@@ -542,6 +582,7 @@ poetry run pre-commit install
 ```
 
 #### Validation Script Failures
+
 ```bash
 # Run individual validations
 ./scripts/validate_issue_P0-002.sh
@@ -553,10 +594,11 @@ poetry run pre-commit install
 ```
 
 ### Emergency Contacts
+
 - **Technical Lead**: _________________
 - **Database Administrator**: _________________  
 - **Project Manager**: _________________
 
 ---
 
-*This checklist ensures comprehensive validation of Phase 0 completion and provides clear documentation for audit and handoff purposes.*
+#### This checklist ensures comprehensive validation of Phase 0 completion and provides clear documentation for audit and handoff purposes

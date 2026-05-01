@@ -35,7 +35,11 @@ from urllib.parse import urlparse
 
 
 def parse_arguments() -> argparse.Namespace:
-    """Parse command line arguments for the workflow review PR command."""
+    """Parse command line arguments for the workflow review PR command.
+
+    Returns:
+        Parsed namespace containing all CLI flags and the PR URL positional argument.
+    """
     parser = argparse.ArgumentParser(
         description="Review pull requests with comprehensive analysis and multi-agent validation",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -134,7 +138,14 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def validate_pr_url(url: str) -> bool:
-    """Validate that the provided URL is a valid GitHub PR URL."""
+    """Validate that the provided URL is a valid GitHub PR URL.
+
+    Args:
+        url: URL string to validate against the github.com/owner/repo/pull/N pattern.
+
+    Returns:
+        True if the URL points to a valid GitHub pull request, False otherwise.
+    """
     try:
         parsed = urlparse(url)
         if parsed.netloc != "github.com":
@@ -155,7 +166,14 @@ def validate_pr_url(url: str) -> bool:
 
 
 def extract_pr_info(url: str) -> dict[str, str]:
-    """Extract PR information from the URL."""
+    """Extract PR information from the URL.
+
+    Args:
+        url: Validated GitHub PR URL in the form https://github.com/owner/repo/pull/N.
+
+    Returns:
+        Dict with owner, repo, pr_number, and full_name keys extracted from the URL path.
+    """
     parsed = urlparse(url)
     parts = parsed.path.strip("/").split("/")
     return {
@@ -167,7 +185,14 @@ def extract_pr_info(url: str) -> dict[str, str]:
 
 
 def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
-    """Build parameters for the MCP pr_review function."""
+    """Build parameters for the MCP pr_review function.
+
+    Args:
+        args: Parsed CLI arguments from parse_arguments.
+
+    Returns:
+        Dict of keyword arguments ready to pass to the mcp__zen__pr_review tool.
+    """
     params = {
         "pr_url": args.pr_url,
         "mode": args.mode,
@@ -190,7 +215,13 @@ def build_mcp_params(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def log_change(pr_info: dict[str, str], action: str, details: str) -> None:
-    """Log the workflow action to the change log."""
+    """Log the workflow action to the change log.
+
+    Args:
+        pr_info: PR metadata dict with full_name and pr_number keys, as returned by extract_pr_info.
+        action: Short label describing the operation performed (e.g., "PR Review Analysis").
+        details: Human-readable summary of review mode and enabled options for this run.
+    """
     log_file = Path("docs/planning/claude-file-change-log.md")
     if not log_file.parent.exists():
         log_file.parent.mkdir(parents=True, exist_ok=True)
@@ -210,7 +241,11 @@ def log_change(pr_info: dict[str, str], action: str, details: str) -> None:
 
 
 def validate_environment() -> bool:
-    """Validate that the environment is ready for PR review."""
+    """Validate that the environment is ready for PR review.
+
+    Returns:
+        True if the environment passes all checks, False if a blocking problem is detected.
+    """
     print("🔍 Validating environment...")
     # Check if we have GitHub CLI available (for potential PR operations)
     import shutil
@@ -224,7 +259,11 @@ def validate_environment() -> bool:
 
 
 def main() -> int:
-    """Main entry point for the workflow review PR command."""
+    """Main entry point for the workflow review PR command.
+
+    Returns:
+        0 on success, 1 if URL validation or environment checks fail.
+    """
     args = parse_arguments()
     print(f"🔍 Starting PR review for: {args.pr_url}")
     # Validate PR URL

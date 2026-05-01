@@ -30,13 +30,16 @@ It serves as the foundation for classification, rebalancing, and benchmarking ag
 ## 🏗️ Taxonomy Structure
 
 ### Level 0 (Asset Class)
+
 - **Equity**
 - **Fixed Income**
 - **Alternatives**
 - **Cash & Cash Equivalents**
 
 ### Level 1 (Sleeves)
-**Equity**
+
+#### Equity
+
 - US Core Beta  
 - US Factors & Styles  
 - US Growth / Value / Size tilts  
@@ -44,7 +47,8 @@ It serves as the foundation for classification, rebalancing, and benchmarking ag
 - Emerging Markets  
 - Sector / Thematic (optional)
 
-**Fixed Income**
+#### Fixed Income
+
 - Core Aggregate  
 - Treasuries (short / intermediate / long)  
 - TIPS  
@@ -53,7 +57,8 @@ It serves as the foundation for classification, rebalancing, and benchmarking ag
 - Municipals  
 - International / Emerging Debt  
 
-**Alternatives**
+#### Alternatives
+
 - Real Estate (Public REITs / Private)  
 - Commodities (Gold / Broad)  
 - Market Neutral / Hedge Fund-Like  
@@ -62,12 +67,14 @@ It serves as the foundation for classification, rebalancing, and benchmarking ag
 - Private Markets (Equity / Credit)  
 - Crypto (BTC / ETH / Diversified)  
 
-**Cash & Cash Equivalents**
+#### Cash & Cash Equivalents
+
 - Money Market / Bank Deposits  
 - T-Bills  
 - Short-Term Cash Proxies  
 
 ### Level 2 (Optional Granularity)
+
 - Equity → Region, Cap Size, Style, Sector  
 - Fixed Income → Duration & Credit Bands  
 - Alternatives → Strategy / Reference Index / Asset Type  
@@ -78,19 +85,22 @@ It serves as the foundation for classification, rebalancing, and benchmarking ag
 
 ## 📊 Reference Models
 
-**1. 70/30 Portfolio**
+### 1. 70/30 Portfolio
+
 - 70% Equity
 - 30% Fixed Income
 - 0–2% Cash
 - No explicit Alternatives
 
-**2. BlackRock Multi-Manager w/ Alts**
+### 2. BlackRock Multi-Manager w/ Alts
+
 - ~55% Equity
 - ~25–30% Fixed Income
 - ~15–17% Alternatives (Market Neutral, Systematic, Gold, Bitcoin, Tactical Opportunities)
 - ~2% Cash
 
-**3. BRX-Plus (Custom Public/Private 70/30)**
+### 3. BRX-Plus (Custom Public/Private 70/30)
+
 - 70% Public Markets (Equities + Bonds)
 - 30% Private/Alternative Markets
   - ~15% Equity-like (PE, VC, Real Estate, Crypto beta)

@@ -170,16 +170,19 @@ erDiagram
 ## Key Features
 
 ### Security Master
+
 - **Complete PP Integration**: All Portfolio Performance securities with full taxonomy classification
 - **Multi-level Classifications**: GICS, asset allocation, geographic, custom BRX-Plus taxonomy
 - **Data Quality Scoring**: Automated completeness assessment (0.00-1.00)
 
 ### Kubera Integration  
+
 - **Hierarchical Structure**: Sheet → Section → Holdings mapping
 - **Flexible PP Mapping**: Configurable mapping to PP groups and accounts
 - **Rich Position Data**: Quantity, value, cost basis, performance metrics, tax implications
 
 ### Holdings Comparison
+
 - **Variance Analysis**: Quantity and value differences with configurable tolerances
 - **Exception Tracking**: PP-only, Kubera-only, threshold exceeded flags
 - **Investigation Workflow**: Status tracking for variance resolution

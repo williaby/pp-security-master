@@ -81,7 +81,11 @@ class SecurityMasterInterface:
         logger.info("Security-Master interface initialized")
 
     def create_app(self) -> gr.Blocks:
-        """Create the complete Gradio application with all tabs and functionality."""
+        """Create the complete Gradio application with all tabs and functionality.
+
+        Returns:
+            The result.
+        """
 
         # Choose theme based on PromptCraft availability
         if PROMPTCRAFT_AVAILABLE:
@@ -1251,7 +1255,18 @@ class SecurityMasterInterface:
         result_display,
         stats_display,
     ):
-        """Setup event handlers for classification tab."""
+        """Setup event handlers for classification tab.
+
+        Args:
+            search_input: The search input value.
+            result_display: The result display value.
+            search_btn: The search btn value.
+            stats_display: The stats display value.
+            search_type: The search type value.
+            auto_classify_btn: The auto classify btn value.
+            save_btn: The save btn value.
+            search_results: The search results value.
+        """
 
         search_btn.click(
             fn=self._search_securities,
@@ -1275,7 +1290,17 @@ class SecurityMasterInterface:
         results_display,
         history_display,
     ):
-        """Setup event handlers for import tab."""
+        """Setup event handlers for import tab.
+
+        Args:
+            options: The options value.
+            status_display: The status display value.
+            institution_type: The institution type value.
+            file_upload: The file upload value.
+            history_display: The history display value.
+            results_display: The results display value.
+            import_btn: The import btn value.
+        """
 
         import_btn.click(
             fn=self._process_institution_import,
@@ -1294,7 +1319,18 @@ class SecurityMasterInterface:
         risk_display,
         chart_display,
     ):
-        """Setup event handlers for analytics tab."""
+        """Setup event handlers for analytics tab.
+
+        Args:
+            start_date: The start date value.
+            end_date: The end date value.
+            metrics_display: The metrics display value.
+            risk_display: The risk display value.
+            chart_display: The chart display value.
+            portfolio_selector: The portfolio selector value.
+            benchmark_selector: The benchmark selector value.
+            generate_btn: The generate btn value.
+        """
 
         generate_btn.click(
             fn=self._generate_portfolio_analytics,
@@ -1312,7 +1348,17 @@ class SecurityMasterInterface:
         result_display,
         benchmarks_display,
     ):
-        """Setup event handlers for benchmark tab."""
+        """Setup event handlers for benchmark tab.
+
+        Args:
+            securities_config: The securities config value.
+            create_custom_btn: The create custom btn value.
+            create_portfolio_btn: The create portfolio btn value.
+            benchmarks_display: The benchmarks display value.
+            result_display: The result display value.
+            source_portfolio: The source portfolio value.
+            benchmark_name: The benchmark name value.
+        """
 
         create_portfolio_btn.click(
             fn=self._create_portfolio_benchmark,
@@ -1331,7 +1377,18 @@ class SecurityMasterInterface:
         stats_display,
         download_file,
     ):
-        """Setup event handlers for export tab."""
+        """Setup event handlers for export tab.
+
+        Args:
+            options: The options value.
+            status_display: The status display value.
+            client_selector: The client selector value.
+            preview_display: The preview display value.
+            download_file: The download file value.
+            format_selector: The format selector value.
+            generate_btn: The generate btn value.
+            stats_display: The stats display value.
+        """
 
         generate_btn.click(
             fn=self._generate_pp_export,
@@ -1347,7 +1404,15 @@ class SecurityMasterInterface:
         validation_issues,
         trend_chart,
     ):
-        """Setup event handlers for quality tab."""
+        """Setup event handlers for quality tab.
+
+        Args:
+            refresh_btn: The refresh btn value.
+            trend_chart: The trend chart value.
+            validation_issues: The validation issues value.
+            security_quality: The security quality value.
+            institution_quality: The institution quality value.
+        """
 
         refresh_btn.click(
             fn=self._refresh_quality_metrics,
@@ -1368,7 +1433,16 @@ class SecurityMasterInterface:
         audit_display,
         api_display,
     ):
-        """Setup event handlers for admin tab."""
+        """Setup event handlers for admin tab.
+
+        Args:
+            audit_display: The audit display value.
+            api_display: The api display value.
+            refresh_btn: The refresh btn value.
+            service_status: The service status value.
+            users_display: The users display value.
+            system_health: The system health value.
+        """
 
         refresh_btn.click(
             fn=self._refresh_system_status,
@@ -1383,7 +1457,11 @@ class SecurityMasterInterface:
 
     # Core functionality methods (implementations would be complete)
     def _initialize_app_state(self):
-        """Initialize application state on load."""
+        """Initialize application state on load.
+
+        Returns:
+            The result.
+        """
         # Implementation would set up user context and permissions
         return (
             gr.update(visible=True),
@@ -1396,7 +1474,15 @@ class SecurityMasterInterface:
         query: str,
         search_type: str,
     ) -> tuple[pd.DataFrame, str]:
-        """Search securities based on query and type."""
+        """Search securities based on query and type.
+
+        Args:
+            query: The query value.
+            search_type: The search type value.
+
+        Returns:
+            The result.
+        """
         # Implementation would query database and return results
         sample_data = pd.DataFrame(
             {
@@ -1453,7 +1539,11 @@ class SecurityMasterInterface:
         return sample_data, stats_html
 
     def _save_manual_classification(self) -> str:
-        """Save manual classification."""
+        """Save manual classification.
+
+        Returns:
+            The result.
+        """
         return "✅ Classification saved successfully"
 
     def _process_institution_import(
@@ -1462,7 +1552,16 @@ class SecurityMasterInterface:
         institution: str,
         options: list[str],
     ) -> tuple[str, pd.DataFrame, pd.DataFrame]:
-        """Process institution file import."""
+        """Process institution file import.
+
+        Args:
+            file: The file value.
+            institution: The institution value.
+            options: The options value.
+
+        Returns:
+            The result.
+        """
         # Implementation would process file and return results
         status = "✅ File imported successfully. Processed 1,247 transactions, classified 987 securities."
 
@@ -1516,7 +1615,17 @@ class SecurityMasterInterface:
         start_date,
         end_date,
     ):
-        """Generate portfolio analytics."""
+        """Generate portfolio analytics.
+
+        Args:
+            start_date: The start date value.
+            end_date: The end date value.
+            benchmark: The benchmark value.
+            portfolio: The portfolio value.
+
+        Returns:
+            The result.
+        """
         # Implementation would calculate analytics and return results
 
         metrics_data = pd.DataFrame(
@@ -1586,7 +1695,15 @@ class SecurityMasterInterface:
         source_portfolio: str,
         benchmark_name: str,
     ) -> tuple[str, pd.DataFrame]:
-        """Create portfolio benchmark."""
+        """Create portfolio benchmark.
+
+        Args:
+            source_portfolio: The source portfolio value.
+            benchmark_name: The benchmark name value.
+
+        Returns:
+            The result.
+        """
         result = (
             f"✅ Created portfolio benchmark '{benchmark_name}' from {source_portfolio}"
         )
@@ -1606,7 +1723,16 @@ class SecurityMasterInterface:
         return result, benchmarks_data
 
     def _generate_pp_export(self, client: str, options: list[str], format: str):
-        """Generate Portfolio Performance export."""
+        """Generate Portfolio Performance export.
+
+        Args:
+            client: The client value.
+            options: The options value.
+            format: The format value.
+
+        Returns:
+            The result.
+        """
         status = (
             f"✅ Generated {format} export for {client} with {len(options)} options"
         )
@@ -1644,7 +1770,11 @@ class SecurityMasterInterface:
         return status, preview, stats_data, None
 
     def _refresh_quality_metrics(self):
-        """Refresh data quality metrics."""
+        """Refresh data quality metrics.
+
+        Returns:
+            The result.
+        """
         institution_data = pd.DataFrame(
             {
                 "Institution": [
@@ -1724,7 +1854,11 @@ class SecurityMasterInterface:
         return institution_data, security_data, issues_data, fig
 
     def _refresh_system_status(self):
-        """Refresh system status information."""
+        """Refresh system status information.
+
+        Returns:
+            The result.
+        """
         health_data = pd.DataFrame(
             {
                 "Component": [
@@ -1839,7 +1973,11 @@ class SecurityMasterInterface:
 
     # Utility methods for styling and layout
     def _get_custom_css(self) -> str:
-        """Get custom CSS styling for the application."""
+        """Get custom CSS styling for the application.
+
+        Returns:
+            The result.
+        """
         return """
         /* Security-Master Interface Styling */
         .gradio-container {
@@ -2036,7 +2174,11 @@ class SecurityMasterInterface:
         """
 
     def _get_custom_head(self) -> str:
-        """Get custom HTML head content."""
+        """Get custom HTML head content.
+
+        Returns:
+            The result.
+        """
         return """
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -2047,7 +2189,11 @@ class SecurityMasterInterface:
         """
 
     def _get_header_html(self) -> str:
-        """Get header HTML content."""
+        """Get header HTML content.
+
+        Returns:
+            The result.
+        """
         return """
         <div class="sm-header">
             <h1>🏛️ Security-Master Enterprise System</h1>
@@ -2056,7 +2202,11 @@ class SecurityMasterInterface:
         """
 
     def _get_footer_html(self) -> str:
-        """Get footer HTML content."""
+        """Get footer HTML content.
+
+        Returns:
+            The result.
+        """
         return """
         <div class="sm-footer">
             Security-Master v5.0 | Enterprise Portfolio Performance System<br>

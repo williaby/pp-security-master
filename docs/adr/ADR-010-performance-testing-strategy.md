@@ -9,18 +9,21 @@
 ## Context
 
 The Security Master Service handles large volumes of financial data including:
+
 - High-frequency transaction processing from multiple institutions
 - Real-time security classification with external API calls
 - Complex analytics calculations on portfolio datasets
 - Large-scale Portfolio Performance XML import/export operations
 
 Performance requirements identified from project planning review:
+
 - **Classification API Response**: <2s p95 for classification requests
 - **Large Portfolio Processing**: Complete backup for 10,000+ transactions within 30 seconds  
 - **Migration Performance**: Migration completes within 2 hours for large portfolios
 - **Concurrent User Support**: Support multiple simultaneous classification operations
 
 Without comprehensive performance testing, the system risks:
+
 - Poor user experience with slow classification responses
 - System failures under production load
 - Scalability limitations as portfolio sizes grow
@@ -34,7 +37,7 @@ We will implement a **comprehensive, multi-layered performance testing strategy*
 
 #### **Four-Tier Testing Strategy**
 
-```
+```python
 Unit Performance Tests    → Individual function/class performance
 Component Performance     → Database operations, API calls, file processing  
 Integration Performance   → End-to-end workflow performance
@@ -72,9 +75,10 @@ class PerformanceTestSuite:
 
 **Objectives**: Validate individual component performance and identify bottlenecks
 
-#### **Critical Components for Unit Performance Testing**:
+#### **Critical Components for Unit Performance Testing**
 
 1. **Classification Engine Components**
+
    ```python
    class ClassificationPerformanceTests:
        @performance_test(max_duration=0.5, memory_limit="100MB")
@@ -89,6 +93,7 @@ class PerformanceTestSuite:
    ```
 
 2. **Database Operation Performance**
+
    ```python
    class DatabasePerformanceTests:
        @performance_test(max_duration=1.0)
@@ -103,6 +108,7 @@ class PerformanceTestSuite:
    ```
 
 3. **File Processing Performance**
+
    ```python
    class FileProcessingPerformanceTests:
        @performance_test(max_duration=30.0)
@@ -116,7 +122,8 @@ class PerformanceTestSuite:
            pass
    ```
 
-#### **Performance Test Markers**:
+#### **Performance Test Markers**
+
 ```python
 # Custom pytest markers for performance testing
 @pytest.mark.performance
@@ -128,7 +135,7 @@ class PerformanceTestSuite:
 
 **Objectives**: Test component interactions and validate system boundaries
 
-#### **Database Component Testing**:
+#### **Database Component Testing**
 
 ```python
 class DatabaseComponentPerformanceTests:
@@ -147,7 +154,7 @@ class DatabaseComponentPerformanceTests:
         pass
 ```
 
-#### **External API Integration Testing**:
+#### **External API Integration Testing**
 
 ```python
 class APIComponentPerformanceTests:
@@ -170,9 +177,10 @@ class APIComponentPerformanceTests:
 
 **Objectives**: Validate end-to-end workflow performance under realistic conditions
 
-#### **End-to-End Performance Scenarios**:
+#### **End-to-End Performance Scenarios**
 
 1. **Broker File Import Performance**
+
    ```python
    def test_wells_fargo_import_performance(self):
        """Test complete Wells Fargo CSV import workflow"""
@@ -190,6 +198,7 @@ class APIComponentPerformanceTests:
    ```
 
 2. **Classification Pipeline Performance**
+
    ```python
    def test_full_classification_pipeline(self):
        """Test complete classification workflow performance"""
@@ -200,6 +209,7 @@ class APIComponentPerformanceTests:
    ```
 
 3. **Portfolio Performance Export**
+
    ```python
    def test_pp_xml_export_performance(self):
        """Test Portfolio Performance XML generation"""
@@ -213,7 +223,7 @@ class APIComponentPerformanceTests:
 
 **Objectives**: Validate system behavior under production load and beyond
 
-#### **Load Testing Scenarios**:
+#### **Load Testing Scenarios**
 
 ```python
 class LoadTestingFramework:
@@ -239,9 +249,10 @@ class LoadTestingFramework:
         pass
 ```
 
-#### **Stress Testing Scenarios**:
+#### **Stress Testing Scenarios**
 
 1. **Database Stress Testing**
+
    ```bash
    # PostgreSQL stress testing with pgbench
    pgbench -c 20 -j 4 -T 300 pp_security_master
@@ -254,6 +265,7 @@ class LoadTestingFramework:
    ```
 
 2. **Memory Stress Testing**
+
    ```python
    def test_large_portfolio_memory_usage(self):
        """Test memory usage with very large portfolios"""
@@ -264,6 +276,7 @@ class LoadTestingFramework:
    ```
 
 3. **API Rate Limit Stress Testing**
+
    ```python
    def test_api_rate_limit_handling(self):
        """Test system behavior when hitting API rate limits"""
@@ -278,6 +291,7 @@ class LoadTestingFramework:
 ### Baseline Performance Metrics
 
 **Database Performance Baselines**:
+
 ```sql
 -- Query performance benchmarks
 -- Simple security lookup: <10ms
@@ -287,11 +301,13 @@ class LoadTestingFramework:
 ```
 
 **API Performance Baselines**:
+
 - OpenFIGI classification request: <3s average, <10s p99
 - Internal classification API: <2s p95, <5s p99
 - Portfolio analytics calculation: <30s for complex metrics
 
 **System Resource Baselines**:
+
 - Memory usage: <4GB for typical operations, <8GB for large imports
 - CPU utilization: <50% during normal operations, <80% during imports
 - Database connections: <20 concurrent connections typical
@@ -321,21 +337,25 @@ class PerformanceMonitor:
 ## Implementation Strategy
 
 ### Phase 1: Foundation (Week 1-2)
+
 - Set up performance testing framework and tooling
 - Implement basic unit performance tests
 - Establish baseline metrics collection
 
 ### Phase 2: Component Testing (Week 3-5)  
+
 - Database performance testing with realistic datasets
 - External API performance testing with mocking
 - File processing performance validation
 
 ### Phase 3: Integration Testing (Week 6-7)
+
 - End-to-end workflow performance testing
 - Cross-component performance validation
 - Performance regression testing setup
 
 ### Phase 4: Load Testing (Week 8-9)
+
 - Production-like load testing setup
 - Stress testing implementation
 - Performance monitoring and alerting
@@ -343,6 +363,7 @@ class PerformanceMonitor:
 ### Continuous Performance Testing
 
 **Development Integration**:
+
 ```yaml
 # GitHub Actions performance testing workflow
 name: Performance Tests
@@ -367,6 +388,7 @@ jobs:
 ```
 
 **Production Monitoring**:
+
 - Real-time performance metrics collection
 - Automated performance threshold alerting
 - Weekly performance report generation
@@ -459,12 +481,14 @@ jobs:
 ### Performance Metrics Dashboard
 
 **Real-time Metrics**:
+
 - Current response times (p50, p95, p99)
 - Active database connections
 - Memory and CPU utilization  
 - API call success rates and latencies
 
 **Historical Analysis**:
+
 - Performance trend analysis over time
 - Regression detection and alerting
 - Capacity planning projections
@@ -473,12 +497,14 @@ jobs:
 ### Performance Reporting
 
 **Weekly Performance Reports**:
+
 - Performance SLA compliance summary
 - Performance degradation incidents
 - Optimization opportunities identified
 - Resource utilization trends
 
 **Monthly Performance Reviews**:
+
 - Performance goal achievement assessment
 - System capacity planning analysis  
 - Performance optimization project planning

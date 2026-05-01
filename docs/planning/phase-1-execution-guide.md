@@ -11,6 +11,7 @@ This document provides step-by-step instructions for executing Phase 1 tasks. Ea
 ## Quick Start Checklist
 
 Before starting Phase 1, ensure:
+
 - [x] Phase 0 validation script passes: `./scripts/validate_phase_0_complete.sh`
 - [x] PostgreSQL 17 operational and accessible from development machines
 - [x] Development environment configured with Phase 0 requirements
@@ -26,6 +27,7 @@ Before starting Phase 1, ensure:
 **Time Estimate**: 4 hours
 
 #### Step 1: Create Phase 1 Schema Structure
+
 ```bash
 # Ensure we're in project root and virtual environment is active
 cd pp-security-master
@@ -40,6 +42,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT version();"
 ```
 
 #### Step 2: Implement Wells Fargo Transaction Table
+
 ```bash
 # Create Wells Fargo transaction table schema
 cat > sql/phase1/002_create_wells_fargo_transactions.sql << 'EOF'
@@ -102,6 +105,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/phase1/002_create_well
 ```
 
 #### Step 3: Implement Interactive Brokers Transaction Table
+
 ```bash
 # Create IBKR transaction table schema
 cat > sql/phase1/003_create_ibkr_transactions.sql << 'EOF'
@@ -165,6 +169,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/phase1/003_create_ibkr
 ```
 
 #### Step 4: Implement AltoIRA and Kubera Transaction Tables
+
 ```bash
 # Create AltoIRA transaction table schema
 cat > sql/phase1/004_create_altoira_transactions.sql << 'EOF'
@@ -271,6 +276,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/phase1/005_create_kube
 ```
 
 #### Step 5: Create Unified Transaction View
+
 ```bash
 # Create common transaction interface view
 cat > sql/phase1/006_create_common_transaction_view.sql << 'EOF'
@@ -380,7 +386,8 @@ EOF
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/phase1/006_create_common_transaction_view.sql
 ```
 
-**Validation:**
+## Validation
+
 ```bash
 # Verify all tables created
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "\dt transactions_*"
@@ -409,7 +416,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT id, batch_id, tran
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "DELETE FROM transactions_wells_fargo;"
 ```
 
-**✅ Day 1 Complete - Institution transaction tables operational**
+## ✅ Day 1 Complete - Institution transaction tables operational
 
 ---
 
@@ -418,6 +425,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "DELETE FROM transactions_
 **Time Estimate**: 3 hours
 
 #### Step 1: Create Import Batch Tracking Table
+
 ```bash
 # Create import batch tracking schema
 cat > sql/phase1/007_create_import_batches.sql << 'EOF'
@@ -495,6 +503,7 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -f sql/phase1/007_create_impo
 ```
 
 #### Step 2: Create Batch Management Python Module
+
 ```bash
 # Create batch management module
 mkdir -p src/security_master/batch
@@ -636,6 +645,7 @@ EOF
 ```
 
 #### Step 3: Create Batch Management Service
+
 ```bash
 cat > src/security_master/batch/service.py << 'EOF'
 """Batch management service for import operations."""
@@ -929,7 +939,8 @@ class BatchManager:
 EOF
 ```
 
-**Validation:**
+#### Validation
+
 ```bash
 # Test batch tracking table
 psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'import_batches' ORDER BY ordinal_position;"
@@ -961,7 +972,7 @@ AND ccu.table_name = 'import_batches';
 # Expected: Shows foreign key relationships from transaction tables
 ```
 
-**✅ Day 2 Complete - Data lineage and batch tracking operational**
+## ✅ Day 2 Complete - Data lineage and batch tracking operational
 
 ---
 
@@ -972,6 +983,7 @@ AND ccu.table_name = 'import_batches';
 **Time Estimate**: 4 hours
 
 #### Step 1: Create Sample Wells Fargo CSV Data
+
 ```bash
 # Create sample data directory
 mkdir -p sample_data/wells_fargo
@@ -990,6 +1002,7 @@ echo "Sample Wells Fargo CSV created with 5 test transactions"
 ```
 
 #### Step 2: Create Wells Fargo Parser Module
+
 ```bash
 # Create extractor module structure
 mkdir -p src/security_master/extractor/wells_fargo
@@ -1096,6 +1109,7 @@ EOF
 ```
 
 #### Step 3: Create Wells Fargo Parser Implementation
+
 ```bash
 cat > src/security_master/extractor/wells_fargo/parser.py << 'EOF'
 """Wells Fargo CSV parser implementation."""
@@ -1371,7 +1385,8 @@ class WellsFargoParser:
 EOF
 ```
 
-**Validation:**
+#### Validation
+
 ```bash
 # Test Wells Fargo parser
 python -c "
@@ -1399,13 +1414,14 @@ psql -h unraid.lan -p 5432 -U pp_user -d pp_master -c "SELECT id, institution, f
 # Expected: Shows the batch from our test
 ```
 
-**✅ Day 8 Complete - Wells Fargo CSV parser operational**
+## ✅ Day 8 Complete - Wells Fargo CSV parser operational
 
 ---
 
 ## Phase 1 Completion Validation
 
 ### Master Validation Script
+
 ```bash
 # Create comprehensive Phase 1 validation script
 cat > scripts/validate_phase_1_complete.sh << 'EOF'
@@ -1552,21 +1568,25 @@ chmod +x scripts/validate_phase_1_complete.sh
 This Phase 1 execution guide provides:
 
 ✅ **Comprehensive Day-by-Day Instructions**  
+
 - Specific commands for each major task
 - Expected outputs and validation steps
 - Clear time estimates and responsibilities
 
 ✅ **Database Schema Implementation**  
+
 - Complete SQL scripts for all institution tables
 - Performance indexes and constraints  
 - Unified view for cross-institution queries
 
 ✅ **Batch Tracking System**  
+
 - Import batch lifecycle management
 - Data lineage and audit trail
 - Python models and service layer
 
 ✅ **Wells Fargo Parser Implementation**  
+
 - CSV parsing with error handling
 - Data validation and business rules
 - Quality scoring and duplicate detection

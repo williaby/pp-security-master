@@ -1,0 +1,98 @@
+---
+default_install_hook_types: [pre-commit, commit-msg]
+default_stages: [pre-commit]
+
+repos:
+  # ── Remote hooks ──────────────────────────────────────────────────────────
+
+  # Ruff: lint with autofix, then format check
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 6fec9b7edb08fd9989088709d864a7826dc74e80  # frozen: v0.15.12
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  # detect-secrets: credential scanning
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: 68e8b45440415753fff70a312ece8da92ba85b4a  # frozen: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: [--baseline, .secrets.baseline]
+        exclude: poetry.lock
+
+  # commitizen: enforce conventional commit message format
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: 2ca29f9297911f8f5a4e8f97100b7832f045e8d3  # frozen: v4.13.10
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  # yamllint: YAML syntax and style
+  - repo: https://github.com/adrienverge/yamllint
+    rev: cba56bcde1fdd01c1deb3f945e69764c291a6530  # frozen: v1.38.0
+    hooks:
+      - id: yamllint
+        args: [-c, .yamllint.yml]
+
+  # markdownlint: Markdown formatting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: e72a3ca1632f0b11a07d171449fe447a7ff6795e  # frozen: v0.48.0
+    hooks:
+      - id: markdownlint
+        args: [--fix, --config, .markdownlint.yml]
+
+  # ── Local hooks (need the project venv via poetry run) ────────────────────
+
+  - repo: local
+    hooks:
+      # basedpyright: strict type checking -- needs project stubs (e.g. SQLAlchemy)
+      - id: basedpyright
+        name: basedpyright
+        language: system
+        entry: poetry run basedpyright
+        types: [python]
+        pass_filenames: false
+        always_run: true
+
+      # bandit: static security analysis -- needs the [toml] extra to read pyproject.toml
+      - id: bandit
+        name: bandit
+        language: system
+        entry: poetry run bandit
+        args: [-r, src, -ll, -c, pyproject.toml]
+        types: [python]
+        pass_filenames: false
+
+      # darglint: docstring argument validation
+      - id: darglint
+        name: darglint
+        language: system
+        entry: poetry run darglint
+        types: [python]
+
+      # interrogate: docstring coverage for src/ (70% threshold)
+      - id: interrogate-src
+        name: interrogate (src)
+        language: system
+        entry: poetry run interrogate
+        args: [--fail-under=70, src/]
+        types: [python]
+        pass_filenames: false
+
+      # interrogate: docstring coverage for scripts/ (85% threshold)
+      - id: interrogate-scripts
+        name: interrogate (scripts)
+        language: system
+        entry: poetry run interrogate
+        args: [--fail-under=85, scripts/]
+        types: [python]
+        pass_filenames: false
+
+      # Em-dash guard: block the U+2014 character in all text files
+      - id: no-em-dash
+        name: No em-dashes
+        language: pygrep
+        entry: "—"
+        types: [text]
+        exclude: '^\.pre-commit-config\.yaml$'

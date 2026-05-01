@@ -1,4 +1,5 @@
 # Phase 4 Execution Guide
+
 ## Analytics and Portfolio Performance Integration
 
 Complete step-by-step guide for implementing Phase 4 with all analytics, benchmark generation, and Portfolio Performance integration features.
@@ -6,6 +7,7 @@ Complete step-by-step guide for implementing Phase 4 with all analytics, benchma
 ## Prerequisites
 
 ### Environment Validation
+
 ```bash
 # Verify PostgreSQL 17 connection
 poetry run python -c "from src.security_master.storage.connection import get_db_connection; print('✅ Database connected')"
@@ -32,6 +34,7 @@ ls -la external_repos/ppxml2db/
 ```
 
 ### Dependency Installation
+
 ```bash
 # Install analytics dependencies
 poetry add numpy pandas scipy scikit-learn plotly dash
@@ -49,6 +52,7 @@ poetry add pytest-benchmark pytest-xdist pytest-html
 ## Step 1: Database Schema Implementation
 
 ### 1.1 Create Analytics Database Extensions
+
 ```bash
 # Execute analytics schema
 poetry run python -c "
@@ -67,6 +71,7 @@ with conn.cursor() as cur:
 ```
 
 ### 1.2 Create Benchmark Security Tables
+
 ```bash
 # Execute benchmark schema
 poetry run python -c "
@@ -85,6 +90,7 @@ with conn.cursor() as cur:
 ```
 
 ### 1.3 Create Portfolio Performance Integration Schema
+
 ```bash
 # Execute PP integration schema
 poetry run python -c "
@@ -105,6 +111,7 @@ with conn.cursor() as cur:
 ## Step 2: Analytics Framework Implementation
 
 ### 2.1 Create Analytics Core Module
+
 ```bash
 # Create analytics package structure
 mkdir -p src/security_master/analytics
@@ -117,6 +124,7 @@ cp docs/planning/phase-4-templates/risk_analytics.py src/security_master/analyti
 ```
 
 ### 2.2 Implement Portfolio Analytics
+
 ```bash
 # Create portfolio analytics module
 cat > src/security_master/analytics/portfolio.py << 'EOF'
@@ -259,6 +267,7 @@ echo "✅ Portfolio analytics module created"
 ```
 
 ### 2.3 Create Analytics Database Views
+
 ```bash
 # Execute analytics views creation script
 poetry run python scripts/phase4/setup_analytics_pp_integration.sh
@@ -269,6 +278,7 @@ echo "✅ Analytics views created"
 ## Step 3: Benchmark Security Generator Implementation
 
 ### 3.1 Create Benchmark Generator Module
+
 ```bash
 # Copy benchmark generator template
 cp docs/planning/phase-4-templates/benchmark_security_generator.py src/security_master/analytics/benchmark_generator.py
@@ -277,6 +287,7 @@ echo "✅ Benchmark generator module created"
 ```
 
 ### 3.2 Test Benchmark Generation
+
 ```bash
 # Run benchmark usage examples
 poetry run python docs/planning/phase-4-templates/benchmark_usage_examples.py
@@ -285,6 +296,7 @@ echo "✅ Benchmark generation tested"
 ```
 
 ### 3.3 Validate Benchmark Database Functions
+
 ```bash
 # Test benchmark validation functions
 poetry run python -c "
@@ -339,6 +351,7 @@ conn.commit()
 ## Step 4: Portfolio Performance Integration
 
 ### 4.1 Create PP XML Generator
+
 ```bash
 # Create PP integration package
 mkdir -p src/security_master/pp_integration
@@ -351,6 +364,7 @@ echo "✅ Portfolio Performance XML generator created"
 ```
 
 ### 4.2 Create PP JSON Exporter
+
 ```bash
 # Create PP JSON exporter
 cat > src/security_master/pp_integration/json_exporter.py << 'EOF'
@@ -499,6 +513,7 @@ echo "✅ Portfolio Performance JSON exporter created"
 ```
 
 ### 4.3 Test PP Integration
+
 ```bash
 # Test PP XML generation
 poetry run python -c "
@@ -539,6 +554,7 @@ print('✅ JSON serialization successful')
 ## Step 5: User Interface and CLI Integration
 
 ### 5.1 Extend CLI with Analytics Commands
+
 ```bash
 # Add analytics commands to CLI
 cat >> src/security_master/cli.py << 'EOF'
@@ -658,6 +674,7 @@ echo "✅ CLI extended with analytics and PP export commands"
 ```
 
 ### 5.2 Test CLI Commands
+
 ```bash
 # Test analytics CLI commands
 poetry run python -m security_master.cli analytics portfolio-metrics test-portfolio-123 --start-date 2024-01-01
@@ -677,6 +694,7 @@ echo "✅ CLI commands tested"
 ## Step 6: Testing and Validation
 
 ### 6.1 Run Phase 4 Test Suite
+
 ```bash
 # Create Phase 4 test directory
 mkdir -p tests/phase4
@@ -691,6 +709,7 @@ echo "✅ Phase 4 tests completed"
 ```
 
 ### 6.2 Performance Validation
+
 ```bash
 # Run performance benchmarks
 poetry run pytest tests/phase4/test_benchmark_performance.py -v --benchmark-only
@@ -722,6 +741,7 @@ print(f'   Price points: {len(benchmark.price_history)}')
 ```
 
 ### 6.3 Integration Validation
+
 ```bash
 # Validate database schema
 poetry run python -c "
@@ -763,6 +783,7 @@ with conn.cursor() as cur:
 ## Step 7: Documentation and User Training
 
 ### 7.1 Generate API Documentation
+
 ```bash
 # Install documentation dependencies
 poetry add sphinx sphinx-rtd-theme sphinx-autodoc-typehints
@@ -796,6 +817,7 @@ echo "✅ API documentation generated"
 ```
 
 ### 7.2 Create User Guides
+
 ```bash
 # Create user guide directory
 mkdir -p docs/user_guides
@@ -811,6 +833,7 @@ echo "✅ User guides created"
 ## Step 8: Production Deployment Preparation
 
 ### 8.1 Environment Configuration
+
 ```bash
 # Create production environment template
 cat > .env.production.template << 'EOF'
@@ -845,6 +868,7 @@ echo "✅ Production environment template created"
 ```
 
 ### 8.2 Database Migration Script
+
 ```bash
 # Create production migration script
 cat > scripts/deploy_phase4_production.sh << 'EOF'
@@ -899,6 +923,7 @@ echo "✅ Production deployment script created"
 ```
 
 ### 8.3 Monitoring and Alerting Setup
+
 ```bash
 # Create monitoring configuration
 cat > monitoring/phase4_alerts.yml << 'EOF'
@@ -940,6 +965,7 @@ echo "✅ Monitoring configuration created"
 ## Step 9: Final Validation and Sign-off
 
 ### 9.1 Execute Complete Validation Checklist
+
 ```bash
 # Run complete validation using the checklist
 poetry run python scripts/phase4/run_validation_checklist.py
@@ -948,6 +974,7 @@ echo "✅ Complete validation checklist executed"
 ```
 
 ### 9.2 Generate Phase 4 Completion Report
+
 ```bash
 # Generate completion report
 poetry run python -c "
