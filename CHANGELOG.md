@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- SHA-pin all GitHub Actions tags across ci.yml, codeql.yml,
+  renovate-auto-merge.yml, and scorecard.yml to immutable commit SHAs
+  (actions/checkout v4.2.2, actions/setup-python v5.4.0,
+  actions/cache v4.2.3, actions/upload-artifact v4.6.2,
+  codecov/codecov-action v4.6.0, github/codeql-action v3.29.0,
+  step-security/harden-runner v2.12.2, snok/install-poetry v1.4.1,
+  fountainhead/action-wait-for-check v1.2.0, ossf/scorecard-action v2.4.3)
+
 ### Added
 
 - Add `.pre-commit-config.yaml` with SHA-pinned remote hooks (ruff v0.15.12, detect-secrets v1.5.0, commitizen v4.13.10, yamllint v1.38.0, markdownlint-cli v0.48.0) and local `poetry run` hooks (basedpyright, bandit, darglint, interrogate, no-em-dash pygrep); add `pre_commit` nox session that installs and runs hooks
