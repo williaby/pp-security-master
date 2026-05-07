@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(poetry run *)",
+      "Bash(nox *)",
+      "Bash(poetry run nox *)",
+      "Bash(pre-commit *)",
+      "Bash(poetry run pre-commit *)",
+      "Bash(qlty *)",
+      "Bash(poetry run pip-audit)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
