@@ -45,8 +45,12 @@ jobs:
       - name: Sync dependencies (locked)
         run: uv sync --frozen --dev
 
+      # `--ignore-vuln PYSEC-2022-42969` honors the Accepted decision in
+      # docs/known-vulnerabilities.md (no upstream fix; the affected code
+      # path in `py.path.svnwc` is unreachable through `interrogate`).
+      # Reassess on the documented 60-day cadence.
       - name: pip-audit (fail on any vulnerability)
-        run: uv run pip-audit --strict
+        run: uv run pip-audit --strict --ignore-vuln PYSEC-2022-42969
 
       # `--severity-level medium` makes bandit fail the run on any finding at
       # medium or high severity, regardless of confidence. Confidence is left
