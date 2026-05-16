@@ -1,0 +1,60 @@
+---
+# Phase 1 security gate.
+#
+# This workflow runs pip-audit and bandit directly, and is the authoritative
+# gate for those two tools. The org reusable workflow consumed by
+# `security-analysis.yml` intentionally disables both (`run-bandit: false`,
+# CodeQL/OSV/dependency-review handled elsewhere); the two workflows are
+# complementary, not redundant.
+
+name: Security
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security:
+    name: Dependency audit and static analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@1e862dfacbd1d6d858c55d9b792c756523627244  # v7.1.4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Sync dependencies (locked)
+        run: uv sync --frozen --dev
+
+      # `--ignore-vuln PYSEC-2022-42969` honors the Accepted decision in
+      # docs/known-vulnerabilities.md (no upstream fix; the affected code
+      # path in `py.path.svnwc` is unreachable through `interrogate`).
+      # Reassess on the documented 60-day cadence.
+      - name: pip-audit (fail on any vulnerability)
+        run: uv run pip-audit --strict --ignore-vuln PYSEC-2022-42969
+
+      # `--severity-level medium` makes bandit fail the run on any finding at
+      # medium or high severity, regardless of confidence. Confidence is left
+      # at bandit's default so high-severity / low-confidence issues still
+      # surface a non-zero exit code.
+      - name: Bandit (fail on high or medium severity)
+        run: uv run bandit -r src/ --severity-level medium
