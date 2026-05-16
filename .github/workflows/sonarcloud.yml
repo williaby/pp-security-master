@@ -17,7 +17,7 @@ permissions:
 jobs:
   sonarcloud:
     name: SonarCloud analysis
-    uses: ByronWilliamsCPA/.github/.github/workflows/sonarcloud.yml@e067cdb7294f6221dbde74ef1f4c3ca735eed570
+    uses: ByronWilliamsCPA/.github/.github/workflows/sonarcloud.yml@e067cdb7294f6221dbde74ef1f4c3ca735eed570  # pinned per Phase 1 brief
     with:
       sonar-organization: williaby
     secrets:

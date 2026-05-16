@@ -1,4 +1,12 @@
 ---
+# Phase 1 security gate.
+#
+# This workflow runs pip-audit and bandit directly, and is the authoritative
+# gate for those two tools. The org reusable workflow consumed by
+# `security-analysis.yml` intentionally disables both (`run-bandit: false`,
+# CodeQL/OSV/dependency-review handled elsewhere); the two workflows are
+# complementary, not redundant.
+
 name: Security
 
 on:
@@ -34,11 +42,15 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
 
-      - name: Sync dependencies
-        run: uv sync --all-extras --dev
+      - name: Sync dependencies (locked)
+        run: uv sync --frozen --dev
 
       - name: pip-audit (fail on any vulnerability)
         run: uv run pip-audit --strict
 
+      # `--severity-level medium` makes bandit fail the run on any finding at
+      # medium or high severity, regardless of confidence. Confidence is left
+      # at bandit's default so high-severity / low-confidence issues still
+      # surface a non-zero exit code.
       - name: Bandit (fail on high or medium severity)
-        run: uv run bandit -r src/ --severity-level medium --confidence-level medium
+        run: uv run bandit -r src/ --severity-level medium
